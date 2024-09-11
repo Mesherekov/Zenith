@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "436274256105",
+    "firebase_url": "https://zenith-e3f8a-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "zenith-e3f8a",
+    "storage_bucket": "zenith-e3f8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436274256105:android:27cdb4c22ecbe5fb9e3878",
+        "android_client_info": {
+          "package_name": "com.example.zenith"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHIsRyezrhuxeYWE0xoJo8PMhiLKZ4HiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
