@@ -8,7 +8,7 @@
     tools:context=".SignUpActivity">
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/emailup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="139dp"
@@ -26,7 +26,7 @@
         tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/nameup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="224dp"
@@ -44,7 +44,7 @@
         tools:ignore="TouchTargetSizeCheck" />
 
     <EditText
-        android:id="@+id/editTextText3"
+        android:id="@+id/passup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="296dp"
@@ -69,7 +69,7 @@
         android:elevation="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.375"
-        app:layout_constraintStart_toEndOf="@+id/editTextText"
+        app:layout_constraintStart_toEndOf="@+id/emailup"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/penciledit" />
 
@@ -81,7 +81,7 @@
         android:elevation="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.375"
-        app:layout_constraintStart_toEndOf="@+id/editTextText"
+        app:layout_constraintStart_toEndOf="@+id/emailup"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/profileicon" />
 
@@ -93,23 +93,20 @@
         android:elevation="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.377"
-        app:layout_constraintStart_toEndOf="@+id/editTextText"
+        app:layout_constraintStart_toEndOf="@+id/emailup"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/keypass" />
 
-    <CheckBox
-        android:id="@+id/checkBox"
+    <Button
+        android:id="@+id/createaccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="429dp"
-        android:text="Remember me"
-        android:textColor="@color/white"
-        android:textColorLink="@color/white"
+        android:layout_marginTop="97dp"
+        android:text="Create Account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passup"
         app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

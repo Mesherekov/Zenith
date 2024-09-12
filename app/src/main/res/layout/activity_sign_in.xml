@@ -8,7 +8,7 @@
     tools:context=".SignInActivity">
 
     <EditText
-        android:id="@+id/editTextText4"
+        android:id="@+id/emailin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="139dp"
@@ -23,10 +23,10 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TextFields,TouchTargetSizeCheck" />
 
     <EditText
-        android:id="@+id/editTextText5"
+        android:id="@+id/passin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="224dp"
@@ -52,7 +52,7 @@
         android:elevation="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.375"
-        app:layout_constraintStart_toEndOf="@+id/editTextText4"
+        app:layout_constraintStart_toEndOf="@+id/emailin"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/penciledit" />
 
@@ -65,22 +65,18 @@
         android:elevation="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.393"
-        app:layout_constraintStart_toEndOf="@+id/editTextText5"
+        app:layout_constraintStart_toEndOf="@+id/passin"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/keypass" />
 
-    <CheckBox
-        android:id="@+id/checkBox2"
+    <Button
+        android:id="@+id/enterac"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="429dp"
-        android:text="Remember me"
-        android:textColor="@color/white"
-        android:textColorLink="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="168dp"
+        android:text="Enter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/passin" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
