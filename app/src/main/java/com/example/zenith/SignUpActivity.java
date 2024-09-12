@@ -3,6 +3,7 @@ package com.example.zenith;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,24 +27,26 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         init();
-        bsignup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!TextUtils.isEmpty(edname.getText().toString()) && !TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())){
-                    mfirebaseAuth.createUserWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
-                                Toast.makeText(getApplicationContext(), "User Sign Up", Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                Toast.makeText(getApplicationContext(), "User Sign Up Failed", Toast.LENGTH_SHORT).show();
-                            }
+        bsignup.setOnClickListener(view -> {
+            if(!TextUtils.isEmpty(edname.getText().toString()) && !TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())){
+                mfirebaseAuth.createUserWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        SendEmailMassageVerification();
+                        Toast.makeText(getApplicationContext(), "User Sign Up", Toast.LENGTH_SHORT).show();
+
+                        FirebaseUser user = mfirebaseAuth.getCurrentUser();
+                        assert user != null;
+                        if(user.isEmailVerified()){
+                            Intent intent = new Intent(SignUpActivity.this, ChartListActivity.class);
+                            startActivity(intent);
                         }
-                    });
-                } else {
-                    Toast.makeText(SignUpActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
-                }
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "User Sign Up Failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                Toast.makeText(SignUpActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -63,5 +66,20 @@ public class SignUpActivity extends AppCompatActivity {
         edpassword = findViewById(R.id.passup);
         bsignup = findViewById(R.id.createaccount);
         mfirebaseAuth = FirebaseAuth.getInstance();
+    }
+    private void SendEmailMassageVerification(){
+        FirebaseUser user = mfirebaseAuth.getCurrentUser();
+        assert user != null;
+        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(SignUpActivity.this, "Confirm your email address", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(SignUpActivity.this, "Send massage failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

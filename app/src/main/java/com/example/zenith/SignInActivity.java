@@ -26,23 +26,22 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         init();
-        bsignin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
-                    mfirebaseAuth.signInWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
-                                Intent intent = new Intent(SignInActivity.this, ChartListActivity.class);
-                                startActivity(intent);
-                            }
-                            else
-                                Toast.makeText(SignInActivity.this, "Sign In failed", Toast.LENGTH_SHORT).show();
+        bsignin.setOnClickListener(view -> {
+            if(!TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
+                mfirebaseAuth.signInWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(SignInActivity.this, task -> {
+                    if(task.isSuccessful()){
+                        FirebaseUser user = mfirebaseAuth.getCurrentUser();
+                        assert user != null;
+                        if(user.isEmailVerified()){
+                            Intent intent = new Intent(SignInActivity.this, ChartListActivity.class);
+                            startActivity(intent);
                         }
-                    });
-                } else Toast.makeText(SignInActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
-            }
+                        else Toast.makeText(this, "Please confirm your email", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        Toast.makeText(SignInActivity.this, "Sign In failed", Toast.LENGTH_SHORT).show();
+                });
+            } else Toast.makeText(SignInActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
         });
     }
     private void init(){

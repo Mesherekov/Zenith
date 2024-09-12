@@ -12,28 +12,21 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String SAVED_TEXT = "savedtext";
     ImageButton signin, signup;
     private FirebaseAuth mfirebaseAuth;
-    SharedPreferences spref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        signup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-                startActivity(intent);
-            }
+        signup.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+            startActivity(intent);
         });
-        signin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-                startActivity(intent);
-            }
+        signin.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -42,8 +35,11 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
         if(currentuser != null){
-            Intent intent = new Intent(MainActivity.this, ChartListActivity.class);
-            startActivity(intent);
+            if(currentuser.isEmailVerified()){
+                Intent intent = new Intent(MainActivity.this, ChartListActivity.class);
+                startActivity(intent);
+            }
+
         }
     }
 
