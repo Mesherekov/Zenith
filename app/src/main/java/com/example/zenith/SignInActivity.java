@@ -3,6 +3,7 @@ package com.example.zenith;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -33,9 +34,8 @@ public class SignInActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()){
-                                FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
-                                assert currentuser != null;
-                                Toast.makeText(SignInActivity.this, currentuser.getEmail(), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(SignInActivity.this, ChartListActivity.class);
+                                startActivity(intent);
                             }
                             else
                                 Toast.makeText(SignInActivity.this, "Sign In failed", Toast.LENGTH_SHORT).show();

@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
     private static final String SAVED_TEXT = "savedtext";
     ImageButton signin, signup;
-    boolean isfirst;
+    private FirebaseAuth mfirebaseAuth;
     SharedPreferences spref;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +36,20 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
+        if(currentuser != null){
+            Intent intent = new Intent(MainActivity.this, ChartListActivity.class);
+            startActivity(intent);
+        }
+    }
+
     void init(){
         signin = findViewById(R.id.signin);
         signup = findViewById(R.id.signup);
-    } void loadbool(){
-        spref = getPreferences(MODE_PRIVATE);
-        isfirst = spref.getBoolean(SAVED_TEXT, false);
+        mfirebaseAuth = FirebaseAuth.getInstance();
     }
-    void savebool(){
-        spref = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = spref.edit();
-        editor.putBoolean(SAVED_TEXT, isfirst);
-        editor.apply();
-    }
-
 }
