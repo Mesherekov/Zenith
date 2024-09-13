@@ -1,12 +1,11 @@
 package com.example.zenith;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,13 +22,10 @@ public class ChartListActivity extends AppCompatActivity {
         FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
         assert currentuser != null;
         email.setText(currentuser.getEmail());
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mfirebaseAuth.signOut();
-                Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
+        logout.setOnClickListener(view -> {
+            mfirebaseAuth.signOut();
+            Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
+            startActivity(intent);
         });
     }
     private void init(){
