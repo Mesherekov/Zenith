@@ -11,12 +11,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.ktx.Firebase;
 
 
 public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth mfirebaseAuth;
     private EditText edemail, edname, edpassword;
     private Button bsignup, next;
+    private DatabaseReference mdatabase;
+    private String USER_KEY = "User";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,9 +50,15 @@ public class SignUpActivity extends AppCompatActivity {
             if (!TextUtils.isEmpty(edname.getText().toString()) && !TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
                 mfirebaseAuth.signInWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(SignUpActivity.this, task -> {
                     if(task.isSuccessful()){
-                        FirebaseUser user = mfirebaseAuth.getCurrentUser();
-                        assert user != null;
-                        if(user.isEmailVerified()){
+                        String id = mdatabase.getKey();
+                        String name = edname.getText().toString();
+                        String email = edemail.getText().toString();
+                        String password = edpassword.getText().toString();
+                        User user = new User(id, name, email, password);
+                        mdatabase.push().setValue(user);
+                        FirebaseUser currentUser = mfirebaseAuth.getCurrentUser();
+                        assert currentUser != null;
+                        if(currentUser.isEmailVerified()){
                             Intent intent = new Intent(SignUpActivity.this, ChartListActivity.class);
                             startActivity(intent);
                         }
@@ -71,6 +82,7 @@ public class SignUpActivity extends AppCompatActivity {
         bsignup = findViewById(R.id.createaccount);
         next = findViewById(R.id.next);
         mfirebaseAuth = FirebaseAuth.getInstance();
+        mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
     }
     private void SendEmailMassageVerification(){
         FirebaseUser user = mfirebaseAuth.getCurrentUser();
