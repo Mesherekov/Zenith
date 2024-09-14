@@ -22,6 +22,7 @@ public class SignUpActivity extends AppCompatActivity {
     private Button bsignup, next;
     private DatabaseReference mdatabase;
     private String USER_KEY = "User";
+    private boolean applynext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,7 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             SendEmailMassageVerification();
                             Toast.makeText(getApplicationContext(), "User Sign Up", Toast.LENGTH_SHORT).show();
+                            applynext = true;
                         } else {
                             Toast.makeText(getApplicationContext(), "User Sign Up Failed", Toast.LENGTH_SHORT).show();
                         }
@@ -48,28 +50,29 @@ public class SignUpActivity extends AppCompatActivity {
         });
         next.setOnClickListener(view -> {
             if (!TextUtils.isEmpty(edname.getText().toString()) && !TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
-                mfirebaseAuth.signInWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(SignUpActivity.this, task -> {
-                    if(task.isSuccessful()){
-                        String id = mdatabase.getKey();
-                        String name = edname.getText().toString();
-                        String email = edemail.getText().toString();
-                        String password = edpassword.getText().toString();
-                        User user = new User(id, name, email, password);
-                        mdatabase.push().setValue(user);
-                        FirebaseUser currentUser = mfirebaseAuth.getCurrentUser();
-                        assert currentUser != null;
-                        if(currentUser.isEmailVerified()){
-                            Intent intent = new Intent(SignUpActivity.this, ChartListActivity.class);
-                            startActivity(intent);
-                        }
-                        else Toast.makeText(this, "Please confirm your email", Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                        Toast.makeText(SignUpActivity.this, "Sign In failed", Toast.LENGTH_SHORT).show();
-                });
-            }else {
-                Toast.makeText(SignUpActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
-            }
+                if (applynext) {
+                    mfirebaseAuth.signInWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(SignUpActivity.this, task -> {
+                        if (task.isSuccessful()) {
+                            String id = mdatabase.getKey();
+                            String name = edname.getText().toString();
+                            String email = edemail.getText().toString();
+                            String password = edpassword.getText().toString();
+                            User user = new User(id, name, email, password);
+                            mdatabase.push().setValue(user);
+                            FirebaseUser currentUser = mfirebaseAuth.getCurrentUser();
+                            assert currentUser != null;
+                            if (currentUser.isEmailVerified()) {
+                                Intent intent = new Intent(SignUpActivity.this, ChartListActivity.class);
+                                startActivity(intent);
+                            } else
+                                Toast.makeText(this, "Please confirm your email", Toast.LENGTH_SHORT).show();
+                        } else
+                            Toast.makeText(SignUpActivity.this, "Sign In failed", Toast.LENGTH_SHORT).show();
+                    });
+                } else Toast.makeText(this, "This account has already been created, please sign in", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SignUpActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
+                }
         });
     }
 
@@ -83,6 +86,7 @@ public class SignUpActivity extends AppCompatActivity {
         next = findViewById(R.id.next);
         mfirebaseAuth = FirebaseAuth.getInstance();
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
+        applynext = false;
     }
     private void SendEmailMassageVerification(){
         FirebaseUser user = mfirebaseAuth.getCurrentUser();

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/solid"
+
     tools:context=".ChartListActivity">
 
     <ImageButton
@@ -14,11 +14,13 @@
         android:layout_marginTop="652dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.955"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logout" />
+        app:srcCompat="@drawable/logout"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
     <TextView
         android:id="@+id/ema"
@@ -28,10 +30,12 @@
         android:text="TextView"
         android:textColor="@color/white"
         android:textSize="20sp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/namechar"
@@ -41,8 +45,35 @@
         android:text="TextView"
         android:textColor="@color/white"
         android:textSize="20sp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText,TextContrastCheck" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.089" />
+
+    <SearchView
+        android:id="@+id/search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/search_bg"
+        android:backgroundTint="@color/LightBlue"
+        android:iconifiedByDefault="false"
+        android:queryHint="Search"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
