@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -12,9 +14,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,7 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChartListActivity extends AppCompatActivity {
-    private TextView email, name;
+    private TextView email;
+    private EditText name;
     private ImageButton logout;
     private FirebaseAuth mfirebaseAuth;
     private DatabaseReference mdatabase;
@@ -38,6 +44,8 @@ public class ChartListActivity extends AppCompatActivity {
     List<Item> items;
     CustomAdapter adapter;
     String checkS;
+    private BottomNavigationView bview;
+    private ConstraintLayout chatlayout, profilelayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,24 @@ public class ChartListActivity extends AppCompatActivity {
             startActivity(intent);
         });
         getData();
+        bview.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @SuppressLint("NonConstantResourceId")
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+               if(item.getItemId()==R.id.chat){
+                 item.setChecked(true);
+                 chatlayout.setVisibility(View.VISIBLE);
+                 profilelayout.setVisibility(View.INVISIBLE);
+               }
+                if(item.getItemId()== R.id.profile){
+                    item.setChecked(true);
+                    chatlayout.setVisibility(View.INVISIBLE);
+                    profilelayout.setVisibility(View.VISIBLE);
+                }
+
+                return false;
+            }
+        });
     }
     private void init(){
         email = findViewById(R.id.ema);
@@ -65,6 +91,9 @@ public class ChartListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview);
         items = new ArrayList<Item>();
         adapter = new CustomAdapter(getApplicationContext(), items);
+        bview = findViewById(R.id.bottomNavigationView);
+        chatlayout = findViewById(R.id.chatlayout);
+        profilelayout = findViewById(R.id.profilelayout);
         ValueEventListener valueEventListener = new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -118,7 +147,7 @@ public class ChartListActivity extends AppCompatActivity {
         }
         if(filterlist.isEmpty()){
             if(!TextUtils.isEmpty(checkS)) {
-                Toast.makeText(this, "No users", Toast.LENGTH_SHORT).show();
+
             }
         } else {
             adapter.setFilterList(filterlist);
