@@ -2,8 +2,11 @@ package com.example.zenith;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -37,15 +40,26 @@ public class ChartListActivity extends AppCompatActivity {
     private ImageButton logout;
     private FirebaseAuth mfirebaseAuth;
     private DatabaseReference mdatabase;
-    private String USER_KEY = "User";
+    private final String USER_KEY = "User";
     private FirebaseUser currentuser;
     RecyclerView recyclerView;
     private SearchView search;
     List<Item> items;
     CustomAdapter adapter;
+    Drawable namedraw;
     String checkS;
     private BottomNavigationView bview;
     private ConstraintLayout chatlayout, profilelayout;
+    private String userID;
+    private DataSnapshot dataSnapshot;
+    private boolean isreadytoupdate = false;
+    ImageButton pencil;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getData();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,25 +74,36 @@ public class ChartListActivity extends AppCompatActivity {
             Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
             startActivity(intent);
         });
-        getData();
-        bview.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @SuppressLint("NonConstantResourceId")
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-               if(item.getItemId()==R.id.chat){
-                 item.setChecked(true);
-                 chatlayout.setVisibility(View.VISIBLE);
-                 profilelayout.setVisibility(View.INVISIBLE);
-               }
-                if(item.getItemId()== R.id.profile){
-                    item.setChecked(true);
-                    chatlayout.setVisibility(View.INVISIBLE);
-                    profilelayout.setVisibility(View.VISIBLE);
-                }
+        bview.setOnItemSelectedListener(item -> {
+           if(item.getItemId()==R.id.chat){
+             item.setChecked(true);
+             chatlayout.setVisibility(View.VISIBLE);
+             profilelayout.setVisibility(View.INVISIBLE);
+           }
+            if(item.getItemId()== R.id.profile){
+                item.setChecked(true);
+                chatlayout.setVisibility(View.INVISIBLE);
+                profilelayout.setVisibility(View.VISIBLE);
+            }
 
-                return false;
+            return false;
+        });
+        pencil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(isreadytoupdate){
+                    updateData(name.getText().toString());
+                    name.setEnabled(false);
+                    name.setBackground(null);
+                    isreadytoupdate = false;
+                } else {
+                    isreadytoupdate = true;
+                    name.setEnabled(true);
+                    name.setBackground(namedraw);
+                }
             }
         });
+
     }
     private void init(){
         email = findViewById(R.id.ema);
@@ -94,6 +119,9 @@ public class ChartListActivity extends AppCompatActivity {
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
         profilelayout = findViewById(R.id.profilelayout);
+        pencil = findViewById(R.id.pencil);
+        namedraw = name.getBackground();
+        name.setBackground(null);
         ValueEventListener valueEventListener = new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -163,6 +191,8 @@ public class ChartListActivity extends AppCompatActivity {
                     assert user != null;
                     if(user.email.equals(currentuser.getEmail())){
                         name.setText(user.name);
+                        userID = user.id;
+                        dataSnapshot = ds;
                     }
                 }
             }
@@ -174,7 +204,9 @@ public class ChartListActivity extends AppCompatActivity {
         };
         mdatabase.addValueEventListener(vListener);
     }
-    private void getUsers(){
-
+    private void updateData(String upname){
+        assert dataSnapshot!=null;
+        dataSnapshot.getRef().child("name").setValue(upname);
     }
+
 }
