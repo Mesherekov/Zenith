@@ -66,7 +66,7 @@
             tools:ignore="HardcodedText,TextContrastCheck" />
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/userimage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="52dp"
@@ -78,7 +78,7 @@
 
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/roundedImage"
-            app:srcCompat="@drawable/zenithicon"
+            app:srcCompat="@drawable/profileicon"
             tools:ignore="MissingConstraints" />
 
         <ImageButton
@@ -94,6 +94,20 @@
             app:layout_constraintStart_toEndOf="@+id/namechar"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/pencil"
+            app:tint="@color/black" />
+
+        <ImageButton
+            android:id="@+id/changeavatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="84dp"
+            android:layout_marginTop="132dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="@+id/userimage"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_add"
             app:tint="@color/black" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,27 +2,32 @@ package com.example.zenith;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +35,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +49,7 @@ public class ChartListActivity extends AppCompatActivity {
     private ImageButton logout;
     private FirebaseAuth mfirebaseAuth;
     private DatabaseReference mdatabase;
+    private StorageReference mstorage;
     private final String USER_KEY = "User";
     private FirebaseUser currentuser;
     RecyclerView recyclerView;
@@ -53,7 +63,9 @@ public class ChartListActivity extends AppCompatActivity {
     private String userID;
     private DataSnapshot dataSnapshot;
     private boolean isreadytoupdate = false;
-    ImageButton pencil;
+    private ImageButton pencil, changeavatar;
+    private ImageView useravatar;
+    private Uri uploaduri;
 
     @Override
     protected void onStart() {
@@ -74,6 +86,13 @@ public class ChartListActivity extends AppCompatActivity {
             Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
             startActivity(intent);
         });
+        changeavatar.setOnClickListener(view -> {
+            ImagePicker.with(this)
+                    .crop()	    			//Crop image(Optional), Check Customization for more option
+                    .compress(1024)			//Final image size will be less than 1 MB(Optional)
+                    .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
+                    .start();
+        });
         bview.setOnItemSelectedListener(item -> {
            if(item.getItemId()==R.id.chat){
              item.setChecked(true);
@@ -85,26 +104,53 @@ public class ChartListActivity extends AppCompatActivity {
                 chatlayout.setVisibility(View.INVISIBLE);
                 profilelayout.setVisibility(View.VISIBLE);
             }
-
             return false;
         });
-        pencil.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(isreadytoupdate){
-                    updateData(name.getText().toString());
-                    name.setEnabled(false);
-                    name.setBackground(null);
-                    isreadytoupdate = false;
-                } else {
-                    isreadytoupdate = true;
-                    name.setEnabled(true);
-                    name.setBackground(namedraw);
-                }
+        pencil.setOnClickListener(view -> {
+            if(isreadytoupdate){
+                updateData(name.getText().toString());
+                name.setEnabled(false);
+                name.setBackground(null);
+                isreadytoupdate = false;
+            } else {
+                isreadytoupdate = true;
+                name.setEnabled(true);
+                name.setBackground(namedraw);
             }
         });
-
     }
+    private void uploadImage(){
+        Bitmap bitmap =((BitmapDrawable) useravatar.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] bytes = baos.toByteArray();
+        final StorageReference mref = mstorage.child(System.currentTimeMillis()+ "user_image");
+        UploadTask uptask = mref.putBytes(bytes);
+        Task<Uri> task = uptask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                return mref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                uploaduri = task.getResult();
+            }
+        });
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        assert data != null;
+        Uri uri = data.getData();
+        useravatar.setImageURI(uri);
+        try {
+            uploadImage();
+        }catch (Exception ex){
+            Toast.makeText(this, "Image upload canceled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void init(){
         email = findViewById(R.id.ema);
         logout = findViewById(R.id.logout);
@@ -113,13 +159,16 @@ public class ChartListActivity extends AppCompatActivity {
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
+        mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         recyclerView = findViewById(R.id.recyclerview);
-        items = new ArrayList<Item>();
+        items = new ArrayList<>();
         adapter = new CustomAdapter(getApplicationContext(), items);
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
         profilelayout = findViewById(R.id.profilelayout);
         pencil = findViewById(R.id.pencil);
+        changeavatar = findViewById(R.id.changeavatar);
+        useravatar = findViewById(R.id.userimage);
         namedraw = name.getBackground();
         name.setBackground(null);
         ValueEventListener valueEventListener = new ValueEventListener() {
@@ -163,9 +212,7 @@ public class ChartListActivity extends AppCompatActivity {
                 return true;
             }
         });
-
     }
-
     private void filterList(String s) {
         List<Item> filterlist = new ArrayList<>();
         for(Item item : items){
@@ -174,9 +221,7 @@ public class ChartListActivity extends AppCompatActivity {
             }
         }
         if(filterlist.isEmpty()){
-            if(!TextUtils.isEmpty(checkS)) {
-
-            }
+            TextUtils.isEmpty(checkS);
         } else {
             adapter.setFilterList(filterlist);
         }
@@ -199,7 +244,6 @@ public class ChartListActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         };
         mdatabase.addValueEventListener(vListener);
@@ -208,5 +252,4 @@ public class ChartListActivity extends AppCompatActivity {
         assert dataSnapshot!=null;
         dataSnapshot.getRef().child("name").setValue(upname);
     }
-
 }
