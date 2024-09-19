@@ -148,6 +148,7 @@ public class ChartListActivity extends AppCompatActivity {
             uploadImage();
         }catch (Exception ex){
             Toast.makeText(this, "Image upload canceled", Toast.LENGTH_SHORT).show();
+            useravatar.setImageResource(R.drawable.profileicon);
         }
     }
 
