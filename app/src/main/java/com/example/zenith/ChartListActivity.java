@@ -38,6 +38,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -66,11 +67,20 @@ public class ChartListActivity extends AppCompatActivity {
     private ImageButton pencil, changeavatar;
     private ImageView useravatar;
     private Uri uploaduri;
+    private boolean finduser = false;
 
     @Override
     protected void onStart() {
         super.onStart();
-        getData();
+        /*if(!finduser){
+            String id = mdatabase.getKey();
+            String name = "Unknown";
+            String email = currentuser.getEmail();
+            String password = "currentuser.getPass";
+            uploadImage();
+            User user = new User(id, name, email, password, uploaduri.toString());
+            mdatabase.push().setValue(user);
+        }*/
     }
 
     @Override
@@ -78,6 +88,7 @@ public class ChartListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart_list);
         init();
+        getData();
         currentuser = mfirebaseAuth.getCurrentUser();
         assert currentuser != null;
         email.setText(currentuser.getEmail());
@@ -108,7 +119,7 @@ public class ChartListActivity extends AppCompatActivity {
         });
         pencil.setOnClickListener(view -> {
             if(isreadytoupdate){
-                updateData(name.getText().toString());
+                updateData(name.getText().toString(), "name");
                 name.setEnabled(false);
                 name.setBackground(null);
                 isreadytoupdate = false;
@@ -146,6 +157,7 @@ public class ChartListActivity extends AppCompatActivity {
         useravatar.setImageURI(uri);
         try {
             uploadImage();
+            updateData(uri.toString(), "imageUri");
         }catch (Exception ex){
             Toast.makeText(this, "Image upload canceled", Toast.LENGTH_SHORT).show();
             useravatar.setImageResource(R.drawable.profileicon);
@@ -238,7 +250,9 @@ public class ChartListActivity extends AppCompatActivity {
                     if(user.email.equals(currentuser.getEmail())){
                         name.setText(user.name);
                         userID = user.id;
+                        Picasso.get().load(user.imageUri).into(useravatar);
                         dataSnapshot = ds;
+                        finduser = true;
                     }
                 }
             }
@@ -249,8 +263,8 @@ public class ChartListActivity extends AppCompatActivity {
         };
         mdatabase.addValueEventListener(vListener);
     }
-    private void updateData(String upname){
+    private void updateData(String upobject, String pathupdate){
         assert dataSnapshot!=null;
-        dataSnapshot.getRef().child("name").setValue(upname);
+        dataSnapshot.getRef().child(pathupdate).setValue(upobject);
     }
 }

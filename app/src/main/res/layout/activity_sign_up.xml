@@ -74,7 +74,7 @@
         app:srcCompat="@drawable/penciledit" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/proflogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="215dp"
@@ -122,6 +122,14 @@
         app:layout_constraintTop_toBottomOf="@+id/createaccount"
         app:layout_constraintVertical_bias="0.012" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:srcCompat="@drawable/genava"
+        tools:layout_editor_absoluteX="136dp"
+        tools:layout_editor_absoluteY="305dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

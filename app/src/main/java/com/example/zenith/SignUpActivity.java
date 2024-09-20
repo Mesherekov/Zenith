@@ -1,19 +1,31 @@
 package com.example.zenith;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.ktx.Firebase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -23,6 +35,9 @@ public class SignUpActivity extends AppCompatActivity {
     private DatabaseReference mdatabase;
     private String USER_KEY = "User";
     private boolean applynext;
+    private ImageView im;
+    private StorageReference mstorage;
+    private Uri uploaduri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +72,8 @@ public class SignUpActivity extends AppCompatActivity {
                             String name = edname.getText().toString();
                             String email = edemail.getText().toString();
                             String password = edpassword.getText().toString();
-                            User user = new User(id, name, email, password);
+                            uploadImage();
+                            User user = new User(id, name, email, password, uploaduri.toString());
                             mdatabase.push().setValue(user);
                             FirebaseUser currentUser = mfirebaseAuth.getCurrentUser();
                             assert currentUser != null;
@@ -77,16 +93,36 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-
+    private void uploadImage(){
+        Bitmap bitmap =((BitmapDrawable) im.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] bytes = baos.toByteArray();
+        final StorageReference mref = mstorage.child(System.currentTimeMillis()+ "user_image");
+        UploadTask uptask = mref.putBytes(bytes);
+        Task<Uri> task = uptask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                return mref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                uploaduri = task.getResult();
+            }
+        });
+    }
     private void init(){
         edemail = findViewById(R.id.emailup);
         edname = findViewById(R.id.nameup);
         edpassword = findViewById(R.id.passup);
         bsignup = findViewById(R.id.createaccount);
         next = findViewById(R.id.next);
+        mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         mfirebaseAuth = FirebaseAuth.getInstance();
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
         applynext = false;
+        im = findViewById(R.id.imageView2);
     }
     private void SendEmailMassageVerification(){
         FirebaseUser user = mfirebaseAuth.getCurrentUser();
