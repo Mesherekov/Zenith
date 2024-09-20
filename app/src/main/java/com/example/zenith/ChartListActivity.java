@@ -184,26 +184,35 @@ public class ChartListActivity extends AppCompatActivity {
         useravatar = findViewById(R.id.userimage);
         namedraw = name.getBackground();
         name.setBackground(null);
-        ValueEventListener valueEventListener = new ValueEventListener() {
-            @SuppressLint("NotifyDataSetChanged")
+        Runnable run = new Runnable() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(items.size() > 0){
-                    items.clear();
-                }
-                for (DataSnapshot ds : snapshot.getChildren()) {
-                    User user = ds.getValue(User.class);
-                    assert user != null;
-                    items.add(new Item(user.name, R.drawable.profileicon));
-                }
-                adapter.notifyDataSetChanged();
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void run() {
 
+                ValueEventListener valueEventListener = new ValueEventListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(items.size() > 0){
+                            items.clear();
+                        }
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            User user = ds.getValue(User.class);
+                            assert user != null;
+                            items.add(new Item(user.name, R.drawable.profileicon));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                };
+                mdatabase.addValueEventListener(valueEventListener);
             }
         };
-        mdatabase.addValueEventListener(valueEventListener);
+        run.run();
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -250,7 +259,7 @@ public class ChartListActivity extends AppCompatActivity {
                     if(user.email.equals(currentuser.getEmail())){
                         name.setText(user.name);
                         userID = user.id;
-                        Picasso.get().load(user.imageUri).into(useravatar);
+                        Picasso.get().load(user.imageUri).resize(400,400).centerCrop().into(useravatar);
                         dataSnapshot = ds;
                         finduser = true;
                     }
