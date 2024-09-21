@@ -1,10 +1,12 @@
 package com.example.zenith;
 
+import android.graphics.drawable.Drawable;
+
 public class Item {
     String name;
-    int image;
+    Drawable image;
 
-    public Item(String name, int image) {
+    public Item(String name, Drawable image) {
         this.name = name;
         this.image = image;
     }
@@ -13,7 +15,7 @@ public class Item {
         return name;
     }
 
-    public int getImage() {
+    public Drawable getImage() {
         return image;
     }
 
@@ -21,7 +23,7 @@ public class Item {
         this.name = name;
     }
 
-    public void setImage(int image) {
+    public void setImage(Drawable image) {
         this.image = image;
     }
 }

@@ -32,7 +32,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         holder.name.setText(items.get(position).getName());
-        holder.avatar.setImageResource(items.get(position).getImage());
+        holder.avatar.setImageDrawable(items.get(position).getImage());
     }
 
     @Override

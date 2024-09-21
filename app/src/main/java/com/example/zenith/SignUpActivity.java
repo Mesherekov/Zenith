@@ -50,6 +50,7 @@ public class SignUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             SendEmailMassageVerification();
                             Toast.makeText(getApplicationContext(), "User Sign Up", Toast.LENGTH_SHORT).show();
+                            uploadImage();
                             applynext = true;
                         } else {
                             Toast.makeText(getApplicationContext(), "User Sign Up Failed", Toast.LENGTH_SHORT).show();
@@ -72,7 +73,6 @@ public class SignUpActivity extends AppCompatActivity {
                             String name = edname.getText().toString();
                             String email = edemail.getText().toString();
                             String password = edpassword.getText().toString();
-                            uploadImage();
                             User user = new User(id, name, email, password, uploaduri.toString());
                             mdatabase.push().setValue(user);
                             FirebaseUser currentUser = mfirebaseAuth.getCurrentUser();

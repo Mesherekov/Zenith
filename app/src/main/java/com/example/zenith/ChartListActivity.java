@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -23,6 +24,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,11 +43,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChartListActivity extends AppCompatActivity {
     private TextView email;
@@ -55,6 +63,7 @@ public class ChartListActivity extends AppCompatActivity {
     private FirebaseUser currentuser;
     RecyclerView recyclerView;
     private SearchView search;
+    ImageView exam;
     List<Item> items;
     CustomAdapter adapter;
     Drawable namedraw;
@@ -168,6 +177,7 @@ public class ChartListActivity extends AppCompatActivity {
         email = findViewById(R.id.ema);
         logout = findViewById(R.id.logout);
         name = findViewById(R.id.namechar);
+        exam = findViewById(R.id.exam);
         search = findViewById(R.id.search);
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
@@ -184,10 +194,11 @@ public class ChartListActivity extends AppCompatActivity {
         useravatar = findViewById(R.id.userimage);
         namedraw = name.getBackground();
         name.setBackground(null);
+
+
         Runnable run = new Runnable() {
             @Override
             public void run() {
-
                 ValueEventListener valueEventListener = new ValueEventListener() {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
@@ -198,7 +209,38 @@ public class ChartListActivity extends AppCompatActivity {
                         for (DataSnapshot ds : snapshot.getChildren()) {
                             User user = ds.getValue(User.class);
                             assert user != null;
-                            items.add(new Item(user.name, R.drawable.profileicon));
+                            Target target = new Target() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                    exam.setImageBitmap(bitmap);
+                                    items.add(new Item(user.name, exam.getDrawable()));
+                                }
+
+                                @Override
+                                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                                }
+
+                                @Override
+                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                }
+                            };
+                            /*Glide.with(ChartListActivity.this).load(user.imageUri).placeholder(R.drawable.profileicon).listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    return false;
+                                }
+                            }).into(exam);*/
+                            Picasso.get().load(user.imageUri).resize(400,400).centerCrop().placeholder(R.drawable.profileicon).into(target);
+
+
+
                         }
                         adapter.notifyDataSetChanged();
                     }
@@ -259,7 +301,7 @@ public class ChartListActivity extends AppCompatActivity {
                     if(user.email.equals(currentuser.getEmail())){
                         name.setText(user.name);
                         userID = user.id;
-                        Picasso.get().load(user.imageUri).resize(400,400).centerCrop().into(useravatar);
+                        Picasso.get().load(user.imageUri).resize(400,400).centerCrop().placeholder(R.drawable.profileicon).into(useravatar);
                         dataSnapshot = ds;
                         finduser = true;
                     }
