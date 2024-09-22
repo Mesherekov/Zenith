@@ -186,23 +186,25 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                     for (DataSnapshot ds : snapshot.getChildren()) {
                         User user = ds.getValue(User.class);
                         assert user != null;
-                        Target target = new Target() {
-                            @Override
-                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                exam.setImageBitmap(bitmap);
-                                items.add(new Item(user.name, exam.getDrawable()));
-                            }
+                        if (!user.email.equals(currentuser.getEmail())) {
 
-                            @Override
-                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                            Target target = new Target() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                    exam.setImageBitmap(bitmap);
+                                    items.add(new Item(user.name, exam.getDrawable()));
+                                }
 
-                            }
+                                @Override
+                                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
 
-                            @Override
-                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                }
 
-                            }
-                        };
+                                @Override
+                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                }
+                            };
                         /*Glide.with(ChartListActivity.this).load(user.imageUri).placeholder(R.drawable.profileicon).listener(new RequestListener<Drawable>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -214,9 +216,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                                 return false;
                             }
                         }).into(exam);*/
-                        Picasso.get().load(user.imageUri).resize(400,400).centerCrop().placeholder(R.drawable.profileicon).into(target);
-
-
+                            Picasso.get().load(user.imageUri).resize(400, 400).centerCrop().placeholder(R.drawable.profileicon).into(target);
+                        }
 
                     }
                     adapter.notifyDataSetChanged();
