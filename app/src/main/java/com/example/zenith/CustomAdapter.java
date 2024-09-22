@@ -2,30 +2,38 @@ package com.example.zenith;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
     Context context;
     List<Item> items;
+    private SelectListener listener;
     @SuppressLint("NotifyDataSetChanged")
     public void setFilterList(List<Item> filterList){
         this.items = filterList;
         notifyDataSetChanged();
     }
-    public CustomAdapter(Context context, List<Item> items) {
+    public CustomAdapter(Context context, List<Item> items, SelectListener listener) {
         this.context = context;
         this.items = items;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
     public CustomViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         return new CustomViewHolder(LayoutInflater.from(context).inflate(R.layout.item_view, parent, false));
     }
 
@@ -33,6 +41,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         holder.name.setText(items.get(position).getName());
         holder.avatar.setImageDrawable(items.get(position).getImage());
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onItemClick(items.get(position));
+            }
+        });
     }
 
     @Override
