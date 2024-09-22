@@ -38,7 +38,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.name.setText(items.get(position).getName());
         holder.avatar.setImageDrawable(items.get(position).getImage());
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
