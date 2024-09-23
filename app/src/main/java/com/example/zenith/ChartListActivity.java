@@ -58,7 +58,6 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private FirebaseUser currentuser;
     RecyclerView recyclerView;
     private SearchView search;
-    ImageView exam;
     List<Item> items;
     CustomAdapter adapter;
     Drawable namedraw;
@@ -155,7 +154,6 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         email = findViewById(R.id.ema);
         logout = findViewById(R.id.logout);
         name = findViewById(R.id.namechar);
-        exam = findViewById(R.id.exam);
         search = findViewById(R.id.search);
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
@@ -191,8 +189,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                             Target target = new Target() {
                                 @Override
                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                    exam.setImageBitmap(bitmap);
-                                    items.add(new Item(user.name, exam.getDrawable()));
+                                    Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                                    items.add(new Item(user.name, drawable, user.UID));
                                 }
 
                                 @Override
@@ -275,7 +273,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 for (DataSnapshot ds : snapshot.getChildren()) {
                     User user = ds.getValue(User.class);
                     assert user != null;
-                    if(user.email.equals(currentuser.getEmail())){
+                    if(user.UID.equals(currentuser.getUid())){
                         name.setText(user.name);
                         userID = user.id;
                         Picasso.get().load(user.imageUri).resize(400,400).centerCrop().placeholder(R.drawable.profileicon).into(useravatar, new Callback() {
@@ -310,6 +308,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     public void onItemClick(Item item) {
         Intent intent = new Intent(ChartListActivity.this, UserChatActivity.class);
         intent.putExtra("NameUser", item.getName());
+        intent.putExtra("UID", item.getUID());
         Bitmap bitmap = ((BitmapDrawable) item.getImage()).getBitmap();
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);

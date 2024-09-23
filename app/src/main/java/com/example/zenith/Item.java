@@ -5,11 +5,14 @@ import android.graphics.drawable.Drawable;
 public class Item {
     String name;
     Drawable image;
+    String UID;
 
-    public Item(String name, Drawable image) {
+    public Item(String name, Drawable image, String UID) {
         this.name = name;
         this.image = image;
+        this.UID = UID;
     }
+    public String getUID(){return UID;}
 
     public String getName() {
         return name;

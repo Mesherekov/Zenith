@@ -73,7 +73,9 @@ public class SignUpActivity extends AppCompatActivity {
                             String name = edname.getText().toString();
                             String email = edemail.getText().toString();
                             String password = edpassword.getText().toString();
-                            User user = new User(id, name, email, password, uploaduri.toString());
+                            FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
+                            assert currentuser!=null;
+                            User user = new User(id, name, email, password, uploaduri.toString(), currentuser.getUid());
                             mdatabase.push().setValue(user);
                             FirebaseUser currentUser = mfirebaseAuth.getCurrentUser();
                             assert currentUser != null;

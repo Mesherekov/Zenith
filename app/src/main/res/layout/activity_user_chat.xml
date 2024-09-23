@@ -4,17 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#6BA2B1"
     tools:context=".UserChatActivity">
 
     <TextView
         android:id="@+id/friendname"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="75sp"
         android:background="#77ADEC"
-        android:paddingStart="130dp"
+        android:paddingStart="125dp"
         android:layout_alignStart="@id/friendimage"
         android:textColor="@color/white"
-        android:textSize="40sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,11 +26,11 @@
         android:id="@+id/friendimage"
         android:layout_width="54dp"
         android:layout_height="54dp"
-        android:layout_marginStart="36dp"
+        android:layout_marginStart="40dp"
         app:layout_constraintBottom_toBottomOf="@+id/friendname"
         app:layout_constraintStart_toStartOf="@+id/friendname"
         app:layout_constraintTop_toTopOf="@+id/friendname"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.75"
         app:shapeAppearanceOverlay="@style/roundedImage"
         app:srcCompat="@drawable/genava"
         tools:ignore="MissingConstraints" />
@@ -49,4 +50,45 @@
         app:srcCompat="?attr/homeAsUpIndicator"
         app:tint="@color/white"
         tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/ownmassage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:ems="10"
+        android:hint="Enter text"
+        android:inputType="textMultiLine"
+        android:minHeight="32dp"
+        android:overScrollMode="always"
+        android:paddingRight="60dp"
+        android:paddingLeft="10dp"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbarStyle="insideInset"
+        android:scrollbars="vertical"
+        android:singleLine="true"
+        android:gravity="top|start"
+
+        android:scrollHorizontally="false"
+        android:textSize="23sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="RtlHardcoded,RtlSymmetry,TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/sendmassage"
+        android:layout_width="38dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="@+id/ownmassage"
+        app:layout_constraintTop_toTopOf="@+id/ownmassage"
+        app:srcCompat="@android:drawable/ic_menu_send"
+        app:tint="@color/LightSeaGreen"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

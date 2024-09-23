@@ -7,19 +7,6 @@
 
     tools:context=".ChartListActivity">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/exam"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/roundedImage"
-
-        app:srcCompat="@drawable/genava" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/profilelayout"
         android:layout_width="match_parent"
