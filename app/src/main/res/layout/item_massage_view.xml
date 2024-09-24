@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:paddingLeft="10dp"
-        android:layout_alignParentEnd="true"
+        android:paddingRight="10dp"
+        android:maxWidth="200dp"
         android:background="@color/white"
         android:textColor="@color/black"
         android:text="TextView" />

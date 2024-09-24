@@ -1,6 +1,6 @@
 package com.example.zenith
 
-class ItemMassage(var textmassage: String, var ownmassage: Boolean) {
+open class ItemMassage(var textmassage: String, var ownmassage: Boolean) {
     fun getTextMassage(): String {
         return textmassage
     }
