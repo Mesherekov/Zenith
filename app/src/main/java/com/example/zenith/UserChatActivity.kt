@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.View.OnClickListener
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -47,6 +49,11 @@ class UserChatActivity : AppCompatActivity() {
             userImage.setImageBitmap(bitmap)
             friendUID = intent.getStringExtra("UID").toString()
             name.text = intent.getStringExtra("NameUser")
+            if(name.text.length>8){
+                name.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                userImage.layoutParams.height = 75*3
+                userImage.layoutParams.width = 75*3
+            }
         }
 
         sendmassage.setOnClickListener{
