@@ -9,7 +9,9 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.zenith.R.id.friendname
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -43,11 +45,10 @@ class UserChatActivity : AppCompatActivity() {
         backImagee = findViewById(R.id.back)
         backImagee = findViewById(R.id.back)
         recyclermassageView = findViewById(R.id.recyclermassage)
-
-        mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY)
         mfireauth = FirebaseAuth.getInstance()
         itemMassage = mutableListOf()
         customMassageAdapter = CustomMassageAdapter(applicationContext, itemMassage)
+        val currentuser = mfireauth.currentUser
 
         var friendUID:String = "45"
         if (intent != null){
@@ -56,7 +57,10 @@ class UserChatActivity : AppCompatActivity() {
             userImage.setImageBitmap(bitmap)
             friendUID = intent.getStringExtra("UID").toString()
             name.text = intent.getStringExtra("NameUser")
-            if(name.text.length>8){
+            mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY)
+
+            getData(friendUID)
+            if(name.text.length>12){
                 name.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 userImage.layoutParams.height = 75*3
                 userImage.layoutParams.width = 75*3
@@ -65,7 +69,6 @@ class UserChatActivity : AppCompatActivity() {
 
         sendmassage.setOnClickListener{
             val id = mdatabase.key
-            val currentuser = mfireauth.currentUser
             if (currentuser != null) {
                 massages = Massages(id, ownmassage.text.toString(), currentuser.uid, currentuser.uid, friendUID)
                 mdatabase.child(currentuser.uid+friendUID).push().setValue(massages)
@@ -85,7 +88,7 @@ class UserChatActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                val massagesgd = snapshot.children
                 massagesgd.forEach{ds: DataSnapshot? ->
-                    val mass = ds?.getValue<Massages>()
+                    val mass = ds?.getValue(Massages::class.java)
                     val currentuser = mfireauth.currentUser
                     if (((currentuser?.uid + friendUID) == ds?.key) or ((friendUID + currentuser?.uid) == ds?.key)){
                         if (currentuser?.uid == mass?.ownUID){
@@ -107,8 +110,9 @@ class UserChatActivity : AppCompatActivity() {
 
 
         }
-
-
+        mdatabase.addValueEventListener(vlistener)
+        recyclermassageView.layoutManager = LinearLayoutManager(this)
+        recyclermassageView.adapter = customMassageAdapter
     }
 }
 
