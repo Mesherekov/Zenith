@@ -31,10 +31,11 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
     public void onBindViewHolder(@NonNull CustomMassageViewHolder holder, int position) {
         holder.textmass.setText(items.get(position).getTextMassage());
         if(items.get(position).getOwnMassage()){
-            holder.textmass.setBackgroundColor(R.color.LightBlue);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+            holder.textmass.getBackground().setTint(R.color.LightBlue);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            params.setMargins(20, 0, 20, 0);
             holder.textmass.setLayoutParams(params);
         }
     }

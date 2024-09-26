@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,9 +46,11 @@ class UserChatActivity : AppCompatActivity() {
         backImagee = findViewById(R.id.back)
         backImagee = findViewById(R.id.back)
         recyclermassageView = findViewById(R.id.recyclermassage)
+        recyclermassageView.layoutManager = LinearLayoutManager(this)
         mfireauth = FirebaseAuth.getInstance()
         itemMassage = mutableListOf()
         customMassageAdapter = CustomMassageAdapter(applicationContext, itemMassage)
+        recyclermassageView.adapter = customMassageAdapter
         val currentuser = mfireauth.currentUser
 
         var friendUID:String = "45"
@@ -57,7 +60,7 @@ class UserChatActivity : AppCompatActivity() {
             userImage.setImageBitmap(bitmap)
             friendUID = intent.getStringExtra("UID").toString()
             name.text = intent.getStringExtra("NameUser")
-            mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY)
+            mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser?.uid.hashCode()+friendUID.hashCode()).toString())
 
             getData(friendUID)
             if(name.text.length>12){
@@ -71,7 +74,7 @@ class UserChatActivity : AppCompatActivity() {
             val id = mdatabase.key
             if (currentuser != null) {
                 massages = Massages(id, ownmassage.text.toString(), currentuser.uid, currentuser.uid, friendUID)
-                mdatabase.child(currentuser.uid+friendUID).push().setValue(massages)
+                mdatabase.push().setValue(massages)
 
             }
 
@@ -84,21 +87,25 @@ class UserChatActivity : AppCompatActivity() {
     }
     fun getData(friendUID: String){
         val vlistener = object : ValueEventListener{
-            @SuppressLint("NotifyDataSetChanged")
+            @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
             override fun onDataChange(snapshot: DataSnapshot) {
                val massagesgd = snapshot.children
+                if(itemMassage.size > 0) itemMassage.clear()
                 massagesgd.forEach{ds: DataSnapshot? ->
                     val mass = ds?.getValue(Massages::class.java)
                     val currentuser = mfireauth.currentUser
-                    if (((currentuser?.uid + friendUID) == ds?.key) or ((friendUID + currentuser?.uid) == ds?.key)){
                         if (currentuser?.uid == mass?.ownUID){
-                            val add =
-                                mass?.text?.let { itemMassage.add(object : ItemMassage(it, true){}) }
+                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true) }
+                            if (itemMassage2 != null) {
+                                itemMassage.add(itemMassage2)
+
+                            }
                         }
                         else{
-                            val add =
-                                mass?.text?.let { itemMassage.add(object : ItemMassage(it, false){}) }
-                        }
+                            val itemMassage3 = mass?.text?.let { ItemMassage(it, false) }
+                            if (itemMassage3 != null) {
+                                itemMassage.add(itemMassage3)
+                            }
                     }
                 }
                 customMassageAdapter.notifyDataSetChanged()
