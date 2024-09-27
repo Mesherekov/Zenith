@@ -89,7 +89,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         assert currentuser != null;
         email.setText(currentuser.getEmail());
         logout.setOnClickListener(view -> {
-            mfirebaseAuth.signOut();
+            try {
+                mfirebaseAuth.signOut();
+            } catch (Exception e){
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
             Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
             startActivity(intent);
         });
@@ -313,6 +317,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
         intent.putExtra("byteArray", bs.toByteArray());
+        intent.putExtra("currentuser", currentuser.getUid());
         startActivity(intent);
     }
 }

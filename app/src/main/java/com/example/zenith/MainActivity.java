@@ -3,6 +3,7 @@ package com.example.zenith;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,19 +32,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
-        if(currentuser != null){
-            if(currentuser.isEmailVerified()){
-                Intent intent = new Intent(MainActivity.this, ChartListActivity.class);
-                startActivity(intent);
-            }
+        try {
+            FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
+            if (currentuser != null) {
+                if (currentuser.isEmailVerified()) {
+                    Intent intent = new Intent(MainActivity.this, ChartListActivity.class);
+                    startActivity(intent);
+                }
 
+            }
+        }catch (Exception ex){
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     void init(){
+        try {
+            mfirebaseAuth = FirebaseAuth.getInstance();
+        }catch (Exception ex){
+            Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+        }
         signin = findViewById(R.id.signin);
         signup = findViewById(R.id.signup);
-        mfirebaseAuth = FirebaseAuth.getInstance();
     }
 }

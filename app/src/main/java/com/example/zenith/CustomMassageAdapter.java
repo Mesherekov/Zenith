@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -31,7 +33,8 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
     public void onBindViewHolder(@NonNull CustomMassageViewHolder holder, int position) {
         holder.textmass.setText(items.get(position).getTextMassage());
         if(items.get(position).getOwnMassage()){
-            holder.textmass.getBackground().setTint(R.color.LightBlue);
+            //holder.textmass.getBackground().setTint(R.color.LightGreen);
+            ViewCompat.setBackgroundTintList(holder.textmass, ContextCompat.getColorStateList(context, R.color.LightBlue));
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_END);

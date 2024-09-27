@@ -94,7 +94,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclermassage"
         android:layout_width="match_parent"
-        android:layout_height="635dp"
+        android:layout_height="611dp"
         app:layout_constraintBottom_toTopOf="@+id/ownmassage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

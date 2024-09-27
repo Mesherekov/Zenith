@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.zenith.R.id.friendname
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -35,6 +36,7 @@ class UserChatActivity : AppCompatActivity() {
     lateinit var itemMassage: MutableList<ItemMassage>
     lateinit var recyclermassageView: RecyclerView
     lateinit var customMassageAdapter: CustomMassageAdapter
+    lateinit var currentuser: FirebaseUser
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +53,7 @@ class UserChatActivity : AppCompatActivity() {
         itemMassage = mutableListOf()
         customMassageAdapter = CustomMassageAdapter(applicationContext, itemMassage)
         recyclermassageView.adapter = customMassageAdapter
-        val currentuser = mfireauth.currentUser
+        currentuser = mfireauth.currentUser!!
 
         var friendUID:String = "45"
         if (intent != null){
@@ -91,18 +93,19 @@ class UserChatActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                val massagesgd = snapshot.children
                 if(itemMassage.size > 0) itemMassage.clear()
+                var b : Boolean
                 massagesgd.forEach{ds: DataSnapshot? ->
                     val mass = ds?.getValue(Massages::class.java)
-                    val currentuser = mfireauth.currentUser
-                        if (currentuser?.uid == mass?.ownUID){
-                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true) }
+                        if (currentuser.uid.hashCode() == mass?.ownUID.hashCode()){
+                            b = true
+                            val itemMassage2 = mass?.text?.let { ItemMassage(it, b) }
                             if (itemMassage2 != null) {
                                 itemMassage.add(itemMassage2)
-
                             }
                         }
                         else{
-                            val itemMassage3 = mass?.text?.let { ItemMassage(it, false) }
+                            b = false
+                            val itemMassage3 = mass?.text?.let { ItemMassage(it, b) }
                             if (itemMassage3 != null) {
                                 itemMassage.add(itemMassage3)
                             }
