@@ -20,6 +20,12 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
     public CustomMassageAdapter(Context context, List<ItemMassage> items) {
         this.context = context;
         this.items = items;
+//        setHasStableIds(true);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
     }
 
     @NonNull
@@ -41,6 +47,11 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
             params.setMargins(20, 0, 20, 0);
             holder.textmass.setLayoutParams(params);
         }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     @Override

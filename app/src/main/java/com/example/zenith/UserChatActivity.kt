@@ -8,11 +8,9 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.zenith.R.id.friendname
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -21,7 +19,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.getValue
 
 class UserChatActivity : AppCompatActivity() {
     lateinit var name: TextView
@@ -37,6 +34,7 @@ class UserChatActivity : AppCompatActivity() {
     lateinit var recyclermassageView: RecyclerView
     lateinit var customMassageAdapter: CustomMassageAdapter
     lateinit var currentuser: FirebaseUser
+    var bool: Boolean = false
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +47,8 @@ class UserChatActivity : AppCompatActivity() {
         backImagee = findViewById(R.id.back)
         recyclermassageView = findViewById(R.id.recyclermassage)
         recyclermassageView.layoutManager = LinearLayoutManager(this)
+        val itemViewType = 0
+        recyclermassageView.recycledViewPool.setMaxRecycledViews(itemViewType, 0)
         mfireauth = FirebaseAuth.getInstance()
         itemMassage = mutableListOf()
         customMassageAdapter = CustomMassageAdapter(applicationContext, itemMassage)
@@ -62,8 +62,7 @@ class UserChatActivity : AppCompatActivity() {
             userImage.setImageBitmap(bitmap)
             friendUID = intent.getStringExtra("UID").toString()
             name.text = intent.getStringExtra("NameUser")
-            mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser?.uid.hashCode()+friendUID.hashCode()).toString())
-
+            mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser.uid.hashCode()+friendUID.hashCode()).toString())
             getData(friendUID)
             if(name.text.length>12){
                 name.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -74,12 +73,8 @@ class UserChatActivity : AppCompatActivity() {
 
         sendmassage.setOnClickListener{
             val id = mdatabase.key
-            if (currentuser != null) {
-                massages = Massages(id, ownmassage.text.toString(), currentuser.uid, currentuser.uid, friendUID)
-                mdatabase.push().setValue(massages)
-
-            }
-
+            massages = Massages(id, ownmassage.text.toString(), currentuser.uid, currentuser.uid, friendUID)
+            mdatabase.push().setValue(massages)
         }
 
         backImagee.setOnClickListener {
@@ -93,22 +88,21 @@ class UserChatActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                val massagesgd = snapshot.children
                 if(itemMassage.size > 0) itemMassage.clear()
-                var b : Boolean
                 massagesgd.forEach{ds: DataSnapshot? ->
                     val mass = ds?.getValue(Massages::class.java)
-                        if (currentuser.uid.hashCode() == mass?.ownUID.hashCode()){
-                            b = true
-                            val itemMassage2 = mass?.text?.let { ItemMassage(it, b) }
-                            if (itemMassage2 != null) {
-                                itemMassage.add(itemMassage2)
-                            }
+                        if (currentuser.uid.equals(mass?.ownUID)){
+                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true) }
+                                itemMassage2?.setOwnMassage(true)
+
+                                itemMassage.add(itemMassage2!!)
                         }
                         else{
-                            b = false
-                            val itemMassage3 = mass?.text?.let { ItemMassage(it, b) }
-                            if (itemMassage3 != null) {
-                                itemMassage.add(itemMassage3)
-                            }
+
+                            val itemMassage3 = mass?.text?.let { ItemMassage(it, false) }
+
+                                itemMassage3?.setOwnMassage(false)
+                                itemMassage.add(itemMassage3!!)
+
                     }
                 }
                 customMassageAdapter.notifyDataSetChanged()

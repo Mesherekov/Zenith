@@ -13,4 +13,5 @@ open class ItemMassage(var textmassage: String, var ownmassage: Boolean) {
     fun setOwnMassage(massagebool: Boolean){
         ownmassage = massagebool
     }
+
 }
