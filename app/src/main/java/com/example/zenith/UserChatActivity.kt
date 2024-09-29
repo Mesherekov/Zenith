@@ -66,7 +66,6 @@ class UserChatActivity : AppCompatActivity() {
             name.text = intent.getStringExtra("NameUser")
             mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser.uid.hashCode()+friendUID.hashCode()).toString())
             getData(friendUID)
-           Toast.makeText(this, itemMassage.size.toString(), Toast.LENGTH_SHORT).show()
             if(name.text.length>12){
                 name.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 userImage.layoutParams.height = 75*3
@@ -121,8 +120,13 @@ class UserChatActivity : AppCompatActivity() {
         mdatabase.addValueEventListener(vlistener)
         recyclermassageView.layoutManager = LinearLayoutManager(this)
         recyclermassageView.adapter = customMassageAdapter
-
-        recyclermassageView.smoothScrollToPosition(0)
+        for (x in 0..1000000){
+            try {
+                recyclermassageView.smoothScrollToPosition(x)
+            }catch (ex: Exception){
+                break
+            }
+        }
     }
 }
 

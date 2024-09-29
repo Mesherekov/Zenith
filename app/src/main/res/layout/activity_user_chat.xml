@@ -7,6 +7,15 @@
     android:background="#6BA2B1"
     tools:context=".UserChatActivity">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclermassage"
+        android:layout_width="match_parent"
+        android:layout_height="611dp"
+        app:layout_constraintBottom_toTopOf="@+id/ownmassage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friendname" />
+
     <TextView
         android:id="@+id/friendname"
         android:layout_width="match_parent"
@@ -50,15 +59,6 @@
         app:srcCompat="?attr/homeAsUpIndicator"
         app:tint="@color/white"
         tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclermassage"
-        android:layout_width="match_parent"
-        android:layout_height="611dp"
-        app:layout_constraintBottom_toTopOf="@+id/ownmassage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/friendname" />
 
     <EditText
         android:id="@+id/ownmassage"
