@@ -8,9 +8,11 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.zenith.R.id.friendname
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -34,7 +36,7 @@ class UserChatActivity : AppCompatActivity() {
     lateinit var recyclermassageView: RecyclerView
     lateinit var customMassageAdapter: CustomMassageAdapter
     lateinit var currentuser: FirebaseUser
-    var bool: Boolean = false
+    var itemc = 0
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +66,7 @@ class UserChatActivity : AppCompatActivity() {
             name.text = intent.getStringExtra("NameUser")
             mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser.uid.hashCode()+friendUID.hashCode()).toString())
             getData(friendUID)
+           Toast.makeText(this, itemMassage.size.toString(), Toast.LENGTH_SHORT).show()
             if(name.text.length>12){
                 name.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 userImage.layoutParams.height = 75*3
@@ -75,6 +78,7 @@ class UserChatActivity : AppCompatActivity() {
             val id = mdatabase.key
             massages = Massages(id, ownmassage.text.toString(), currentuser.uid, currentuser.uid, friendUID)
             mdatabase.push().setValue(massages)
+            ownmassage.setText("")
         }
 
         backImagee.setOnClickListener {
@@ -87,7 +91,9 @@ class UserChatActivity : AppCompatActivity() {
             @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
             override fun onDataChange(snapshot: DataSnapshot) {
                val massagesgd = snapshot.children
-                if(itemMassage.size > 0) itemMassage.clear()
+                if(itemMassage.size > 0) {
+                    itemMassage.clear()
+                }
                 massagesgd.forEach{ds: DataSnapshot? ->
                     val mass = ds?.getValue(Massages::class.java)
                         if (currentuser.uid.equals(mass?.ownUID)){
@@ -97,9 +103,7 @@ class UserChatActivity : AppCompatActivity() {
                                 itemMassage.add(itemMassage2!!)
                         }
                         else{
-
-                            val itemMassage3 = mass?.text?.let { ItemMassage(it, false) }
-
+                                val itemMassage3 = mass?.text?.let { ItemMassage(it, false) }
                                 itemMassage3?.setOwnMassage(false)
                                 itemMassage.add(itemMassage3!!)
 
@@ -117,6 +121,8 @@ class UserChatActivity : AppCompatActivity() {
         mdatabase.addValueEventListener(vlistener)
         recyclermassageView.layoutManager = LinearLayoutManager(this)
         recyclermassageView.adapter = customMassageAdapter
+
+        recyclermassageView.smoothScrollToPosition(0)
     }
 }
 
