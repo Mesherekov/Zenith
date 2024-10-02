@@ -1,8 +1,14 @@
 package com.example.zenith
 
+import android.R.attr.label
+import android.R.attr.text
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageButton
@@ -12,7 +18,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.zenith.R.id.friendname
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -22,21 +27,27 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class UserChatActivity : AppCompatActivity() {
-    lateinit var name: TextView
-    lateinit var userImage: ImageView
-    lateinit var backImagee: ImageButton
-    lateinit var sendmassage : ImageButton
-    lateinit var ownmassage : EditText
+
+class UserChatActivity : AppCompatActivity(), SelectMassageListener {
+    private lateinit var name: TextView
+    private lateinit var userImage: ImageView
+    private lateinit var backImagee: ImageButton
+    private lateinit var sendmassage : ImageButton
+    private lateinit var ownmassage : EditText
+    private lateinit var close: ImageButton
+    private lateinit var delete: ImageButton
+    private lateinit var copy: ImageButton
     private val MASSAGE_KEY = "Massage"
-    private lateinit var mfireauth : FirebaseAuth
-    private lateinit var mdatabase : DatabaseReference
+    private  var mfireauth : FirebaseAuth? = null
+    private  var mdatabase : DatabaseReference? = null
     private lateinit var massages: Massages
-    lateinit var itemMassage: MutableList<ItemMassage>
-    lateinit var recyclermassageView: RecyclerView
-    lateinit var customMassageAdapter: CustomMassageAdapter
-    lateinit var currentuser: FirebaseUser
-    var itemc = 0
+    private lateinit var itemMassage: MutableList<ItemMassage>
+    private lateinit var recyclermassageView: RecyclerView
+    private lateinit var customMassageAdapter: CustomMassageAdapter
+    var currentuser: FirebaseUser? = null
+    private lateinit var itemMassagecopy: ItemMassage
+    private var counter: Int = 0
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +56,9 @@ class UserChatActivity : AppCompatActivity() {
         sendmassage = findViewById(R.id.sendmassage)
         ownmassage = findViewById(R.id.ownmassage)
         userImage = findViewById(R.id.friendimage)
-        backImagee = findViewById(R.id.back)
+        close = findViewById(R.id.closema)
+        delete = findViewById(R.id.deletemass)
+        copy = findViewById(R.id.copy)
         backImagee = findViewById(R.id.back)
         recyclermassageView = findViewById(R.id.recyclermassage)
         recyclermassageView.layoutManager = LinearLayoutManager(this)
@@ -53,9 +66,9 @@ class UserChatActivity : AppCompatActivity() {
         recyclermassageView.recycledViewPool.setMaxRecycledViews(itemViewType, 0)
         mfireauth = FirebaseAuth.getInstance()
         itemMassage = mutableListOf()
-        customMassageAdapter = CustomMassageAdapter(applicationContext, itemMassage)
+        customMassageAdapter = CustomMassageAdapter(applicationContext, itemMassage, this)
         recyclermassageView.adapter = customMassageAdapter
-        currentuser = mfireauth.currentUser!!
+        currentuser = mfireauth!!.currentUser!!
 
         var friendUID:String = "45"
         if (intent != null){
@@ -64,7 +77,7 @@ class UserChatActivity : AppCompatActivity() {
             userImage.setImageBitmap(bitmap)
             friendUID = intent.getStringExtra("UID").toString()
             name.text = intent.getStringExtra("NameUser")
-            mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser.uid.hashCode()+friendUID.hashCode()).toString())
+            mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser!!.uid.hashCode()+friendUID.hashCode()).toString())
             getData(friendUID)
             if(name.text.length>12){
                 name.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -72,15 +85,49 @@ class UserChatActivity : AppCompatActivity() {
                 userImage.layoutParams.width = 75*3
             }
         }
-
+        close.setOnClickListener{
+            copy.visibility = View.GONE
+            close.visibility = View.GONE
+            delete.visibility = View.GONE
+            itemMassagecopy.textistrigger = false
+        }
+        copy.setOnClickListener{
+            val clipboard: ClipboardManager =
+                getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("The text has been copied", itemMassagecopy.getTextMassage())
+            clipboard.setPrimaryClip(clip)
+        }
+        delete.setOnClickListener {
+            if (itemMassagecopy.ownmassage) {
+                mdatabase?.child(itemMassagecopy.key)?.removeValue()
+                copy.visibility = View.GONE
+                close.visibility = View.GONE
+                delete.visibility = View.GONE
+                itemMassagecopy.textistrigger = false
+            } else {
+                Toast.makeText(this, "You can`t delete friend`s massage", Toast.LENGTH_SHORT).show()
+            }
+        }
         sendmassage.setOnClickListener{
-            val id = mdatabase.key
-            massages = Massages(id, ownmassage.text.toString(), currentuser.uid, currentuser.uid, friendUID)
-            mdatabase.push().setValue(massages)
-            ownmassage.setText("")
+            if (!ownmassage.text.toString().equals("")) {
+                val id = mdatabase?.key
+                massages = Massages(
+                    id,
+                    ownmassage.text.toString(),
+                    currentuser!!.uid,
+                    currentuser!!.uid,
+                    friendUID
+                )
+                mdatabase?.push()?.setValue(massages)
+                ownmassage.setText("")
+                recyclermassageView.smoothScrollToPosition(counter++)
+            }
         }
 
         backImagee.setOnClickListener {
+            mdatabase = null
+            mfireauth = null
+            currentuser = null
             finish()
         }
 
@@ -95,14 +142,16 @@ class UserChatActivity : AppCompatActivity() {
                 }
                 massagesgd.forEach{ds: DataSnapshot? ->
                     val mass = ds?.getValue(Massages::class.java)
-                        if (currentuser.uid.equals(mass?.ownUID)){
-                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true) }
+                        if (currentuser?.uid.equals(mass?.ownUID)){
+                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true, ds.key.toString()) }
                                 itemMassage2?.setOwnMassage(true)
 
                                 itemMassage.add(itemMassage2!!)
                         }
                         else{
-                                val itemMassage3 = mass?.text?.let { ItemMassage(it, false) }
+                                val itemMassage3 = mass?.text?.let { ItemMassage(it, false,
+                                    ds.key.toString()
+                                ) }
                                 itemMassage3?.setOwnMassage(false)
                                 itemMassage.add(itemMassage3!!)
 
@@ -117,16 +166,27 @@ class UserChatActivity : AppCompatActivity() {
 
 
         }
-        mdatabase.addValueEventListener(vlistener)
+        mdatabase?.addValueEventListener(vlistener)
         recyclermassageView.layoutManager = LinearLayoutManager(this)
         recyclermassageView.adapter = customMassageAdapter
         for (x in 0..1000000){
             try {
                 recyclermassageView.smoothScrollToPosition(x)
+                counter++
             }catch (ex: Exception){
                 break
             }
         }
+    }
+
+    override fun onItemMassageClick(item: ItemMassage?) {
+        item?.textistrigger = true
+        if (item != null) {
+            itemMassagecopy = item
+        }
+        copy.visibility = View.VISIBLE
+        close.visibility = View.VISIBLE
+        delete.visibility = View.VISIBLE
     }
 }
 

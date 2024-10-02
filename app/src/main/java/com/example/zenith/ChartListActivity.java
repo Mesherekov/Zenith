@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -70,6 +71,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private ImageButton pencil, changeavatar;
     private ImageView useravatar;
     private Uri uploaduri;
+    ValueEventListener vListener, valueEventListener;
     private boolean finduser = false;
     private Drawable reserveAvatar;
 
@@ -90,12 +92,16 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         email.setText(currentuser.getEmail());
         logout.setOnClickListener(view -> {
             try {
+                mdatabase.removeEventListener(vListener);
+                mdatabase.removeEventListener(valueEventListener);
                 mfirebaseAuth.signOut();
+                finish();
             } catch (Exception e){
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.d("ERROR", e.getMessage());
             }
-            Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
-            startActivity(intent);
+
+//            Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
+//            startActivity(intent);
         });
         changeavatar.setOnClickListener(view -> {
             ImagePicker.with(this)
@@ -178,7 +184,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
 
         Runnable run = () -> {
-            ValueEventListener valueEventListener = new ValueEventListener() {
+            valueEventListener = new ValueEventListener() {
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -271,7 +277,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     }
 
     private void getData(){
-        ValueEventListener vListener = new ValueEventListener() {
+        vListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot ds : snapshot.getChildren()) {

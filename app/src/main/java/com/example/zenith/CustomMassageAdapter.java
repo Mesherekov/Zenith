@@ -3,6 +3,7 @@ package com.example.zenith;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -16,11 +17,12 @@ import java.util.List;
 public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageViewHolder> {
     Context context;
     List<ItemMassage> items;
+    private SelectMassageListener listener;
 
-    public CustomMassageAdapter(Context context, List<ItemMassage> items) {
+    public CustomMassageAdapter(Context context, List<ItemMassage> items, SelectMassageListener listener) {
         this.context = context;
         this.items = items;
-//        setHasStableIds(true);
+        this.listener = listener;
     }
 
     @Override
@@ -36,8 +38,20 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
 
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(@NonNull CustomMassageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CustomMassageViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.textmass.setText(items.get(position).getTextMassage());
+        holder.massrel.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                listener.onItemMassageClick(items.get(position));
+                if (items.get(position).getTextistrigger()){
+                    ViewCompat.setBackgroundTintList(holder.massrel, ContextCompat.getColorStateList(context, R.color.CadetBlue));
+                } else {
+                    ViewCompat.setBackgroundTintList(holder.massrel, ContextCompat.getColorStateList(context, R.color.Transparent));
+                }
+                return false;
+            }
+        });
         if(items.get(position).getOwnMassage()){
             //holder.textmass.getBackground().setTint(R.color.LightGreen);
             ViewCompat.setBackgroundTintList(holder.textmass, ContextCompat.getColorStateList(context, R.color.LightBlue));

@@ -18,34 +18,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        init();
-        signup.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
-            startActivity(intent);
-        });
-        signin.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, SignInActivity.class);
-            startActivity(intent);
-        });
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         try {
-            FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
-            if (currentuser != null) {
-                if (currentuser.isEmailVerified()) {
-                    Intent intent = new Intent(MainActivity.this, ChartListActivity.class);
-                    startActivity(intent);
-                }
-
-            }
+            init();
+            signup.setOnClickListener(view -> {
+                Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
+                startActivity(intent);
+            });
+            signin.setOnClickListener(view -> {
+                Intent intent = new Intent(MainActivity.this, SignInActivity.class);
+                startActivity(intent);
+            });
         }catch (Exception ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
     void init(){
         try {
             mfirebaseAuth = FirebaseAuth.getInstance();
@@ -54,5 +40,18 @@ public class MainActivity extends AppCompatActivity {
         }
         signin = findViewById(R.id.signin);
         signup = findViewById(R.id.signup);
+        try {
+            FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
+            if (currentuser != null) {
+                if (currentuser.isEmailVerified()) {
+                    Intent intent = new Intent(MainActivity.this, ChartListActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+
+            }
+        }catch (Exception ex){
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 }

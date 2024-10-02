@@ -20,12 +20,13 @@
         android:id="@+id/friendname"
         android:layout_width="match_parent"
         android:layout_height="65sp"
+        android:layout_alignStart="@id/friendimage"
         android:background="#77ADEC"
         android:paddingStart="125dp"
-        android:layout_alignStart="@id/friendimage"
         android:textColor="@color/white"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlSymmetry,TextContrastCheck"
@@ -98,5 +99,53 @@
         app:srcCompat="@android:drawable/ic_menu_send"
         app:tint="@color/LightSeaGreen"
         tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+    <ImageButton
+        android:id="@+id/deletemass"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/closema"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/deletertrt"
+        app:tint="@color/white"
+        tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/closema"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/close"
+        app:tint="@color/white"
+        tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/copy"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/deletemass"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/copy"
+        app:tint="@color/white"
+        tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

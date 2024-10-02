@@ -30,6 +30,7 @@ public class SignInActivity extends AppCompatActivity {
                         if(user.isEmailVerified()){
                             Intent intent = new Intent(SignInActivity.this, ChartListActivity.class);
                             startActivity(intent);
+                            finish();
                         }
                         else Toast.makeText(this, "Please confirm your email", Toast.LENGTH_SHORT).show();
                     }
