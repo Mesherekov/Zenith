@@ -1,7 +1,5 @@
 package com.example.zenith
 
-import android.R.attr.label
-import android.R.attr.text
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -71,7 +69,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         recyclermassageView.adapter = customMassageAdapter
         currentuser = mfireauth!!.currentUser!!
 
-        var friendUID:String = "45"
+        var friendUID = "45"
         if (intent != null){
             val bitmap = intent.getByteArrayExtra("byteArray")
                 ?.let { BitmapFactory.decodeByteArray(intent.getByteArrayExtra("byteArray"), 0, it.size) }
@@ -79,7 +77,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             friendUID = intent.getStringExtra("UID").toString()
             name.text = intent.getStringExtra("NameUser")
             mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser!!.uid.hashCode()+friendUID.hashCode()).toString())
-            getData(friendUID)
+            getData()
             if(name.text.length>12){
                 name.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 userImage.layoutParams.height = 75*3
@@ -112,7 +110,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             }
         }
         sendmassage.setOnClickListener{
-            if (!ownmassage.text.toString().equals("")) {
+            if (ownmassage.text.toString() != "") {
                 val id = mdatabase?.key
                 massages = Massages(
                     id,
@@ -136,7 +134,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         }
 
     }
-    fun getData(friendUID: String){
+    fun getData() {
         vlistener = object : ValueEventListener{
             @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
             override fun onDataChange(snapshot: DataSnapshot) {

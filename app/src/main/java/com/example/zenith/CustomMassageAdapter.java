@@ -3,10 +3,8 @@ package com.example.zenith;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -18,7 +16,7 @@ import java.util.List;
 public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageViewHolder> {
     Context context;
     List<ItemMassage> items;
-    private SelectMassageListener listener;
+    private final SelectMassageListener listener;
 
     public CustomMassageAdapter(Context context, List<ItemMassage> items, SelectMassageListener listener) {
         this.context = context;
@@ -41,25 +39,17 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
     @Override
     public void onBindViewHolder(@NonNull CustomMassageViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.textmass.setText(items.get(position).getTextMassage());
-        holder.massrel.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                listener.onItemMassageClick(items.get(position));
-                if (items.get(position).getTextistrigger()){
-                    //ViewCompat.setBackgroundTintList(holder.massrel, ContextCompat.getColorStateList(context, items.get(position).getColorrelat()));
-                    holder.massrel.setBackgroundColor(items.get(position).getColorrelat());
-                } else {
-                    holder.massrel.setBackgroundColor(R.color.Transparent);
-                }
-                return false;
-            }
-        });
-        items.get(position).setListener(new ItemMassage.ChangeListener() {
-            @Override
-            public void onChange() {
+        holder.massrel.setOnLongClickListener(view -> {
+            listener.onItemMassageClick(items.get(position));
+            if (items.get(position).getTextistrigger()){
+                //ViewCompat.setBackgroundTintList(holder.massrel, ContextCompat.getColorStateList(context, items.get(position).getColorrelat()));
                 holder.massrel.setBackgroundColor(items.get(position).getColorrelat());
+            } else {
+                holder.massrel.setBackgroundColor(R.color.Transparent);
             }
+            return false;
         });
+        items.get(position).setListener(() -> holder.massrel.setBackgroundColor(items.get(position).getColorrelat()));
         if(items.get(position).getOwnMassage()){
             //holder.textmass.getBackground().setTint(R.color.LightGreen);
             ViewCompat.setBackgroundTintList(holder.textmass, ContextCompat.getColorStateList(context, R.color.LightBlue));
