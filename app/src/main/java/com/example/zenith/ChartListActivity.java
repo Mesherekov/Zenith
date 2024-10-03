@@ -95,13 +95,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 mdatabase.removeEventListener(vListener);
                 mdatabase.removeEventListener(valueEventListener);
                 mfirebaseAuth.signOut();
-                finish();
             } catch (Exception e){
                 Log.d("ERROR", e.getMessage());
             }
 
-//            Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
-//            startActivity(intent);
+           Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
+            startActivity(intent);
         });
         changeavatar.setOnClickListener(view -> {
             ImagePicker.with(this)

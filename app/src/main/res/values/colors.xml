@@ -134,7 +134,7 @@
     <color name="Sienna">#A0522D</color>
     <color name="Brown">#A52A2A</color>
     <color name="Maroon">#800000</color>
-    <color name="Transparent">#00000000</color>
+    <color name="Transparent">#00FF0000</color>
 
     <!--    БЕЛЫЕ-->
     <color name="White">#FFFFFF</color>

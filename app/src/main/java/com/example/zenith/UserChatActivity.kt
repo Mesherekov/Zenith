@@ -7,6 +7,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +48,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     var currentuser: FirebaseUser? = null
     private lateinit var itemMassagecopy: ItemMassage
     private var counter: Int = 0
-
+    lateinit var vlistener: ValueEventListener
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +91,8 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             close.visibility = View.GONE
             delete.visibility = View.GONE
             itemMassagecopy.textistrigger = false
+            val transparentColor = Color.argb(0, 255, 0, 0)
+            itemMassagecopy.setResColor(transparentColor)
         }
         copy.setOnClickListener{
             val clipboard: ClipboardManager =
@@ -125,6 +128,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         }
 
         backImagee.setOnClickListener {
+            mdatabase?.removeEventListener(vlistener)
             mdatabase = null
             mfireauth = null
             currentuser = null
@@ -133,7 +137,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
 
     }
     fun getData(friendUID: String){
-        val vlistener = object : ValueEventListener{
+        vlistener = object : ValueEventListener{
             @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
             override fun onDataChange(snapshot: DataSnapshot) {
                val massagesgd = snapshot.children
@@ -143,14 +147,14 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                 massagesgd.forEach{ds: DataSnapshot? ->
                     val mass = ds?.getValue(Massages::class.java)
                         if (currentuser?.uid.equals(mass?.ownUID)){
-                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true, ds.key.toString()) }
+                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true, ds.key.toString(), R.color.Transparent) }
                                 itemMassage2?.setOwnMassage(true)
 
                                 itemMassage.add(itemMassage2!!)
                         }
                         else{
                                 val itemMassage3 = mass?.text?.let { ItemMassage(it, false,
-                                    ds.key.toString()
+                                    ds.key.toString(), R.color.Transparent
                                 ) }
                                 itemMassage3?.setOwnMassage(false)
                                 itemMassage.add(itemMassage3!!)
@@ -183,6 +187,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         item?.textistrigger = true
         if (item != null) {
             itemMassagecopy = item
+            item.setResColor(R.color.CadetBlue)
         }
         copy.visibility = View.VISIBLE
         close.visibility = View.VISIBLE

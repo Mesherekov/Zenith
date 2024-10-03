@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -45,11 +46,18 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
             public boolean onLongClick(View view) {
                 listener.onItemMassageClick(items.get(position));
                 if (items.get(position).getTextistrigger()){
-                    ViewCompat.setBackgroundTintList(holder.massrel, ContextCompat.getColorStateList(context, R.color.CadetBlue));
+                    //ViewCompat.setBackgroundTintList(holder.massrel, ContextCompat.getColorStateList(context, items.get(position).getColorrelat()));
+                    holder.massrel.setBackgroundColor(items.get(position).getColorrelat());
                 } else {
-                    ViewCompat.setBackgroundTintList(holder.massrel, ContextCompat.getColorStateList(context, R.color.Transparent));
+                    holder.massrel.setBackgroundColor(R.color.Transparent);
                 }
                 return false;
+            }
+        });
+        items.get(position).setListener(new ItemMassage.ChangeListener() {
+            @Override
+            public void onChange() {
+                holder.massrel.setBackgroundColor(items.get(position).getColorrelat());
             }
         });
         if(items.get(position).getOwnMassage()){
