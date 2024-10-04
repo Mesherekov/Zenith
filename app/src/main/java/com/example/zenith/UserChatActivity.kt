@@ -145,14 +145,17 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                 massagesgd.forEach{ds: DataSnapshot? ->
                     val mass = ds?.getValue(Massages::class.java)
                         if (currentuser?.uid.equals(mass?.ownUID)){
-                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true, ds.key.toString(), R.color.Transparent) }
+                            val transparentColor = Color.argb(0, 255, 0, 0)
+                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true, ds.key.toString(), transparentColor) }
                                 itemMassage2?.setOwnMassage(true)
 
                                 itemMassage.add(itemMassage2!!)
                         }
                         else{
-                                val itemMassage3 = mass?.text?.let { ItemMassage(it, false,
-                                    ds.key.toString(), R.color.Transparent
+                            val transparentColor = Color.argb(0, 255, 0, 0)
+
+                            val itemMassage3 = mass?.text?.let { ItemMassage(it, false,
+                                    ds.key.toString(), transparentColor
                                 ) }
                                 itemMassage3?.setOwnMassage(false)
                                 itemMassage.add(itemMassage3!!)

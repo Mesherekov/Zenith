@@ -44,7 +44,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onItemClick(items.get(position));
+                listener.onItemClick(items.get(position), position);
             }
         });
     }

@@ -1,5 +1,5 @@
 package com.example.zenith;
 
 public interface SelectListener {
-    void onItemClick(Item item);
+    void onItemClick(Item item, int position);
 }

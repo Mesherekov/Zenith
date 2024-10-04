@@ -53,8 +53,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private StorageReference mstorage;
     private final String USER_KEY = "User";
     private FirebaseUser currentuser;
-    RecyclerView recyclerView;
+    RecyclerView recyclerView, recyclerViewfriends;
     private SearchView search;
+    private CustomFriendsAdapter customFriendsAdapter;
+    List<ItemFriends> itemFriends;
     List<Item> items;
     CustomAdapter adapter;
     Drawable namedraw;
@@ -63,6 +65,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private ConstraintLayout chatlayout, profilelayout;
     private String userID;
     private DataSnapshot dataSnapshot;
+    private DatabaseReference friendsdatasnapshot;
     private boolean isreadytoupdate = false;
     private ImageButton pencil, changeavatar;
     private ImageView useravatar;
@@ -70,6 +73,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     ValueEventListener vListener, valueEventListener;
     private boolean finduser = false;
     private Drawable reserveAvatar;
+    List<String> imageUriFriends;
 
     @Override
     protected void onStart() {
@@ -163,8 +167,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         recyclerView = findViewById(R.id.recyclerview);
+        recyclerViewfriends = findViewById(R.id.friendrecycler);
 
         items = new ArrayList<>();
+        imageUriFriends = new ArrayList<>();
+        itemFriends = new ArrayList<>();
+        customFriendsAdapter = new CustomFriendsAdapter(getApplicationContext(), itemFriends);
         adapter = new CustomAdapter(getApplicationContext(), items, this);
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
@@ -218,6 +226,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                             }
                         }).into(exam);*/
                             Picasso.get().load(user.imageUri).resize(400, 400).centerCrop().placeholder(R.drawable.profileicon).into(target);
+                            imageUriFriends.add(user.imageUri);
                         }
 
                     }
@@ -229,12 +238,50 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 }
             };
             mdatabase.addValueEventListener(valueEventListener);
+           /* ValueEventListener eventListener = new ValueEventListener() {
+                @SuppressLint("NotifyDataSetChanged")
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(itemFriends.size()>0) itemFriends.clear();
+                    for (DataSnapshot ds: snapshot.getChildren()) {
+                        Friends friends = ds.getValue(Friends.class);
+                        assert friends!=null;
+                        Target target = new Target() {
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                                itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID));
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        };
+                        Picasso.get().load(friends.PNG).resize(400, 400).centerCrop().placeholder(R.drawable.profileicon).into(target);
+                    }
+                    customFriendsAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+            assert friendsdatasnapshot!=null;
+            friendsdatasnapshot.addValueEventListener(eventListener);*/
         };
         run.run();
 
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+//        recyclerViewfriends.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerViewfriends.setAdapter(customFriendsAdapter);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -291,6 +338,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                             }
                         });
                         dataSnapshot = ds;
+                        friendsdatasnapshot = ds.child("Friends").getRef();
                         finduser = true;
                     }
                 }
@@ -308,10 +356,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     }
 
     @Override
-    public void onItemClick(Item item) {
+    public void onItemClick(Item item, int position) {
         Intent intent = new Intent(ChartListActivity.this, UserChatActivity.class);
         intent.putExtra("NameUser", item.getName());
         intent.putExtra("UID", item.getUID());
+        //String id = friendsdatasnapshot.getKey();
+        //Friends friends = new Friends(id, item.UID, item.name, imageUriFriends.get(position));
+        //friendsdatasnapshot.push().setValue(friends);
         Bitmap bitmap = ((BitmapDrawable) item.getImage()).getBitmap();
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
