@@ -1,7 +1,7 @@
 package com.example.zenith;
 
 public class Friends {
-    String id, UID, Name, PNG;
+    public String id, UID, Name, PNG;
     public Friends() {
     }
 

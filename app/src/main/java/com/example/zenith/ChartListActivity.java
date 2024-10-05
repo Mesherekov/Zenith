@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -87,7 +88,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         setContentView(R.layout.activity_chart_list);
         init();
         getData();
-        currentuser = mfirebaseAuth.getCurrentUser();
+
         assert currentuser != null;
         email.setText(currentuser.getEmail());
         logout.setOnClickListener(view -> {
@@ -164,7 +165,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         search = findViewById(R.id.search);
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
+        currentuser = mfirebaseAuth.getCurrentUser();
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
+        friendsdatasnapshot = FirebaseDatabase.getInstance().getReference().child("Friends").child(currentuser.getUid());
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         recyclerView = findViewById(R.id.recyclerview);
         recyclerViewfriends = findViewById(R.id.friendrecycler);
@@ -182,7 +185,6 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         useravatar = findViewById(R.id.userimage);
         namedraw = name.getBackground();
         name.setBackground(null);
-
 
         Runnable run = () -> {
             valueEventListener = new ValueEventListener() {
@@ -206,12 +208,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
                                 @Override
                                 public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
                                 }
 
                                 @Override
                                 public void onPrepareLoad(Drawable placeHolderDrawable) {
-
                                 }
                             };
                         /*Glide.with(ChartListActivity.this).load(user.imageUri).placeholder(R.drawable.profileicon).listener(new RequestListener<Drawable>() {
@@ -238,7 +238,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 }
             };
             mdatabase.addValueEventListener(valueEventListener);
-           /* ValueEventListener eventListener = new ValueEventListener() {
+            ValueEventListener eventListener = new ValueEventListener() {
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -274,14 +274,14 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 }
             };
             assert friendsdatasnapshot!=null;
-            friendsdatasnapshot.addValueEventListener(eventListener);*/
+            friendsdatasnapshot.addValueEventListener(eventListener);
         };
         run.run();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-//        recyclerViewfriends.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerViewfriends.setAdapter(customFriendsAdapter);
+        recyclerViewfriends.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewfriends.setAdapter(customFriendsAdapter);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -334,11 +334,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
                             @Override
                             public void onError(Exception e) {
-
                             }
                         });
                         dataSnapshot = ds;
-                        friendsdatasnapshot = ds.child("Friends").getRef();
                         finduser = true;
                     }
                 }
@@ -360,9 +358,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         Intent intent = new Intent(ChartListActivity.this, UserChatActivity.class);
         intent.putExtra("NameUser", item.getName());
         intent.putExtra("UID", item.getUID());
-        //String id = friendsdatasnapshot.getKey();
-        //Friends friends = new Friends(id, item.UID, item.name, imageUriFriends.get(position));
-        //friendsdatasnapshot.push().setValue(friends);
+        try {
+            String id = friendsdatasnapshot.getKey();
+            Friends friends = new Friends(id, item.UID, item.getName(), imageUriFriends.get(position));
+            friendsdatasnapshot.push().setValue(friends);
+        }catch (Exception ex){
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
         Bitmap bitmap = ((BitmapDrawable) item.getImage()).getBitmap();
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
