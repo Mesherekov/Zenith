@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,10 +15,12 @@ import java.util.List;
 public class CustomFriendsAdapter extends RecyclerView.Adapter<CustomFriendsViewHolder> {
     Context context;
     List<ItemFriends> items;
+    SelectFriendsListener selectFriendsListener;
 
-    public CustomFriendsAdapter(Context context, List<ItemFriends> items) {
+    public CustomFriendsAdapter(Context context, List<ItemFriends> items, SelectFriendsListener selectFriendsListener) {
         this.context = context;
         this.items = items;
+        this.selectFriendsListener = selectFriendsListener;
     }
 
     @NonNull
@@ -28,14 +31,18 @@ public class CustomFriendsAdapter extends RecyclerView.Adapter<CustomFriendsView
 
     @Override
     public void onBindViewHolder(@NonNull CustomFriendsViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.name.setText(items.get(position).getName());
-        holder.imageButton.setImageDrawable(items.get(position).getImage());
-        holder.relativeLayoutfriend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        try {
+            holder.name.setText(items.get(position).getName());
+            holder.imageView.setImageDrawable(items.get(position).getImage());
+            holder.relativeLayoutfriend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    selectFriendsListener.onItemFriendClick(items.get(position), position);
+                }
+            });
+        }catch (Exception ex){
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

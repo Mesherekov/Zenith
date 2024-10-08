@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 
+@Suppress("DEPRECATION")
 class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     private lateinit var name: TextView
     private lateinit var userImage: ImageView
@@ -84,6 +85,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                 userImage.layoutParams.width = 75*3
             }
         }
+
         close.setOnClickListener{
             copy.visibility = View.GONE
             close.visibility = View.GONE
@@ -134,6 +136,16 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         }
 
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        mdatabase?.removeEventListener(vlistener)
+        mdatabase = null
+        mfireauth = null
+        currentuser = null
+        finish()
+    }
+
     fun getData() {
         vlistener = object : ValueEventListener{
             @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
@@ -194,6 +206,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         close.visibility = View.VISIBLE
         delete.visibility = View.VISIBLE
     }
+
 }
 
 

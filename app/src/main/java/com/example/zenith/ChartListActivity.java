@@ -45,7 +45,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChartListActivity extends AppCompatActivity implements SelectListener{
+public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener{
     private TextView email;
     private EditText name;
     private ImageButton logout;
@@ -75,6 +75,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private boolean finduser = false;
     private Drawable reserveAvatar;
     List<String> imageUriFriends;
+    List<String> FriendUID;
 
     @Override
     protected void onStart() {
@@ -158,6 +159,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         }
     }
 
+    @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
     private void init(){
         email = findViewById(R.id.ema);
         logout = findViewById(R.id.logout);
@@ -167,7 +169,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         mfirebaseAuth = FirebaseAuth.getInstance();
         currentuser = mfirebaseAuth.getCurrentUser();
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
-        friendsdatasnapshot = FirebaseDatabase.getInstance().getReference().child("Friends").child(currentuser.getUid());
+        friendsdatasnapshot = FirebaseDatabase.getInstance().getReference("Friends").child(currentuser.getUid());
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         recyclerView = findViewById(R.id.recyclerview);
         recyclerViewfriends = findViewById(R.id.friendrecycler);
@@ -175,7 +177,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         items = new ArrayList<>();
         imageUriFriends = new ArrayList<>();
         itemFriends = new ArrayList<>();
-        customFriendsAdapter = new CustomFriendsAdapter(getApplicationContext(), itemFriends);
+        FriendUID = new ArrayList<>();
+        customFriendsAdapter = new CustomFriendsAdapter(ChartListActivity.this, itemFriends, this);
         adapter = new CustomAdapter(getApplicationContext(), items, this);
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
@@ -198,7 +201,6 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                         User user = ds.getValue(User.class);
                         assert user != null;
                         if (!user.email.equals(currentuser.getEmail())) {
-
                             Target target = new Target() {
                                 @Override
                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -239,18 +241,19 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             };
             mdatabase.addValueEventListener(valueEventListener);
             ValueEventListener eventListener = new ValueEventListener() {
-                @SuppressLint("NotifyDataSetChanged")
+                @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(itemFriends.size()>0) itemFriends.clear();
                     for (DataSnapshot ds: snapshot.getChildren()) {
                         Friends friends = ds.getValue(Friends.class);
                         assert friends!=null;
-                        Target target = new Target() {
+                        Target target1 = new Target() {
                             @Override
                             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                                 itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID));
+                                FriendUID.add(friends.UID);
                             }
 
                             @Override
@@ -263,9 +266,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
                             }
                         };
-                        Picasso.get().load(friends.PNG).resize(400, 400).centerCrop().placeholder(R.drawable.profileicon).into(target);
+                        Picasso.get().load(friends.PNG).resize(400, 400).centerCrop().placeholder(R.drawable.profileicon).into(target1);
+
                     }
-                    customFriendsAdapter.notifyDataSetChanged();
+                   customFriendsAdapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -273,10 +277,14 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
                 }
             };
-            assert friendsdatasnapshot!=null;
-            friendsdatasnapshot.addValueEventListener(eventListener);
+            try {
+                friendsdatasnapshot.addValueEventListener(eventListener);
+            }catch (Exception ex){
+                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         };
         run.run();
+
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -293,9 +301,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 checkS = s;
                 if(TextUtils.isEmpty(s)){
                     recyclerView.setVisibility(View.INVISIBLE);
+                    recyclerViewfriends.setVisibility(View.VISIBLE);
                 }
                 else {
                     recyclerView.setVisibility(View.VISIBLE);
+                    recyclerViewfriends.setVisibility(View.INVISIBLE);
                     filterList(s);
                 }
                 return true;
@@ -311,8 +321,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         }
         if(filterlist.isEmpty()){
             TextUtils.isEmpty(checkS);
+            recyclerViewfriends.setVisibility(View.VISIBLE);
         } else {
             adapter.setFilterList(filterlist);
+            recyclerViewfriends.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -359,12 +371,27 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         intent.putExtra("NameUser", item.getName());
         intent.putExtra("UID", item.getUID());
         try {
-            String id = friendsdatasnapshot.getKey();
-            Friends friends = new Friends(id, item.UID, item.getName(), imageUriFriends.get(position));
-            friendsdatasnapshot.push().setValue(friends);
+            if(!FriendUID.contains(item.UID)) {
+                String id = friendsdatasnapshot.getKey();
+                Friends friends = new Friends(id, item.UID, item.getName(), imageUriFriends.get(position));
+                friendsdatasnapshot.push().setValue(friends);
+            }
         }catch (Exception ex){
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
+        Bitmap bitmap = ((BitmapDrawable) item.getImage()).getBitmap();
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
+        intent.putExtra("byteArray", bs.toByteArray());
+        intent.putExtra("currentuser", currentuser.getUid());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onItemFriendClick(ItemFriends item, int position) {
+        Intent intent = new Intent(ChartListActivity.this, UserChatActivity.class);
+        intent.putExtra("NameUser", item.getName());
+        intent.putExtra("UID", item.getUID());
         Bitmap bitmap = ((BitmapDrawable) item.getImage()).getBitmap();
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
