@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener{
-    private TextView email;
+    private TextView email, numfriends;
     private EditText name;
     private ImageButton logout;
     private FirebaseAuth mfirebaseAuth;
@@ -54,14 +54,14 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private StorageReference mstorage;
     private final String USER_KEY = "User";
     private FirebaseUser currentuser;
-    RecyclerView recyclerView, recyclerViewfriends;
+    private RecyclerView recyclerView, recyclerViewfriends;
     private SearchView search;
     private CustomFriendsAdapter customFriendsAdapter;
-    List<ItemFriends> itemFriends;
-    List<Item> items;
-    CustomAdapter adapter;
-    Drawable namedraw;
-    String checkS;
+    private List<ItemFriends> itemFriends;
+    private List<Item> items;
+    private CustomAdapter adapter;
+    private Drawable namedraw;
+    private String checkS;
     private BottomNavigationView bview;
     private ConstraintLayout chatlayout, profilelayout;
     private String userID;
@@ -74,8 +74,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     ValueEventListener vListener, valueEventListener;
     private boolean finduser = false;
     private Drawable reserveAvatar;
-    List<String> imageUriFriends;
-    List<String> FriendUID;
+    private List<String> imageUriFriends;
+    private List<String> FriendUID;
 
     @Override
     protected void onStart() {
@@ -186,6 +186,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         pencil = findViewById(R.id.pencil);
         changeavatar = findViewById(R.id.changeavatar);
         useravatar = findViewById(R.id.userimage);
+        numfriends = findViewById(R.id.numfriends);
         namedraw = name.getBackground();
         name.setBackground(null);
 
@@ -241,10 +242,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             };
             mdatabase.addValueEventListener(valueEventListener);
             ValueEventListener eventListener = new ValueEventListener() {
-                @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
+                @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables", "SetTextI18n"})
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(itemFriends.size()>0) itemFriends.clear();
+                    final int[] numoffriends = {0};
                     for (DataSnapshot ds: snapshot.getChildren()) {
                         Friends friends = ds.getValue(Friends.class);
                         assert friends!=null;
@@ -254,6 +256,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                                 itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID));
                                 FriendUID.add(friends.UID);
+                                numoffriends[0]++;
                             }
 
                             @Override
@@ -270,6 +273,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
                     }
                    customFriendsAdapter.notifyDataSetChanged();
+                    numfriends.setText("Количество друзей: "+numoffriends[0]);
                 }
 
                 @Override
