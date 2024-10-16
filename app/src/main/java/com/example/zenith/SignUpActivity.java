@@ -72,14 +72,14 @@ public class SignUpActivity extends AppCompatActivity {
                             String id = mdatabase.getKey();
                             String name = edname.getText().toString();
                             String email = edemail.getText().toString();
-                            String password = edpassword.getText().toString();
+                            String password = String.valueOf(edpassword.getText().toString().hashCode());
                             FirebaseUser currentuser = mfirebaseAuth.getCurrentUser();
                             assert currentuser!=null;
                             User user = new User(id, name, email, password, uploaduri.toString(), currentuser.getUid());
                             mdatabase.push().setValue(user);
-                            FirebaseUser currentUser = mfirebaseAuth.getCurrentUser();
-                            assert currentUser != null;
-                            if (currentUser.isEmailVerified()) {
+
+                            assert currentuser != null;
+                            if (currentuser.isEmailVerified()) {
                                 Intent intent = new Intent(SignUpActivity.this, ChartListActivity.class);
                                 startActivity(intent);
                             } else

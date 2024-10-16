@@ -25,6 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,6 +46,7 @@ import com.squareup.picasso.Target;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener{
     private TextView email, numfriends;
@@ -70,7 +73,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private boolean isreadytoupdate = false;
     private ImageButton pencil, changeavatar;
     private ImageView useravatar;
-    private Uri uploaduri;
+    private Uri uploaduri, newuploaduri;
     ValueEventListener vListener, valueEventListener;
     private boolean finduser = false;
     private Drawable reserveAvatar;
@@ -143,6 +146,26 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         final StorageReference mref = mstorage.child(System.currentTimeMillis()+ "user_image");
         UploadTask uptask = mref.putBytes(bytes);
         Task<Uri> task = uptask.continueWithTask(task1 -> mref.getDownloadUrl()).addOnCompleteListener(task12 -> uploaduri = task12.getResult());
+    }
+    private void newuploadImage(){
+        useravatar.setImageResource(R.drawable.genava);
+        Bitmap bitmap =((BitmapDrawable) useravatar.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] bytes = baos.toByteArray();
+        final StorageReference mref = mstorage.child(System.currentTimeMillis()+ "user_image");
+        UploadTask uptask = mref.putBytes(bytes);
+        Task<Uri> task = uptask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                return mref.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+                newuploaduri = task.getResult();
+            }
+        });
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -355,6 +378,17 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                         dataSnapshot = ds;
                         finduser = true;
                     }
+                }
+                if(!finduser){
+                    String id = mdatabase.getKey();
+                    String name = Objects.requireNonNull(currentuser.getEmail()).substring(0, 5);
+                    String email = currentuser.getEmail();
+                    String password = String.valueOf(currentuser.getUid().hashCode());
+                    newuploadImage();
+
+                    User user = new User(id, name, email, password, "newuploaduri.toString()", currentuser.getUid());
+                    mdatabase.push().setValue(user);
+
                 }
             }
 
