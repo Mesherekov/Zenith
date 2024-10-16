@@ -349,9 +349,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         if(filterlist.isEmpty()){
             TextUtils.isEmpty(checkS);
             recyclerViewfriends.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
         } else {
             adapter.setFilterList(filterlist);
-            recyclerViewfriends.setVisibility(View.INVISIBLE);
+            recyclerViewfriends.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
         }
     }
 

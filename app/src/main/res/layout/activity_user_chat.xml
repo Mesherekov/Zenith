@@ -33,6 +33,16 @@
         tools:ignore="RtlSymmetry,TextContrastCheck"
         tools:text="UserName" />
 
+    <TextView
+        android:id="@+id/solid"
+        android:layout_width="match_parent"
+        android:layout_height="65sp"
+
+        android:background="#77ADEC"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/friendimage"
         android:layout_width="54dp"

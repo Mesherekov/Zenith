@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener
 @Suppress("DEPRECATION")
 class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     private lateinit var name: TextView
+    private lateinit var solid: TextView
     private lateinit var userImage: ImageView
     private lateinit var backImagee: ImageButton
     private lateinit var sendmassage : ImageButton
@@ -60,6 +61,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         delete = findViewById(R.id.deletemass)
         copy = findViewById(R.id.copy)
         backImagee = findViewById(R.id.back)
+        solid = findViewById(R.id.solid)
         recyclermassageView = findViewById(R.id.recyclermassage)
         recyclermassageView.layoutManager = LinearLayoutManager(this)
         val itemViewType = 0
@@ -81,6 +83,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             getData()
             if(name.text.length>12){
                 name.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                solid.layoutParams.height = 75*3
                 userImage.layoutParams.height = 75*3
                 userImage.layoutParams.width = 75*3
             }
@@ -90,6 +93,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             copy.visibility = View.GONE
             close.visibility = View.GONE
             delete.visibility = View.GONE
+            solid.visibility = View.GONE
             itemMassagecopy.textistrigger = false
             val transparentColor = Color.argb(0, 255, 0, 0)
             itemMassagecopy.setResColor(transparentColor)
@@ -205,6 +209,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         copy.visibility = View.VISIBLE
         close.visibility = View.VISIBLE
         delete.visibility = View.VISIBLE
+        solid.visibility = View.VISIBLE
     }
 
 }
