@@ -16,11 +16,13 @@ public class CustomFriendsAdapter extends RecyclerView.Adapter<CustomFriendsView
     Context context;
     List<ItemFriends> items;
     SelectFriendsListener selectFriendsListener;
+    SelectListenerDelFriend selectListenerDelFriend;
 
-    public CustomFriendsAdapter(Context context, List<ItemFriends> items, SelectFriendsListener selectFriendsListener) {
+    public CustomFriendsAdapter(Context context, List<ItemFriends> items, SelectFriendsListener selectFriendsListener, SelectListenerDelFriend selectListenerDelFriend) {
         this.context = context;
         this.items = items;
         this.selectFriendsListener = selectFriendsListener;
+        this.selectListenerDelFriend = selectListenerDelFriend;
     }
 
     @NonNull
@@ -34,6 +36,13 @@ public class CustomFriendsAdapter extends RecyclerView.Adapter<CustomFriendsView
         try {
             holder.name.setText(items.get(position).getName());
             holder.imageView.setImageDrawable(items.get(position).getImage());
+            holder.relativeLayoutfriend.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    selectListenerDelFriend.onLongItemClick(items.get(position), position);
+                    return true;
+                }
+            });
             holder.relativeLayoutfriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

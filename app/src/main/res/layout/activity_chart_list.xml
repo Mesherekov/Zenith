@@ -153,6 +153,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/solidchart"
+            android:layout_width="match_parent"
+            android:layout_height="65sp"
+
+            android:background="#77ADEC"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/closefriendchart"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/close"
+            app:tint="@color/white"
+            tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+        <ImageButton
+            android:id="@+id/deletefriend"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/closefriendchart"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/deletertrt"
+            app:tint="@color/white"
+            tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/friendrecycler"
             android:layout_width="match_parent"
@@ -179,6 +222,48 @@
             app:layout_constraintTop_toBottomOf="@+id/search"
             app:layout_constraintVertical_bias="0.0" />
 
+        <TextView
+            android:id="@+id/solidfriend"
+            android:layout_width="match_parent"
+            android:layout_height="55sp"
+            android:background="#77ADEC"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/delfriend"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/closefrie"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/deletertrt"
+            app:tint="@color/white"
+            tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+        <ImageButton
+            android:id="@+id/closefrie"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/close"
+            app:tint="@color/white"
+            tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
         <SearchView
             android:id="@+id/search"
             android:layout_width="0dp"
@@ -187,6 +272,7 @@
             android:backgroundTint="@color/LightBlue"
             android:iconifiedByDefault="false"
             android:queryHint="Search"
+            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

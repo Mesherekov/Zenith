@@ -48,10 +48,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener{
-    private TextView email, numfriends;
+public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend{
+    private TextView email, numfriends, solid;
     private EditText name;
-    private ImageButton logout;
+    private ImageButton logout, close, delete;
     private FirebaseAuth mfirebaseAuth;
     private DatabaseReference mdatabase;
     private StorageReference mstorage;
@@ -65,6 +65,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private CustomAdapter adapter;
     private Drawable namedraw;
     private String checkS;
+    private List<String> FriendsKey;
     private BottomNavigationView bview;
     private ConstraintLayout chatlayout, profilelayout;
     private String userID;
@@ -79,6 +80,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private Drawable reserveAvatar;
     private List<String> imageUriFriends;
     private List<String> FriendUID;
+    private String FriendKey;
 
     @Override
     protected void onStart() {
@@ -124,6 +126,19 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 profilelayout.setVisibility(View.VISIBLE);
             }
             return false;
+        });
+        close.setOnClickListener(view -> {
+            solid.setVisibility(View.GONE);
+            close.setVisibility(View.GONE);
+            delete.setVisibility(View.GONE);
+            search.setVisibility(View.VISIBLE);
+        });
+        delete.setOnClickListener(view -> {
+            friendsdatasnapshot.child(FriendKey).removeValue();
+            solid.setVisibility(View.GONE);
+            close.setVisibility(View.GONE);
+            delete.setVisibility(View.GONE);
+            search.setVisibility(View.VISIBLE);
         });
         pencil.setOnClickListener(view -> {
             if(isreadytoupdate){
@@ -188,6 +203,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         logout = findViewById(R.id.logout);
         name = findViewById(R.id.namechar);
         search = findViewById(R.id.search);
+        delete = findViewById(R.id.delfriend);
+        close = findViewById(R.id.closefrie);
+        solid = findViewById(R.id.solidfriend);
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
         currentuser = mfirebaseAuth.getCurrentUser();
@@ -201,7 +219,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         imageUriFriends = new ArrayList<>();
         itemFriends = new ArrayList<>();
         FriendUID = new ArrayList<>();
-        customFriendsAdapter = new CustomFriendsAdapter(ChartListActivity.this, itemFriends, this);
+        FriendsKey = new ArrayList<>();
+        customFriendsAdapter = new CustomFriendsAdapter(ChartListActivity.this, itemFriends, this, this);
         adapter = new CustomAdapter(getApplicationContext(), items, this);
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
@@ -269,9 +288,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(itemFriends.size()>0) itemFriends.clear();
+                    if(FriendsKey.size()>0) FriendsKey.clear();
                     final int[] numoffriends = {0};
                     for (DataSnapshot ds: snapshot.getChildren()) {
                         Friends friends = ds.getValue(Friends.class);
+                        FriendsKey.add(ds.getKey());
                         assert friends!=null;
                         Target target1 = new Target() {
                             @Override
@@ -438,5 +459,14 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         intent.putExtra("byteArray", bs.toByteArray());
         intent.putExtra("currentuser", currentuser.getUid());
         startActivity(intent);
+    }
+
+    @Override
+    public void onLongItemClick(ItemFriends item, int position) {
+        solid.setVisibility(View.VISIBLE);
+        close.setVisibility(View.VISIBLE);
+        delete.setVisibility(View.VISIBLE);
+        search.setVisibility(View.INVISIBLE);
+        FriendKey = FriendsKey.get(position);
     }
 }
