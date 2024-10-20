@@ -51,7 +51,7 @@ import java.util.Objects;
 public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend{
     private TextView email, numfriends, solid;
     private EditText name;
-    private ImageButton logout, close, delete;
+    private ImageButton logout, close, delete, settings, closesett;
     private FirebaseAuth mfirebaseAuth;
     private DatabaseReference mdatabase;
     private StorageReference mstorage;
@@ -67,7 +67,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private String checkS;
     private List<String> FriendsKey;
     private BottomNavigationView bview;
-    private ConstraintLayout chatlayout, profilelayout;
+    private ConstraintLayout chatlayout, profilelayout, settingslayout;
     private String userID;
     private DataSnapshot dataSnapshot;
     private DatabaseReference friendsdatasnapshot;
@@ -126,6 +126,17 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 profilelayout.setVisibility(View.VISIBLE);
             }
             return false;
+        });
+        settings.setOnClickListener(view -> {
+            settingslayout.setVisibility(View.VISIBLE);
+            chatlayout.setVisibility(View.GONE);
+            profilelayout.setVisibility(View.GONE);
+            bview.setClickable(false);
+        });
+        closesett.setOnClickListener(view -> {
+            settingslayout.setVisibility(View.GONE);
+            profilelayout.setVisibility(View.VISIBLE);
+            bview.setClickable(true);
         });
         close.setOnClickListener(view -> {
             solid.setVisibility(View.GONE);
@@ -205,7 +216,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         search = findViewById(R.id.search);
         delete = findViewById(R.id.delfriend);
         close = findViewById(R.id.closefrie);
+        closesett = findViewById(R.id.closesettings);
         solid = findViewById(R.id.solidfriend);
+        settings = findViewById(R.id.settings);
+        settingslayout = findViewById(R.id.settingslayout);
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
         currentuser = mfirebaseAuth.getCurrentUser();
@@ -317,7 +331,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
                     }
                    customFriendsAdapter.notifyDataSetChanged();
-                    numfriends.setText("Количество друзей: "+numoffriends[0]);
+                    numfriends.setText("Number of friends: "+numoffriends[0]);
                 }
 
                 @Override
