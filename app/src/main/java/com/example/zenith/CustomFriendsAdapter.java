@@ -34,6 +34,7 @@ public class CustomFriendsAdapter extends RecyclerView.Adapter<CustomFriendsView
     @Override
     public void onBindViewHolder(@NonNull CustomFriendsViewHolder holder, @SuppressLint("RecyclerView") int position) {
         try {
+            holder.name.setTextColor(items.get(position).getColortext());
             holder.name.setText(items.get(position).getName());
             holder.imageView.setImageDrawable(items.get(position).getImage());
             holder.relativeLayoutfriend.setOnLongClickListener(new View.OnLongClickListener() {

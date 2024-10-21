@@ -295,7 +295,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <ImageView
-            android:id="@+id/imageView16"
+            android:id="@+id/solidsett"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -330,7 +330,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="@+id/imageView16"
+            app:layout_constraintStart_toStartOf="@+id/solidsett"
             app:layout_constraintTop_toBottomOf="@+id/redtheme"
             app:srcCompat="@drawable/rectangleyellow"
             tools:ignore="SpeakableTextPresentCheck" />
@@ -344,7 +344,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="@+id/imageView16"
+            app:layout_constraintEnd_toEndOf="@+id/solidsett"
             app:layout_constraintHorizontal_bias="0.166"
             app:layout_constraintStart_toEndOf="@+id/purpletheme"
             app:layout_constraintTop_toBottomOf="@+id/greentheme"
@@ -409,7 +409,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="@+id/imageView16"
+            app:layout_constraintStart_toStartOf="@+id/solidsett"
             app:layout_constraintTop_toBottomOf="@+id/textView2"
             app:srcCompat="@drawable/rectanglered"
             tools:ignore="SpeakableTextPresentCheck" />
@@ -437,7 +437,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="@+id/imageView16"
+            app:layout_constraintEnd_toEndOf="@+id/solidsett"
             app:layout_constraintHorizontal_bias="0.083"
             app:layout_constraintStart_toEndOf="@+id/bluetheme"
             app:layout_constraintTop_toBottomOf="@+id/textView2"

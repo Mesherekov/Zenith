@@ -3,6 +3,7 @@ package com.example.zenith;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -10,17 +11,21 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,6 +56,8 @@ import java.util.Objects;
 public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend{
     private TextView email, numfriends, solid;
     private EditText name;
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private Switch sw_theme, sw_private;
     private ImageButton logout, close, delete, settings, closesett;
     private FirebaseAuth mfirebaseAuth;
     private DatabaseReference mdatabase;
@@ -73,7 +80,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private DatabaseReference friendsdatasnapshot;
     private boolean isreadytoupdate = false;
     private ImageButton pencil, changeavatar;
-    private ImageView useravatar;
+    private ImageView useravatar, solidsett;
     private Uri uploaduri, newuploaduri;
     ValueEventListener vListener, valueEventListener;
     private boolean finduser = false;
@@ -151,6 +158,15 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             delete.setVisibility(View.GONE);
             search.setVisibility(View.VISIBLE);
         });
+        sw_theme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (sw_theme.isChecked()) setDarkTheme();
+                else setLightTheme();
+
+            }
+        });
+
         pencil.setOnClickListener(view -> {
             if(isreadytoupdate){
                 updateData(name.getText().toString(), "name");
@@ -164,6 +180,44 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             }
         });
     }
+
+    private void setLightTheme() {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    }
+
+    private void setDarkTheme() {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int textcolor;
+        if(sw_theme.isChecked()){
+            textcolor = R.color.white;
+            logout.setColorFilter(ContextCompat.getColor(this, R.color.White));
+            closesett.setColorFilter(ContextCompat.getColor(this, R.color.White));
+            pencil.setColorFilter(ContextCompat.getColor(this, R.color.White));
+            changeavatar.setColorFilter(ContextCompat.getColor(this, R.color.White));
+            settings.setColorFilter(ContextCompat.getColor(this, R.color.White), android.graphics.PorterDuff.Mode.MULTIPLY);
+            solidsett.setImageResource(R.drawable.rectanglesolidblack);
+        }
+        else {
+            textcolor = R.color.black;
+            logout.setColorFilter(ContextCompat.getColor(this, R.color.Black));
+            closesett.setColorFilter(ContextCompat.getColor(this, R.color.Black));
+            pencil.setColorFilter(ContextCompat.getColor(this, R.color.Black));
+            changeavatar.setColorFilter(ContextCompat.getColor(this, R.color.Black));
+            settings.setColorFilter(ContextCompat.getColor(this, R.color.Black), android.graphics.PorterDuff.Mode.MULTIPLY);
+            solidsett.setImageResource(R.drawable.rectanglesolid);
+        }
+        email.setTextColor(ContextCompat.getColor(this, textcolor));
+        name.setTextColor(ContextCompat.getColor(this, textcolor));
+        sw_theme.setTextColor(ContextCompat.getColor(this, textcolor));
+        sw_private.setTextColor(ContextCompat.getColor(this, textcolor));
+        numfriends.setTextColor(ContextCompat.getColor(this, textcolor));
+    }
+
     private void uploadImage(){
         Bitmap bitmap =((BitmapDrawable) useravatar.getDrawable()).getBitmap();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -219,7 +273,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         closesett = findViewById(R.id.closesettings);
         solid = findViewById(R.id.solidfriend);
         settings = findViewById(R.id.settings);
+        sw_private = findViewById(R.id.switchprivate);
+        sw_theme = findViewById(R.id.switchtheme);
         settingslayout = findViewById(R.id.settingslayout);
+        solidsett = findViewById(R.id.solidsett);
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
         currentuser = mfirebaseAuth.getCurrentUser();
@@ -312,7 +369,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                             @Override
                             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                                itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID));
+                                if(sw_theme.isChecked()) {
+                                    itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID, Color.rgb(255,255,255)));
+                                }else itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID, Color.rgb(0,0,0)));
                                 FriendUID.add(friends.UID);
                                 numoffriends[0]++;
                             }
