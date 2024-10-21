@@ -1,7 +1,10 @@
 package com.example.zenith;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -89,7 +92,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private List<String> FriendUID;
     private String FriendKey;
     private ImageButton redtheme, bluetheme, blacktheme, yellowtheme, purpletheme, greentheme;
-
+    private int savecol = Color.rgb(72, 61, 139);
     @Override
     protected void onStart() {
         super.onStart();
@@ -135,7 +138,92 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             }
             return false;
         });
+        redtheme.setOnClickListener(view -> {
+            @SuppressLint("ResourceType") int colorFrom = savecol;
+            int colorTo = Color.rgb(255, 0, 0);
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+            colorAnimation.setDuration(400); // milliseconds
+            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                }
 
+            });
+            colorAnimation.start();
+        });
+        greentheme.setOnClickListener(view -> {
+            @SuppressLint("ResourceType") int colorFrom = savecol;
+            int colorTo = Color.rgb(0, 186, 127);
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+            colorAnimation.setDuration(400); // milliseconds
+            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                }
+
+            });
+            colorAnimation.start();
+        });
+        bluetheme.setOnClickListener(view -> {
+            @SuppressLint("ResourceType") int colorFrom = savecol;
+            int colorTo = Color.rgb(72, 61, 139);
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+            colorAnimation.setDuration(400); // milliseconds
+            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                }
+            });
+            colorAnimation.start();
+        });
+        blacktheme.setOnClickListener(view -> {
+            @SuppressLint("ResourceType") int colorFrom = savecol;
+            int colorTo = Color.rgb(0, 0, 0);
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+            colorAnimation.setDuration(400); // milliseconds
+            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                }
+            });
+            colorAnimation.start();
+        });
+        purpletheme.setOnClickListener(view -> {
+            @SuppressLint("ResourceType") int colorFrom = savecol;
+            int colorTo = Color.rgb(194, 51, 147);
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+            colorAnimation.setDuration(400); // milliseconds
+            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                }
+            });
+            colorAnimation.start();
+        });
+        yellowtheme.setOnClickListener(view -> {
+            @SuppressLint("ResourceType") int colorFrom = savecol;
+            int colorTo = Color.rgb(255, 235, 59);
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+            colorAnimation.setDuration(400); // milliseconds
+            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animator) {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                }
+            });
+            colorAnimation.start();
+        });
         settings.setOnClickListener(view -> {
             settingslayout.setVisibility(View.VISIBLE);
             chatlayout.setVisibility(View.GONE);
@@ -281,6 +369,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         settings = findViewById(R.id.settings);
         sw_private = findViewById(R.id.switchprivate);
         sw_theme = findViewById(R.id.switchtheme);
+        redtheme = findViewById(R.id.redtheme);
+        greentheme = findViewById(R.id.greentheme);
+        blacktheme = findViewById(R.id.blacktheme);
+        yellowtheme = findViewById(R.id.yellowtheme);
+        purpletheme = findViewById(R.id.purpletheme);
+        bluetheme = findViewById(R.id.bluetheme);
         settingslayout = findViewById(R.id.settingslayout);
         solidsett = findViewById(R.id.solidsett);
         search.clearFocus();
