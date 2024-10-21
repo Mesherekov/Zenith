@@ -3,6 +3,7 @@ package com.example.zenith;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -38,12 +39,14 @@ public class SignUpActivity extends AppCompatActivity {
     private ImageView im;
     private StorageReference mstorage;
     private Uri uploaduri;
+    private MediaPlayer mp3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         init();
         bsignup.setOnClickListener(view -> {
+            mp3.start();
             if(!TextUtils.isEmpty(edname.getText().toString()) && !TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
                 if (edpassword.getText().toString().length() >= 6) {
                     mfirebaseAuth.createUserWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(task -> {
@@ -65,6 +68,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         });
         next.setOnClickListener(view -> {
+            mp3.start();
             if (!TextUtils.isEmpty(edname.getText().toString()) && !TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
                 if (applynext) {
                     mfirebaseAuth.signInWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(SignUpActivity.this, task -> {
@@ -120,6 +124,7 @@ public class SignUpActivity extends AppCompatActivity {
         edpassword = findViewById(R.id.passup);
         bsignup = findViewById(R.id.createaccount);
         next = findViewById(R.id.next);
+        mp3 = MediaPlayer.create(this, R.raw.mouse);
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         mfirebaseAuth = FirebaseAuth.getInstance();
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
