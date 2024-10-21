@@ -441,6 +441,7 @@
             app:layout_constraintHorizontal_bias="0.083"
             app:layout_constraintStart_toEndOf="@+id/bluetheme"
             app:layout_constraintTop_toBottomOf="@+id/textView2"
+
             app:srcCompat="@drawable/rectanglegreen"
             tools:ignore="SpeakableTextPresentCheck" />
 

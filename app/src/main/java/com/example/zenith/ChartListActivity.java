@@ -88,6 +88,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private List<String> imageUriFriends;
     private List<String> FriendUID;
     private String FriendKey;
+    private ImageButton redtheme, bluetheme, blacktheme, yellowtheme, purpletheme, greentheme;
 
     @Override
     protected void onStart() {
@@ -134,6 +135,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             }
             return false;
         });
+
         settings.setOnClickListener(view -> {
             settingslayout.setVisibility(View.VISIBLE);
             chatlayout.setVisibility(View.GONE);
@@ -189,6 +191,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     protected void onResume() {
         super.onResume();
@@ -201,6 +204,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             changeavatar.setColorFilter(ContextCompat.getColor(this, R.color.White));
             settings.setColorFilter(ContextCompat.getColor(this, R.color.White), android.graphics.PorterDuff.Mode.MULTIPLY);
             solidsett.setImageResource(R.drawable.rectanglesolidblack);
+            settings.setColorFilter(Color.argb(255, 255, 255, 255));
         }
         else {
             textcolor = R.color.black;
@@ -209,6 +213,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             pencil.setColorFilter(ContextCompat.getColor(this, R.color.Black));
             changeavatar.setColorFilter(ContextCompat.getColor(this, R.color.Black));
             settings.setColorFilter(ContextCompat.getColor(this, R.color.Black), android.graphics.PorterDuff.Mode.MULTIPLY);
+            settings.setColorFilter(Color.argb(255, 0, 0, 0));
             solidsett.setImageResource(R.drawable.rectanglesolid);
         }
         email.setTextColor(ContextCompat.getColor(this, textcolor));
@@ -216,6 +221,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         sw_theme.setTextColor(ContextCompat.getColor(this, textcolor));
         sw_private.setTextColor(ContextCompat.getColor(this, textcolor));
         numfriends.setTextColor(ContextCompat.getColor(this, textcolor));
+        bview.setSelectedItemId(R.id.chat);
     }
 
     private void uploadImage(){
@@ -319,7 +325,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                                 @Override
                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                     Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                                    items.add(new Item(user.name, drawable, user.UID));
+                                    if(sw_theme.isChecked()) items.add(new Item(user.name, drawable, user.UID, Color.rgb(255,255,255)));
+                                    else items.add(new Item(user.name, drawable, user.UID, Color.rgb(0,0,0)));
                                 }
 
                                 @Override
