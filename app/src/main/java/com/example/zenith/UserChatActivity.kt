@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +30,7 @@ import com.google.firebase.database.ValueEventListener
 
 @Suppress("DEPRECATION")
 class UserChatActivity : AppCompatActivity(), SelectMassageListener {
+    private lateinit var sendmp3: MediaPlayer
     private lateinit var name: TextView
     private lateinit var solid: TextView
     private lateinit var userImage: ImageView
@@ -48,6 +50,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     var currentuser: FirebaseUser? = null
     private lateinit var itemMassagecopy: ItemMassage
     private var counter: Int = 0
+    private lateinit var mediaPlayer: MediaPlayer
     lateinit var vlistener: ValueEventListener
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +64,8 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         delete = findViewById(R.id.deletemass)
         copy = findViewById(R.id.copy)
         backImagee = findViewById(R.id.back)
+        sendmp3 = MediaPlayer.create(this, R.raw.modern)
+        mediaPlayer = MediaPlayer.create(this, R.raw.mouse)
         solid = findViewById(R.id.solid)
         recyclermassageView = findViewById(R.id.recyclermassage)
         recyclermassageView.layoutManager = LinearLayoutManager(this)
@@ -94,17 +99,20 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             close.visibility = View.GONE
             delete.visibility = View.GONE
             solid.visibility = View.GONE
+            mediaPlayer.start()
             itemMassagecopy.textistrigger = false
             val transparentColor = Color.argb(0, 255, 0, 0)
             itemMassagecopy.setResColor(transparentColor)
         }
         copy.setOnClickListener{
+            mediaPlayer.start()
             val clipboard: ClipboardManager =
                 getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("The text has been copied", itemMassagecopy.getTextMassage())
             clipboard.setPrimaryClip(clip)
         }
         delete.setOnClickListener {
+            mediaPlayer.start()
             if (itemMassagecopy.ownmassage) {
                 mdatabase?.child(itemMassagecopy.key)?.removeValue()
                 copy.visibility = View.GONE
@@ -116,6 +124,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             }
         }
         sendmassage.setOnClickListener{
+            sendmp3.start()
             if (ownmassage.text.toString() != "") {
                 val id = mdatabase?.key
                 massages = Massages(

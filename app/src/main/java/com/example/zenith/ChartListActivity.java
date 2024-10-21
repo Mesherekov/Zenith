@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -59,6 +60,7 @@ import java.util.Objects;
 public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend{
     private TextView email, numfriends, solid;
     private EditText name;
+    private MediaPlayer switchmp3, settmp3, chatprofmp3, thememp3, pencilmp3;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch sw_theme, sw_private;
     private ImageButton logout, close, delete, settings, closesett;
@@ -112,6 +114,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             try {
                 mdatabase.removeEventListener(vListener);
                 mdatabase.removeEventListener(valueEventListener);
+                settmp3.start();
                 mfirebaseAuth.signOut();
             } catch (Exception e){
                 Log.d("ERROR", e.getMessage());
@@ -120,12 +123,16 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
            Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
             startActivity(intent);
         });
-        changeavatar.setOnClickListener(view -> ImagePicker.with(this)
+        changeavatar.setOnClickListener(view -> {
+            ImagePicker.with(this)
                 .crop()	    			//Crop image(Optional), Check Customization for more option
                 .compress(1024)			//Final image size will be less than 1 MB(Optional)
                 .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
-                .start());
+                .start();
+            thememp3.start();
+        });
         bview.setOnItemSelectedListener(item -> {
+            chatprofmp3.start();
            if(item.getItemId()==R.id.chat){
              item.setChecked(true);
              chatlayout.setVisibility(View.VISIBLE);
@@ -139,6 +146,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             return false;
         });
         redtheme.setOnClickListener(view -> {
+            thememp3.start();
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(255, 0, 0);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -154,6 +162,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         greentheme.setOnClickListener(view -> {
+            thememp3.start();
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(0, 186, 127);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -169,6 +178,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         bluetheme.setOnClickListener(view -> {
+            thememp3.start();
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(72, 61, 139);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -183,6 +193,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         blacktheme.setOnClickListener(view -> {
+            thememp3.start();
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(0, 0, 0);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -197,6 +208,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         purpletheme.setOnClickListener(view -> {
+            thememp3.start();
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(194, 51, 147);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -211,6 +223,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         yellowtheme.setOnClickListener(view -> {
+            thememp3.start();
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(255, 235, 59);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -225,12 +238,14 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         settings.setOnClickListener(view -> {
+            settmp3.start();
             settingslayout.setVisibility(View.VISIBLE);
             chatlayout.setVisibility(View.GONE);
             profilelayout.setVisibility(View.GONE);
             bview.setClickable(false);
         });
         closesett.setOnClickListener(view -> {
+            settmp3.start();
             settingslayout.setVisibility(View.GONE);
             profilelayout.setVisibility(View.VISIBLE);
             bview.setClickable(true);
@@ -240,6 +255,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             close.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
             search.setVisibility(View.VISIBLE);
+            settmp3.start();
         });
         delete.setOnClickListener(view -> {
             friendsdatasnapshot.child(FriendKey).removeValue();
@@ -247,17 +263,18 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             close.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
             search.setVisibility(View.VISIBLE);
+            settmp3.start();
         });
-        sw_theme.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (sw_theme.isChecked()) setDarkTheme();
-                else setLightTheme();
+        sw_theme.setOnCheckedChangeListener((compoundButton, b) -> {
+            switchmp3.start();
+            if (sw_theme.isChecked()) setDarkTheme();
+            else setLightTheme();
 
-            }
         });
+        sw_private.setOnCheckedChangeListener((compoundButton, b) -> switchmp3.start());
 
         pencil.setOnClickListener(view -> {
+            pencilmp3.start();
             if(isreadytoupdate){
                 updateData(name.getText().toString(), "name");
                 name.setEnabled(false);
@@ -377,6 +394,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         bluetheme = findViewById(R.id.bluetheme);
         settingslayout = findViewById(R.id.settingslayout);
         solidsett = findViewById(R.id.solidsett);
+        switchmp3 = MediaPlayer.create(this, R.raw.switcher);
+        chatprofmp3 = MediaPlayer.create(this, R.raw.modern);
+        settmp3 = MediaPlayer.create(this, R.raw.mouse);
+        thememp3 = MediaPlayer.create(this, R.raw.selectcl);
+        pencilmp3 = MediaPlayer.create(this, R.raw.pencils);
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
         currentuser = mfirebaseAuth.getCurrentUser();
@@ -633,10 +655,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         intent.putExtra("byteArray", bs.toByteArray());
         intent.putExtra("currentuser", currentuser.getUid());
         startActivity(intent);
+        chatprofmp3.start();
     }
 
     @Override
     public void onLongItemClick(ItemFriends item, int position) {
+        chatprofmp3.start();
         solid.setVisibility(View.VISIBLE);
         close.setVisibility(View.VISIBLE);
         delete.setVisibility(View.VISIBLE);
