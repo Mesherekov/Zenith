@@ -34,6 +34,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -339,7 +340,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
     }
 
-    @SuppressLint("ResourceAsColor")
+    @SuppressLint({"ResourceAsColor", "ResourceType"})
     @Override
     protected void onResume() {
         super.onResume();
@@ -353,6 +354,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             settings.setColorFilter(ContextCompat.getColor(this, R.color.White), android.graphics.PorterDuff.Mode.MULTIPLY);
             solidsett.setImageResource(R.drawable.rectanglesolidblack);
             settings.setColorFilter(Color.argb(255, 255, 255, 255));
+            ViewCompat.setBackgroundTintList(search, ContextCompat.getColorStateList(this, R.color.Blue));
         }
         else {
             textcolor = R.color.black;

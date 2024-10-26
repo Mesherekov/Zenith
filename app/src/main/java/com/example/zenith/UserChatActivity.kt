@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.MediaPlayer
@@ -52,6 +53,8 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     private var counter: Int = 0
     private lateinit var mediaPlayer: MediaPlayer
     lateinit var vlistener: ValueEventListener
+    private lateinit var settingsDatabase: SettingsDatabase
+    private lateinit var sqldb: SQLiteDatabase
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +78,15 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         itemMassage = mutableListOf()
         customMassageAdapter = CustomMassageAdapter(applicationContext, itemMassage, this)
         recyclermassageView.adapter = customMassageAdapter
+        settingsDatabase = SettingsDatabase(this)
+        sqldb = settingsDatabase.writableDatabase
+        val cursor = sqldb.query(SettingsDatabase.TABLE_SETTINGS, null, null, null, null, null, null)
+        if (cursor.moveToFirst()){
+            val ColorOFTheme = cursor.getColumnIndex(SettingsDatabase.COLOROFTHEME)
+            window.statusBarColor = cursor.getInt(ColorOFTheme)
+            window.navigationBarColor = cursor.getInt(ColorOFTheme)
+        }
+        cursor.close()
         currentuser = mfireauth!!.currentUser!!
 
         var friendUID = "45"
