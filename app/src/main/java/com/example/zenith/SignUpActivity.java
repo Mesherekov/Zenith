@@ -12,11 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,7 +31,6 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText edemail, edname, edpassword;
     private Button bsignup, next;
     private DatabaseReference mdatabase;
-    private String USER_KEY = "User";
     private boolean applynext;
     private ImageView im;
     private StorageReference mstorage;
@@ -106,17 +102,7 @@ public class SignUpActivity extends AppCompatActivity {
         byte[] bytes = baos.toByteArray();
         final StorageReference mref = mstorage.child(System.currentTimeMillis()+ "user_image");
         UploadTask uptask = mref.putBytes(bytes);
-        Task<Uri> task = uptask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                return mref.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                uploaduri = task.getResult();
-            }
-        });
+        Task<Uri> task = uptask.continueWithTask(task12 -> mref.getDownloadUrl()).addOnCompleteListener(task1 -> uploaduri = task1.getResult());
     }
     private void init(){
         edemail = findViewById(R.id.emailup);
@@ -127,6 +113,7 @@ public class SignUpActivity extends AppCompatActivity {
         mp3 = MediaPlayer.create(this, R.raw.mouse);
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         mfirebaseAuth = FirebaseAuth.getInstance();
+        String USER_KEY = "User";
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
         applynext = false;
         im = findViewById(R.id.imageView2);

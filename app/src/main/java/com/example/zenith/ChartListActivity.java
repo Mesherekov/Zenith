@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -19,7 +18,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -39,8 +37,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,7 +57,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend{
     private TextView email, numfriends, solid;
@@ -162,17 +157,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             int colorTo = Color.rgb(255, 0, 0);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
             colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
-                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                    savecol = colorTo;
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
-                }
-
+            colorAnimation.addUpdateListener(animator -> {
+                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                savecol = colorTo;
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
             });
             colorAnimation.start();
         });
@@ -182,17 +173,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             int colorTo = Color.rgb(0, 186, 127);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
             colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
-                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                    savecol = colorTo;
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
-                }
-
+            colorAnimation.addUpdateListener(animator -> {
+                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                savecol = colorTo;
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
             });
             colorAnimation.start();
         });
@@ -202,16 +189,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             int colorTo = Color.rgb(72, 61, 139);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
             colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
-                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                    savecol = colorTo;
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
-                }
+            colorAnimation.addUpdateListener(animator -> {
+                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                savecol = colorTo;
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
             });
             colorAnimation.start();
         });
@@ -221,16 +205,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             int colorTo = Color.rgb(0, 0, 0);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
             colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
-                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                    savecol = colorTo;
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
-                }
+            colorAnimation.addUpdateListener(animator -> {
+                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                savecol = colorTo;
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
             });
             colorAnimation.start();
         });
@@ -240,16 +221,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             int colorTo = Color.rgb(194, 51, 147);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
             colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
-                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                    savecol = colorTo;
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
-                }
+            colorAnimation.addUpdateListener(animator -> {
+                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                savecol = colorTo;
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
             });
             colorAnimation.start();
         });
@@ -259,16 +237,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             int colorTo = Color.rgb(255, 235, 59);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
             colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
-                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                    savecol = colorTo;
-                    ContentValues contentValues = new ContentValues();
-                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
-                }
+            colorAnimation.addUpdateListener(animator -> {
+                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                savecol = colorTo;
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
             });
             colorAnimation.start();
         });
@@ -391,17 +366,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         byte[] bytes = baos.toByteArray();
         final StorageReference mref = mstorage.child(System.currentTimeMillis()+ "user_image");
         UploadTask uptask = mref.putBytes(bytes);
-        Task<Uri> task = uptask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-            @Override
-            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                return mref.getDownloadUrl();
-            }
-        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-            @Override
-            public void onComplete(@NonNull Task<Uri> task) {
-                newuploaduri = task.getResult();
-            }
-        });
+        Task<Uri> task = uptask.continueWithTask(task1 -> mref.getDownloadUrl()).addOnCompleteListener(task12 -> newuploaduri = task12.getResult());
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

@@ -82,9 +82,9 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         sqldb = settingsDatabase.writableDatabase
         val cursor = sqldb.query(SettingsDatabase.TABLE_SETTINGS, null, null, null, null, null, null)
         if (cursor.moveToFirst()){
-            val ColorOFTheme = cursor.getColumnIndex(SettingsDatabase.COLOROFTHEME)
-            window.statusBarColor = cursor.getInt(ColorOFTheme)
-            window.navigationBarColor = cursor.getInt(ColorOFTheme)
+            val coloroftheme = cursor.getColumnIndex(SettingsDatabase.COLOROFTHEME)
+            window.statusBarColor = cursor.getInt(coloroftheme)
+            window.navigationBarColor = cursor.getInt(coloroftheme)
         }
         cursor.close()
         currentuser = mfireauth!!.currentUser!!
@@ -163,6 +163,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
         mdatabase?.removeEventListener(vlistener)
