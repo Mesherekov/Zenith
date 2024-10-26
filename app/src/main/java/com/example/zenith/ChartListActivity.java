@@ -3,8 +3,12 @@ package com.example.zenith;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -56,6 +60,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend{
     private TextView email, numfriends, solid;
@@ -81,6 +86,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private BottomNavigationView bview;
     private ConstraintLayout chatlayout, profilelayout, settingslayout;
     private String userID;
+    private SettingsDatabase settingsDatabase;
+    private SQLiteDatabase sqLiteDatabase;
+    private SharedPreferences spref;
+    private boolean isfirst;
+    private final String SAVED_TEXT = "savedtext";
     private DataSnapshot dataSnapshot;
     private DatabaseReference friendsdatasnapshot;
     private boolean isreadytoupdate = false;
@@ -156,6 +166,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 public void onAnimationUpdate(ValueAnimator animator) {
                     getWindow().setStatusBarColor((int) animator.getAnimatedValue());
                     getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
                 }
 
             });
@@ -172,6 +186,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 public void onAnimationUpdate(ValueAnimator animator) {
                     getWindow().setStatusBarColor((int) animator.getAnimatedValue());
                     getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
                 }
 
             });
@@ -188,6 +206,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 public void onAnimationUpdate(ValueAnimator animator) {
                     getWindow().setStatusBarColor((int) animator.getAnimatedValue());
                     getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
                 }
             });
             colorAnimation.start();
@@ -203,6 +225,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 public void onAnimationUpdate(ValueAnimator animator) {
                     getWindow().setStatusBarColor((int) animator.getAnimatedValue());
                     getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
                 }
             });
             colorAnimation.start();
@@ -218,6 +244,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 public void onAnimationUpdate(ValueAnimator animator) {
                     getWindow().setStatusBarColor((int) animator.getAnimatedValue());
                     getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
                 }
             });
             colorAnimation.start();
@@ -233,6 +263,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 public void onAnimationUpdate(ValueAnimator animator) {
                     getWindow().setStatusBarColor((int) animator.getAnimatedValue());
                     getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
                 }
             });
             colorAnimation.start();
@@ -267,8 +301,17 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         });
         sw_theme.setOnCheckedChangeListener((compoundButton, b) -> {
             switchmp3.start();
-            if (sw_theme.isChecked()) setDarkTheme();
-            else setLightTheme();
+            ContentValues contentValues = new ContentValues();
+            if (sw_theme.isChecked()) {
+                contentValues.put(SettingsDatabase.THEME, "dark");
+                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                setDarkTheme();
+            }
+            else {
+                contentValues.put(SettingsDatabase.THEME, "light");
+                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                setLightTheme();
+            }
 
         });
         sw_private.setOnCheckedChangeListener((compoundButton, b) -> switchmp3.start());
@@ -424,7 +467,33 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         numfriends = findViewById(R.id.numfriends);
         namedraw = name.getBackground();
         name.setBackground(null);
-
+        settingsDatabase = new SettingsDatabase(this);
+        sqLiteDatabase = settingsDatabase.getWritableDatabase();
+        loadbool();
+        if(isfirst){
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(SettingsDatabase.LANGUAGE, "English");
+            contentValues.put(SettingsDatabase.THEME, "light");
+            contentValues.put(SettingsDatabase.COLOROFTHEME, Color.rgb(72, 61, 139));
+            sqLiteDatabase.insert(SettingsDatabase.TABLE_SETTINGS, null, contentValues);
+            isfirst = false;
+            savebool();
+        }else {
+            Cursor cursor = sqLiteDatabase.query(SettingsDatabase.TABLE_SETTINGS, null, null, null, null, null, null);
+            int theme = cursor.getColumnIndex(SettingsDatabase.THEME);
+            int coloroftheme = cursor.getColumnIndex(SettingsDatabase.COLOROFTHEME);
+            int language = cursor.getColumnIndex(SettingsDatabase.LANGUAGE);
+            if(cursor.moveToFirst()){
+                savecol = cursor.getInt(coloroftheme);
+                getWindow().setStatusBarColor(savecol);
+                getWindow().setNavigationBarColor(savecol);
+                if(cursor.getString(theme).equals("dark")){
+                    sw_theme.setChecked(true);
+                    setDarkTheme();
+                }
+                cursor.close();
+            }
+        }
         Runnable run = () -> {
             valueEventListener = new ValueEventListener() {
                 @SuppressLint("NotifyDataSetChanged")
@@ -556,6 +625,19 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             }
         });
     }
+
+    private void loadbool() {
+        spref = getPreferences(MODE_PRIVATE);
+        isfirst = spref.getBoolean(SAVED_TEXT, true);
+    }
+
+    private void savebool() {
+        spref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = spref.edit();
+        editor.putBoolean(SAVED_TEXT, isfirst);
+        editor.apply();
+    }
+
     private void filterList(String s) {
         List<Item> filterlist = new ArrayList<>();
         for(Item item : items){

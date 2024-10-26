@@ -118,6 +118,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                 copy.visibility = View.GONE
                 close.visibility = View.GONE
                 delete.visibility = View.GONE
+                solid.visibility = View.GONE
                 itemMassagecopy.textistrigger = false
             } else {
                 Toast.makeText(this, "You can`t delete friend`s massage", Toast.LENGTH_SHORT).show()
