@@ -8,7 +8,9 @@ import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.media.AudioManager
 import android.media.MediaPlayer
+import android.media.SoundPool
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zenith.R.id.addimage
@@ -34,7 +37,6 @@ import com.google.firebase.database.ValueEventListener
 
 @Suppress("DEPRECATION", "DEPRECATED_IDENTITY_EQUALS")
 class UserChatActivity : AppCompatActivity(), SelectMassageListener {
-    private lateinit var sendmp3: MediaPlayer
     private lateinit var name: TextView
     private lateinit var solid: TextView
     private lateinit var userImage: ImageView
@@ -45,6 +47,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     private lateinit var close: ImageButton
     private lateinit var delete: ImageButton
     private lateinit var copy: ImageButton
+    private var mSoundPool: SoundPool? = null
     private val MASSAGE_KEY = "Massage"
     private  var mfireauth : FirebaseAuth? = null
     private  var mdatabase : DatabaseReference? = null
@@ -55,7 +58,6 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     var currentuser: FirebaseUser? = null
     private lateinit var itemMassagecopy: ItemMassage
     private var counter: Int = 0
-    private lateinit var mediaPlayer: MediaPlayer
     lateinit var vlistener: ValueEventListener
     private lateinit var settingsDatabase: SettingsDatabase
     private lateinit var sqldb: SQLiteDatabase
@@ -73,8 +75,9 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         copy = findViewById(R.id.copy)
         backImage = findViewById(R.id.back)
         addImage = findViewById(addimage)
-        sendmp3 = MediaPlayer.create(this, R.raw.modern)
-        mediaPlayer = MediaPlayer.create(this, R.raw.mouse)
+        mSoundPool = SoundPool(4, AudioManager.STREAM_MUSIC, 100)
+        mSoundPool!!.load(this, R.raw.mouse, 1)
+        mSoundPool!!.load(this, R.raw.modern, 2)
         solid = findViewById(R.id.solid)
         yourimage = findViewById(R.id.yourimage)
         recyclermassageView = findViewById(R.id.recyclermassage)
@@ -96,11 +99,16 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         cursor.close()
         currentuser = mfireauth!!.currentUser!!
         addImage.setOnClickListener {
-            sendmp3.start()
-            ImagePicker.with(this)
-                .crop()
-                .compress(1024)
-                .maxResultSize(1920, 1080).start()
+            playSoundBool(2)
+            if (!yourimage.isVisible) {
+                ImagePicker.with(this)
+                    .crop()
+                    .compress(1024)
+                    .maxResultSize(1920, 1080).start()
+            } else{
+                yourimage.visibility = View.GONE
+                addImage.setImageResource(R.drawable.addimage)
+            }
         }
         var friendUID = "45"
         if (intent != null){
@@ -125,20 +133,20 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             close.visibility = View.GONE
             delete.visibility = View.GONE
             solid.visibility = View.GONE
-            mediaPlayer.start()
+            playSoundBool(1)
             itemMassagecopy.textistrigger = false
             val transparentColor = Color.argb(0, 255, 0, 0)
             itemMassagecopy.setResColor(transparentColor)
         }
         copy.setOnClickListener{
-            mediaPlayer.start()
+            playSoundBool(1)
             val clipboard: ClipboardManager =
                 getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("The text has been copied", itemMassagecopy.getTextMassage())
             clipboard.setPrimaryClip(clip)
         }
         delete.setOnClickListener {
-            mediaPlayer.start()
+            playSoundBool(1)
             if (itemMassagecopy.ownmassage) {
                 mdatabase?.child(itemMassagecopy.key)?.removeValue()
                 copy.visibility = View.GONE
@@ -151,7 +159,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             }
         }
         sendmassage.setOnClickListener{
-            sendmp3.start()
+            playSoundBool(2)
             if (ownmassage.text.isNotEmpty()) {
                 if (ownmassage.text.toString() != "") {
                     val id = mdatabase?.key
@@ -183,8 +191,16 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         super.onActivityResult(requestCode, resultCode, data)
         assert(data != null)
         val uri = data?.data
-        yourimage.setImageURI(uri)
-        yourimage.visibility = View.VISIBLE
+        try {
+            if (uri!=null) {
+                yourimage.setImageURI(uri)
+                yourimage.visibility = View.VISIBLE
+                addImage.setImageResource(R.drawable.close)
+            }
+        }catch (ex: Exception){
+            yourimage.visibility = View.GONE
+            addImage.setImageResource(R.drawable.addimage)
+        }
     }
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
@@ -256,6 +272,24 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         close.visibility = View.VISIBLE
         delete.visibility = View.VISIBLE
         solid.visibility = View.VISIBLE
+    }
+    private fun playSoundBool(mSoundId: Int) {
+        val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+        val curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC).toFloat()
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC).toFloat()
+        val leftVolume = curVolume / maxVolume
+        val rightVolume = curVolume / maxVolume
+        val priority = 1
+        val no_loop = 0
+        val normal_playback_rate = 1f
+        val mStreamId = mSoundPool!!.play(
+            mSoundId,
+            leftVolume,
+            rightVolume,
+            priority,
+            no_loop,
+            normal_playback_rate
+        )
     }
 
 }

@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -12,7 +13,9 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -61,11 +64,11 @@ import java.util.Objects;
 public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend{
     private TextView email, numfriends, solid;
     private EditText name;
-    private MediaPlayer switchmp3, settmp3, chatprofmp3, thememp3, pencilmp3;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch sw_theme, sw_private;
     private ImageButton logout, close, delete, settings, closesett;
     private FirebaseAuth mfirebaseAuth;
+    private SoundPool mSoundPool;
     private DatabaseReference mdatabase;
     private StorageReference mstorage;
     private final String USER_KEY = "User";
@@ -120,7 +123,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             try {
                 mdatabase.removeEventListener(vListener);
                 mdatabase.removeEventListener(valueEventListener);
-                settmp3.start();
+                playSoundBool(3);
                 mfirebaseAuth.signOut();
             } catch (Exception e){
                 Log.d("ERROR", e.getMessage());
@@ -135,10 +138,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 .compress(1024)			//Final image size will be less than 1 MB(Optional)
                 .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
                 .start();
-            thememp3.start();
+            playSoundBool(4);
         });
         bview.setOnItemSelectedListener(item -> {
-            chatprofmp3.start();
+            playSoundBool(2);
            if(item.getItemId()==R.id.chat){
              item.setChecked(true);
              chatlayout.setVisibility(View.VISIBLE);
@@ -152,7 +155,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             return false;
         });
         redtheme.setOnClickListener(view -> {
-            thememp3.start();
+            playSoundBool(4);
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(255, 0, 0);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -168,7 +171,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         greentheme.setOnClickListener(view -> {
-            thememp3.start();
+            playSoundBool(4);
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(0, 186, 127);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -184,7 +187,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         bluetheme.setOnClickListener(view -> {
-            thememp3.start();
+            playSoundBool(4);
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(72, 61, 139);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -200,7 +203,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         blacktheme.setOnClickListener(view -> {
-            thememp3.start();
+            playSoundBool(4);
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(0, 0, 0);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -216,7 +219,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         purpletheme.setOnClickListener(view -> {
-            thememp3.start();
+            playSoundBool(4);
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(194, 51, 147);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -232,7 +235,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         yellowtheme.setOnClickListener(view -> {
-            thememp3.start();
+            playSoundBool(4);
             @SuppressLint("ResourceType") int colorFrom = savecol;
             int colorTo = Color.rgb(255, 235, 59);
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
@@ -248,14 +251,14 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         settings.setOnClickListener(view -> {
-            settmp3.start();
+            playSoundBool(3);
             settingslayout.setVisibility(View.VISIBLE);
             chatlayout.setVisibility(View.GONE);
             profilelayout.setVisibility(View.GONE);
             bview.setClickable(false);
         });
         closesett.setOnClickListener(view -> {
-            settmp3.start();
+            playSoundBool(3);
             settingslayout.setVisibility(View.GONE);
             profilelayout.setVisibility(View.VISIBLE);
             bview.setClickable(true);
@@ -265,7 +268,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             close.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
             search.setVisibility(View.VISIBLE);
-            settmp3.start();
+            playSoundBool(3);
         });
         delete.setOnClickListener(view -> {
             friendsdatasnapshot.child(FriendKey).removeValue();
@@ -273,10 +276,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             close.setVisibility(View.GONE);
             delete.setVisibility(View.GONE);
             search.setVisibility(View.VISIBLE);
-            settmp3.start();
+            playSoundBool(3);
         });
         sw_theme.setOnCheckedChangeListener((compoundButton, b) -> {
-            switchmp3.start();
+            playSoundBool(1);
             ContentValues contentValues = new ContentValues();
             if (sw_theme.isChecked()) {
                 contentValues.put(SettingsDatabase.THEME, "dark");
@@ -290,10 +293,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             }
 
         });
-        sw_private.setOnCheckedChangeListener((compoundButton, b) -> switchmp3.start());
+        sw_private.setOnCheckedChangeListener((compoundButton, b) -> playSoundBool(1));
 
         pencil.setOnClickListener(view -> {
-            pencilmp3.start();
+            playSoundBool(5);
             if(isreadytoupdate){
                 updateData(name.getText().toString(), "name");
                 name.setEnabled(false);
@@ -404,11 +407,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         bluetheme = findViewById(R.id.bluetheme);
         settingslayout = findViewById(R.id.settingslayout);
         solidsett = findViewById(R.id.solidsett);
-        switchmp3 = MediaPlayer.create(this, R.raw.switcher);
-        chatprofmp3 = MediaPlayer.create(this, R.raw.modern);
-        settmp3 = MediaPlayer.create(this, R.raw.mouse);
-        thememp3 = MediaPlayer.create(this, R.raw.selectcl);
-        pencilmp3 = MediaPlayer.create(this, R.raw.pencils);
+        mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
+        mSoundPool.load(this, R.raw.switcher, 1);
+        mSoundPool.load(this, R.raw.modern, 2);
+        mSoundPool.load(this, R.raw.mouse, 3);
+        mSoundPool.load(this, R.raw.selectcl, 4);
+        mSoundPool.load(this, R.raw.pencils, 5);
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
         currentuser = mfirebaseAuth.getCurrentUser();
@@ -704,12 +708,23 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         intent.putExtra("byteArray", bs.toByteArray());
         intent.putExtra("currentuser", currentuser.getUid());
         startActivity(intent);
-        chatprofmp3.start();
+        playSoundBool(2);
+    }
+    private void playSoundBool(int mSoundId){
+        AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        float leftVolume = curVolume / maxVolume;
+        float rightVolume = curVolume / maxVolume;
+        int priority = 1;
+        int no_loop = 0;
+        float normal_playback_rate = 1f;
+        int mStreamId = mSoundPool.play(mSoundId, leftVolume, rightVolume, priority, no_loop, normal_playback_rate);
     }
 
     @Override
     public void onLongItemClick(ItemFriends item, int position) {
-        chatprofmp3.start();
+        playSoundBool(2);
         solid.setVisibility(View.VISIBLE);
         close.setVisibility(View.VISIBLE);
         delete.setVisibility(View.VISIBLE);

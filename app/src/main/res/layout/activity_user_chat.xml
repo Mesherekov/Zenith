@@ -171,6 +171,7 @@
         app:layout_constraintEnd_toStartOf="@+id/sendmassage"
         app:layout_constraintTop_toTopOf="@+id/ownmassage"
         app:srcCompat="@drawable/addimage"
+        app:tint="#235EA5"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     <ImageView
