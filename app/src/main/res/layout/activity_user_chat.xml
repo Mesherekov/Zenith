@@ -82,7 +82,7 @@
         android:inputType="textMultiLine"
         android:minHeight="32dp"
         android:overScrollMode="always"
-        android:paddingRight="60dp"
+        android:paddingRight="78dp"
         android:paddingLeft="10dp"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbarStyle="insideInset"
@@ -108,7 +108,7 @@
         app:layout_constraintEnd_toEndOf="@+id/ownmassage"
         app:layout_constraintTop_toTopOf="@+id/ownmassage"
         app:srcCompat="@android:drawable/ic_menu_send"
-        app:tint="@color/LightSeaGreen"
+        app:tint="#235EA5"
         tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
     <ImageButton
@@ -158,5 +158,31 @@
         app:srcCompat="@drawable/copy"
         app:tint="@color/white"
         tools:ignore="MissingConstraints,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageButton
+        android:id="@+id/addimage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="12dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toStartOf="@+id/sendmassage"
+        app:layout_constraintTop_toTopOf="@+id/ownmassage"
+        app:srcCompat="@drawable/addimage"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <ImageView
+        android:id="@+id/yourimage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/ownmassage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="?attr/panelBackground" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

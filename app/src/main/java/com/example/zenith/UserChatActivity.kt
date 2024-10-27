@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.BitmapFactory
 import android.graphics.Color
@@ -19,7 +20,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.zenith.R.id.addimage
 import com.example.zenith.R.id.friendname
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -29,13 +32,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
 
-@Suppress("DEPRECATION")
+@Suppress("DEPRECATION", "DEPRECATED_IDENTITY_EQUALS")
 class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     private lateinit var sendmp3: MediaPlayer
     private lateinit var name: TextView
     private lateinit var solid: TextView
     private lateinit var userImage: ImageView
-    private lateinit var backImagee: ImageButton
+    private lateinit var backImage: ImageButton
+    private lateinit var addImage: ImageButton
     private lateinit var sendmassage : ImageButton
     private lateinit var ownmassage : EditText
     private lateinit var close: ImageButton
@@ -55,7 +59,8 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     lateinit var vlistener: ValueEventListener
     private lateinit var settingsDatabase: SettingsDatabase
     private lateinit var sqldb: SQLiteDatabase
-    @SuppressLint("MissingInflatedId")
+    private lateinit var yourimage: ImageView
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_chat)
@@ -66,10 +71,12 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         close = findViewById(R.id.closema)
         delete = findViewById(R.id.deletemass)
         copy = findViewById(R.id.copy)
-        backImagee = findViewById(R.id.back)
+        backImage = findViewById(R.id.back)
+        addImage = findViewById(addimage)
         sendmp3 = MediaPlayer.create(this, R.raw.modern)
         mediaPlayer = MediaPlayer.create(this, R.raw.mouse)
         solid = findViewById(R.id.solid)
+        yourimage = findViewById(R.id.yourimage)
         recyclermassageView = findViewById(R.id.recyclermassage)
         recyclermassageView.layoutManager = LinearLayoutManager(this)
         val itemViewType = 0
@@ -88,7 +95,13 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         }
         cursor.close()
         currentuser = mfireauth!!.currentUser!!
-
+        addImage.setOnClickListener {
+            sendmp3.start()
+            ImagePicker.with(this)
+                .crop()
+                .compress(1024)
+                .maxResultSize(1920, 1080).start()
+        }
         var friendUID = "45"
         if (intent != null){
             val bitmap = intent.getByteArrayExtra("byteArray")
@@ -105,6 +118,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                 userImage.layoutParams.width = 75*3
             }
         }
+
 
         close.setOnClickListener{
             copy.visibility = View.GONE
@@ -138,22 +152,24 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         }
         sendmassage.setOnClickListener{
             sendmp3.start()
-            if (ownmassage.text.toString() != "") {
-                val id = mdatabase?.key
-                massages = Massages(
-                    id,
-                    ownmassage.text.toString(),
-                    currentuser!!.uid,
-                    currentuser!!.uid,
-                    friendUID
-                )
-                mdatabase?.push()?.setValue(massages)
-                ownmassage.setText("")
-                recyclermassageView.smoothScrollToPosition(counter++)
+            if (ownmassage.text.isNotEmpty()) {
+                if (ownmassage.text.toString() != "") {
+                    val id = mdatabase?.key
+                    massages = Massages(
+                        id,
+                        ownmassage.text.toString(),
+                        currentuser!!.uid,
+                        currentuser!!.uid,
+                        friendUID
+                    )
+                    mdatabase?.push()?.setValue(massages)
+                    ownmassage.setText("")
+                    recyclermassageView.smoothScrollToPosition(counter++)
+                }
             }
         }
 
-        backImagee.setOnClickListener {
+        backImage.setOnClickListener {
             mdatabase?.removeEventListener(vlistener)
             mdatabase = null
             mfireauth = null
@@ -163,6 +179,13 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        assert(data != null)
+        val uri = data?.data
+        yourimage.setImageURI(uri)
+        yourimage.visibility = View.VISIBLE
+    }
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         super.onBackPressed()
