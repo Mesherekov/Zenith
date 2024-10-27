@@ -6,11 +6,13 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
 import android.media.AudioManager
-import android.media.MediaPlayer
 import android.media.SoundPool
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.zenith.R.id.addimage
 import com.example.zenith.R.id.friendname
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -33,9 +36,13 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
+import java.io.ByteArrayOutputStream
 
 
-@Suppress("DEPRECATION", "DEPRECATED_IDENTITY_EQUALS")
+@Suppress("DEPRECATION")
 class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     private lateinit var name: TextView
     private lateinit var solid: TextView
@@ -58,10 +65,12 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     var currentuser: FirebaseUser? = null
     private lateinit var itemMassagecopy: ItemMassage
     private var counter: Int = 0
-    lateinit var vlistener: ValueEventListener
+    private lateinit var vlistener: ValueEventListener
     private lateinit var settingsDatabase: SettingsDatabase
     private lateinit var sqldb: SQLiteDatabase
     private lateinit var yourimage: ImageView
+    private lateinit var uploaduri: Uri
+    private lateinit var mstorage: StorageReference
     @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +84,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         copy = findViewById(R.id.copy)
         backImage = findViewById(R.id.back)
         addImage = findViewById(addimage)
+        mstorage = FirebaseStorage.getInstance().getReference("ImageDB")
         mSoundPool = SoundPool(4, AudioManager.STREAM_MUSIC, 100)
         mSoundPool!!.load(this, R.raw.mouse, 1)
         mSoundPool!!.load(this, R.raw.modern, 2)
@@ -161,6 +171,9 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         sendmassage.setOnClickListener{
             playSoundBool(2)
             if (ownmassage.text.isNotEmpty()) {
+                if (yourimage.visibility == View.VISIBLE){
+                    uploadImage()
+                }
                 if (ownmassage.text.toString() != "") {
                     val id = mdatabase?.key
                     massages = Massages(
@@ -187,6 +200,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         assert(data != null)
@@ -212,7 +226,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         finish()
     }
 
-    fun getData() {
+    private fun getData() {
         vlistener = object : ValueEventListener{
             @SuppressLint("NotifyDataSetChanged", "SuspiciousIndentation")
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -280,16 +294,29 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         val leftVolume = curVolume / maxVolume
         val rightVolume = curVolume / maxVolume
         val priority = 1
-        val no_loop = 0
-        val normal_playback_rate = 1f
+        val noLoop = 0
+        val normalPlaybackRate = 1f
         val mStreamId = mSoundPool!!.play(
             mSoundId,
             leftVolume,
             rightVolume,
             priority,
-            no_loop,
-            normal_playback_rate
+            noLoop,
+            normalPlaybackRate
         )
+    }
+    private fun uploadImage() {
+        val bitmap = (yourimage.drawable as BitmapDrawable).bitmap
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val bytes = baos.toByteArray()
+        val mref = mstorage.child(System.currentTimeMillis().toString() + "send_image")
+        val uptask = mref.putBytes(bytes)
+        val task =
+            uptask.continueWithTask { task1: Task<UploadTask.TaskSnapshot?>? -> mref.downloadUrl }
+                .addOnCompleteListener { task12: Task<Uri> ->
+                    uploaduri = task12.result
+                }
     }
 
 }
