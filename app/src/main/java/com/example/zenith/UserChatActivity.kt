@@ -171,21 +171,38 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         sendmassage.setOnClickListener{
             playSoundBool(2)
             if (ownmassage.text.isNotEmpty()) {
-                if (yourimage.visibility == View.VISIBLE){
+                if (yourimage.visibility == View.VISIBLE) {
                     uploadImage()
+                    if (ownmassage.text.toString() != "") {
+                        val id = mdatabase?.key
+                        massages = Massages(
+                            id,
+                            ownmassage.text.toString(),
+                            currentuser!!.uid,
+                            currentuser!!.uid,
+                            friendUID,
+                            uploaduri.toString()
+                        )
+                        mdatabase?.push()?.setValue(massages)
+                        ownmassage.setText("")
+                        recyclermassageView.smoothScrollToPosition(counter++)
+                    }
                 }
-                if (ownmassage.text.toString() != "") {
-                    val id = mdatabase?.key
-                    massages = Massages(
-                        id,
-                        ownmassage.text.toString(),
-                        currentuser!!.uid,
-                        currentuser!!.uid,
-                        friendUID
-                    )
-                    mdatabase?.push()?.setValue(massages)
-                    ownmassage.setText("")
-                    recyclermassageView.smoothScrollToPosition(counter++)
+                else {
+                    if (ownmassage.text.toString() != "") {
+                        val id = mdatabase?.key
+                        massages = Massages(
+                            id,
+                            ownmassage.text.toString(),
+                            currentuser!!.uid,
+                            currentuser!!.uid,
+                            friendUID,
+                            "null"
+                        )
+                        mdatabase?.push()?.setValue(massages)
+                        ownmassage.setText("")
+                        recyclermassageView.smoothScrollToPosition(counter++)
+                    }
                 }
             }
         }

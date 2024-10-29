@@ -1,7 +1,10 @@
 package com.example.zenith;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -17,14 +20,22 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mfirebaseAuth;
     private EditText edemail, edpassword;
     private Button bsignin;
-    private MediaPlayer mp3;
+    private SoundPool mSoundPool;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         init();
         bsignin.setOnClickListener(view -> {
-            mp3.start();
+            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            float leftVolume = curVolume / maxVolume;
+            float rightVolume = curVolume / maxVolume;
+            int priority = 1;
+            int no_loop = 0;
+            float normal_playback_rate = 1f;
+            int mStreamId = mSoundPool.play(1, leftVolume, rightVolume, priority, no_loop, normal_playback_rate);
             if(!TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
                 mfirebaseAuth.signInWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(SignInActivity.this, task -> {
                     if(task.isSuccessful()){
@@ -47,7 +58,8 @@ public class SignInActivity extends AppCompatActivity {
         edemail = findViewById(R.id.emailin);
         edpassword = findViewById(R.id.passin);
         bsignin = findViewById(R.id.enterac);
-        mp3 = MediaPlayer.create(this, R.raw.mouse);
+        mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
+        mSoundPool.load(this, R.raw.mouse, 1);
         mfirebaseAuth = FirebaseAuth.getInstance();
     }
 }

@@ -1,9 +1,12 @@
 package com.example.zenith;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -35,14 +38,22 @@ public class SignUpActivity extends AppCompatActivity {
     private ImageView im;
     private StorageReference mstorage;
     private Uri uploaduri;
-    private MediaPlayer mp3;
+    private SoundPool mSoundPool;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         init();
         bsignup.setOnClickListener(view -> {
-            mp3.start();
+            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            float leftVolume = curVolume / maxVolume;
+            float rightVolume = curVolume / maxVolume;
+            int priority = 1;
+            int no_loop = 0;
+            float normal_playback_rate = 1f;
+            int mStreamId = mSoundPool.play(1, leftVolume, rightVolume, priority, no_loop, normal_playback_rate);
             if(!TextUtils.isEmpty(edname.getText().toString()) && !TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
                 if (edpassword.getText().toString().length() >= 6) {
                     mfirebaseAuth.createUserWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(task -> {
@@ -64,7 +75,15 @@ public class SignUpActivity extends AppCompatActivity {
 
         });
         next.setOnClickListener(view -> {
-            mp3.start();
+            AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            float leftVolume = curVolume / maxVolume;
+            float rightVolume = curVolume / maxVolume;
+            int priority = 1;
+            int no_loop = 0;
+            float normal_playback_rate = 1f;
+            int mStreamId = mSoundPool.play(1, leftVolume, rightVolume, priority, no_loop, normal_playback_rate);
             if (!TextUtils.isEmpty(edname.getText().toString()) && !TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
                 if (applynext) {
                     mfirebaseAuth.signInWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(SignUpActivity.this, task -> {
@@ -110,13 +129,14 @@ public class SignUpActivity extends AppCompatActivity {
         edpassword = findViewById(R.id.passup);
         bsignup = findViewById(R.id.createaccount);
         next = findViewById(R.id.next);
-        mp3 = MediaPlayer.create(this, R.raw.mouse);
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         mfirebaseAuth = FirebaseAuth.getInstance();
         String USER_KEY = "User";
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
         applynext = false;
         im = findViewById(R.id.imageView2);
+        mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
+        mSoundPool.load(this, R.raw.mouse, 1);
     }
     private void SendEmailMassageVerification(){
         FirebaseUser user = mfirebaseAuth.getCurrentUser();
