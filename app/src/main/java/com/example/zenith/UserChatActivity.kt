@@ -70,6 +70,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     private lateinit var sqldb: SQLiteDatabase
     private lateinit var yourimage: ImageView
     private lateinit var uploaduri: Uri
+    private lateinit var massageUri: Uri
     private lateinit var mstorage: StorageReference
     @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -170,7 +171,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         }
         sendmassage.setOnClickListener{
             playSoundBool(2)
-            if (ownmassage.text.isNotEmpty()) {
+            if (ownmassage.text.isNotEmpty() || yourimage.visibility == View.VISIBLE) {
                 if (yourimage.visibility == View.VISIBLE) {
                     uploadImage()
                     if (ownmassage.text.toString() != "") {
@@ -181,11 +182,13 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                             currentuser!!.uid,
                             currentuser!!.uid,
                             friendUID,
-                            uploaduri.toString()
+                            massageUri.toString()
                         )
                         mdatabase?.push()?.setValue(massages)
                         ownmassage.setText("")
                         recyclermassageView.smoothScrollToPosition(counter++)
+                        yourimage.visibility = View.GONE
+                        addImage.setImageResource(R.drawable.addimage)
                     }
                 }
                 else {
@@ -226,6 +229,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             if (uri!=null) {
                 yourimage.setImageURI(uri)
                 yourimage.visibility = View.VISIBLE
+                massageUri = uri
                 addImage.setImageResource(R.drawable.close)
             }
         }catch (ex: Exception){

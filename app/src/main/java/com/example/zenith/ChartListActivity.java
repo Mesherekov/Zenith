@@ -464,6 +464,57 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 cursor.close();
             }
         }
+        Runnable runfriends = () -> {
+            ValueEventListener eventListener = new ValueEventListener() {
+                @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables", "SetTextI18n"})
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(itemFriends.size()>0) itemFriends.clear();
+                    if(FriendsKey.size()>0) FriendsKey.clear();
+                    final int[] numoffriends = {0};
+                    for (DataSnapshot ds: snapshot.getChildren()) {
+                        Friends friends = ds.getValue(Friends.class);
+                        FriendsKey.add(ds.getKey());
+                        assert friends!=null;
+                        Target target1 = new Target() {
+                            @Override
+                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                                if(sw_theme.isChecked()) {
+                                    itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID, Color.rgb(255,255,255)));
+                                }else itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID, Color.rgb(0,0,0)));
+                                FriendUID.add(friends.UID);
+                                numoffriends[0]++;
+                            }
+
+                            @Override
+                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                            }
+
+                            @Override
+                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                            }
+                        };
+                        Picasso.get().load(friends.PNG).resize(400, 400).centerCrop().placeholder(R.drawable.profileicon).into(target1);
+
+                    }
+                    customFriendsAdapter.notifyDataSetChanged();
+                    numfriends.setText("Number of friends: "+numoffriends[0]);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+            try {
+                friendsdatasnapshot.addValueEventListener(eventListener);
+            }catch (Exception ex){
+                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
         Runnable run = () -> {
             valueEventListener = new ValueEventListener() {
                 @SuppressLint("NotifyDataSetChanged")
@@ -516,58 +567,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 }
             };
             mdatabase.addValueEventListener(valueEventListener);
-            ValueEventListener eventListener = new ValueEventListener() {
-                @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables", "SetTextI18n"})
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(itemFriends.size()>0) itemFriends.clear();
-                    if(FriendsKey.size()>0) FriendsKey.clear();
-                    final int[] numoffriends = {0};
-                    for (DataSnapshot ds: snapshot.getChildren()) {
-                        Friends friends = ds.getValue(Friends.class);
-                        FriendsKey.add(ds.getKey());
-                        assert friends!=null;
-                        Target target1 = new Target() {
-                            @Override
-                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                                if(sw_theme.isChecked()) {
-                                    itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID, Color.rgb(255,255,255)));
-                                }else itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID, Color.rgb(0,0,0)));
-                                FriendUID.add(friends.UID);
-                                numoffriends[0]++;
-                            }
 
-                            @Override
-                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-                            }
-
-                            @Override
-                            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                            }
-                        };
-                        Picasso.get().load(friends.PNG).resize(400, 400).centerCrop().placeholder(R.drawable.profileicon).into(target1);
-
-                    }
-                   customFriendsAdapter.notifyDataSetChanged();
-                    numfriends.setText("Number of friends: "+numoffriends[0]);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            };
-            try {
-                friendsdatasnapshot.addValueEventListener(eventListener);
-            }catch (Exception ex){
-                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            }
         };
         run.run();
-
+        runfriends.run();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
