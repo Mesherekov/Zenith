@@ -304,11 +304,8 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
 
                             override fun onPrepareLoad(placeHolderDrawable: Drawable) {}
                         }
-
-                        Picasso.get().load(mass?.uri).placeholder(R.drawable.profileicon).into(target)
+                        Picasso.get().load(mass?.uri).resize(400, 400).placeholder(R.drawable.profileicon).into(target)
                         //Glide.with(applicationContext).load(mass?.uri).placeholder(R.drawable.profileicon).into(requere)
-
-
                     }else{
                         if (currentuser?.uid.equals(mass.ownUID)) {
                             val transparentColor = Color.argb(0, 255, 0, 0)
@@ -389,8 +386,9 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     }
     private fun uploadImage() {
         val bitmap = (yourimage.drawable as BitmapDrawable).bitmap
+        val compressBitmap = Bitmap.createScaledBitmap(bitmap, 300, 300, true)
         val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        compressBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val bytes = baos.toByteArray()
         val mref = mstorage.child(System.currentTimeMillis().toString() + "send_image")
         val uptask = mref.putBytes(bytes)
