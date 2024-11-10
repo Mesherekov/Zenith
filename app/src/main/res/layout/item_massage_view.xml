@@ -9,16 +9,27 @@
 
     <TextView
         android:id="@+id/massageu"
-        android:layout_width="wrap_content"
+        android:layout_width="118dp"
+        android:layout_below="@id/sendimage"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:paddingLeft="20dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:paddingRight="20dp"
-        android:maxWidth="200dp"
         android:background="@drawable/shape"
         android:backgroundTint="@color/white"
+        android:maxWidth="200dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="TextView"
         android:textColor="@color/black"
-        android:text="TextView" />
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/sendimage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/genava" />
+
 </RelativeLayout>

@@ -3,6 +3,7 @@ package com.example.zenith;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
@@ -57,7 +58,12 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.ALIGN_PARENT_END);
             params.setMargins(20, 0, 20, 0);
+            holder.sendimage.setLayoutParams(params);
             holder.textmass.setLayoutParams(params);
+        }
+        if(items.get(position).getSendYourImage()!=null){
+            holder.sendimage.setImageDrawable(items.get(position).getSendYourImage());
+            holder.sendimage.setVisibility(View.VISIBLE);
         }
     }
 

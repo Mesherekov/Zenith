@@ -3,7 +3,6 @@ package com.example.zenith;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -35,7 +34,7 @@ public class SignInActivity extends AppCompatActivity {
             int priority = 1;
             int no_loop = 0;
             float normal_playback_rate = 1f;
-            int mStreamId = mSoundPool.play(1, leftVolume, rightVolume, priority, no_loop, normal_playback_rate);
+            mSoundPool.play(1, leftVolume, rightVolume, priority, no_loop, normal_playback_rate);
             if(!TextUtils.isEmpty(edemail.getText().toString()) && !TextUtils.isEmpty(edpassword.getText().toString())) {
                 mfirebaseAuth.signInWithEmailAndPassword(edemail.getText().toString(), edpassword.getText().toString()).addOnCompleteListener(SignInActivity.this, task -> {
                     if(task.isSuccessful()){

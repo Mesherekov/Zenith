@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.media.SoundPool
 import android.net.Uri
@@ -25,6 +26,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.example.zenith.R.id.addimage
 import com.example.zenith.R.id.friendname
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -39,6 +44,9 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Picasso.LoadedFrom
+import com.squareup.picasso.Target
 import java.io.ByteArrayOutputStream
 
 
@@ -130,6 +138,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             name.text = intent.getStringExtra("NameUser")
             mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser!!.uid.hashCode()+friendUID.hashCode()).toString())
             getData()
+
             if(name.text.length>12){
                 name.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 solid.layoutParams.height = 75*3
@@ -257,22 +266,75 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                 }
                 massagesgd.forEach{ds: DataSnapshot? ->
                     val mass = ds?.getValue(Massages::class.java)
-                        if (currentuser?.uid.equals(mass?.ownUID)){
-                            val transparentColor = Color.argb(0, 255, 0, 0)
-                            val itemMassage2 = mass?.text?.let { ItemMassage(it, true, ds.key.toString(), transparentColor) }
-                                itemMassage2?.setOwnMassage(true)
+                    if(mass?.uri!="null") {
+                        val target: Target = object : Target {
+                            override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
+                                val drawable: Drawable = BitmapDrawable(resources, bitmap)
+                                if (currentuser?.uid.equals(mass?.ownUID)) {
+                                    val transparentColor = Color.argb(0, 255, 0, 0)
+                                    val itemMassage2 = mass?.text?.let {
+                                        ItemMassage(
+                                            it,
+                                            true,
+                                            ds.key.toString(),
+                                            transparentColor,
+                                            drawable
+                                        )
+                                    }
+                                    itemMassage2?.setOwnMassage(true)
+                                    itemMassage.add(itemMassage2!!)
+                                } else {
+                                    val transparentColor = Color.argb(0, 255, 0, 0)
 
-                                itemMassage.add(itemMassage2!!)
+                                    val itemMassage3 = mass?.text?.let {
+                                        ItemMassage(
+                                            it, false,
+                                            ds.key.toString(), transparentColor, drawable
+                                        )
+                                    }
+                                    itemMassage3?.setOwnMassage(false)
+                                    itemMassage.add(itemMassage3!!)
+                                }
+                            }
+
+                            override fun onBitmapFailed(
+                                e: java.lang.Exception,
+                                errorDrawable: Drawable) {
+                            }
+
+                            override fun onPrepareLoad(placeHolderDrawable: Drawable) {}
                         }
-                        else{
+
+                        Picasso.get().load(mass?.uri).placeholder(R.drawable.profileicon).into(target)
+                        //Glide.with(applicationContext).load(mass?.uri).placeholder(R.drawable.profileicon).into(requere)
+
+
+                    }else{
+                        if (currentuser?.uid.equals(mass.ownUID)) {
+                            val transparentColor = Color.argb(0, 255, 0, 0)
+                            val itemMassage2 = mass.text?.let {
+                                ItemMassage(
+                                    it,
+                                    true,
+                                    ds.key.toString(),
+                                    transparentColor,
+                                    null
+                                )
+                            }
+                            itemMassage2?.setOwnMassage(true)
+                            itemMassage.add(itemMassage2!!)
+                        } else {
                             val transparentColor = Color.argb(0, 255, 0, 0)
 
-                            val itemMassage3 = mass?.text?.let { ItemMassage(it, false,
-                                    ds.key.toString(), transparentColor
-                                ) }
-                                itemMassage3?.setOwnMassage(false)
-                                itemMassage.add(itemMassage3!!)
-
+                            val itemMassage3 = mass.text?.let {
+                                ItemMassage(
+                                    it, false,
+                                    ds.key.toString(), transparentColor, null
+                                )
+                            }
+                            itemMassage3?.setOwnMassage(false)
+                            itemMassage.add(itemMassage3!!)
+                        }
                     }
                 }
                 customMassageAdapter.notifyDataSetChanged()
@@ -281,7 +343,6 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
             }
-
 
         }
         mdatabase?.addValueEventListener(vlistener)
@@ -317,7 +378,7 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         val priority = 1
         val noLoop = 0
         val normalPlaybackRate = 1f
-        val mStreamId = mSoundPool!!.play(
+        mSoundPool!!.play(
             mSoundId,
             leftVolume,
             rightVolume,

@@ -1,7 +1,9 @@
 package com.example.zenith
 
+import android.graphics.drawable.Drawable
 
-open class ItemMassage(var textmassage: String, var ownmassage: Boolean, var key: String, var rescolor: Int) {
+
+open class ItemMassage(var textmassage: String, var ownmassage: Boolean, var key: String, var rescolor: Int, var sendImage: Drawable?) {
     var textistrigger: Boolean = false
     private var listener: ChangeListener? = null
     fun getTexttrigger(): Boolean {
@@ -10,7 +12,9 @@ open class ItemMassage(var textmassage: String, var ownmassage: Boolean, var key
         fun setTexttrigger(value: Boolean) {
             textistrigger = value
         }
-
+    fun getSendYourImage(): Drawable? {
+        return sendImage
+    }
     fun getTextMassage(): String {
         return textmassage
     }

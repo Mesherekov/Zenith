@@ -165,7 +165,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 savecol = colorTo;
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
             });
             colorAnimation.start();
         });
@@ -181,7 +181,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 savecol = colorTo;
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
             });
             colorAnimation.start();
         });
@@ -197,7 +197,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 savecol = colorTo;
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
             });
             colorAnimation.start();
         });
@@ -213,7 +213,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 savecol = colorTo;
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
             });
             colorAnimation.start();
         });
@@ -229,7 +229,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 savecol = colorTo;
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
             });
             colorAnimation.start();
         });
@@ -245,7 +245,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 savecol = colorTo;
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
             });
             colorAnimation.start();
         });
@@ -282,12 +282,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             ContentValues contentValues = new ContentValues();
             if (sw_theme.isChecked()) {
                 contentValues.put(SettingsDatabase.THEME, "dark");
-                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
                 setDarkTheme();
             }
             else {
                 contentValues.put(SettingsDatabase.THEME, "light");
-                int upcount = sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[] {"1"});
+                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
                 setLightTheme();
             }
 
@@ -548,7 +548,6 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                                 return false;
                             }
-
                             @Override
                             public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                                 return false;
@@ -721,7 +720,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         int priority = 1;
         int no_loop = 0;
         float normal_playback_rate = 1f;
-        int mStreamId = mSoundPool.play(mSoundId, leftVolume, rightVolume, priority, no_loop, normal_playback_rate);
+        mSoundPool.play(mSoundId, leftVolume, rightVolume, priority, no_loop, normal_playback_rate);
     }
 
     @Override
