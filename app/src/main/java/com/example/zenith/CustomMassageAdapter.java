@@ -56,10 +56,13 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
             ViewCompat.setBackgroundTintList(holder.textmass, ContextCompat.getColorStateList(context, R.color.LightBlue));
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
                     RelativeLayout.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ALIGN_PARENT_END);
-            params.setMargins(20, 0, 20, 0);
-            holder.sendimage.setLayoutParams(params);
-            holder.textmass.setLayoutParams(params);
+            ((RelativeLayout.LayoutParams) holder.textmass.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_END);
+            RelativeLayout.LayoutParams paramsimage = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+            ((RelativeLayout.LayoutParams) holder.sendimage.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_END);
+            ((RelativeLayout.LayoutParams) holder.sendimage.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            ((RelativeLayout.LayoutParams) holder.textmass.getLayoutParams()).setMargins(20, 0, 20, 0);
+            //holder.textmass.setWidth(holder.sendimage.getWidth());
         }
         if(items.get(position).getSendYourImage()!=null){
             holder.sendimage.setImageDrawable(items.get(position).getSendYourImage());

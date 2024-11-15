@@ -23,13 +23,16 @@
         android:textColor="@color/black"
         android:textSize="16sp" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/sendimage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/LightBlue"
         android:layout_marginStart="10dp"
         android:visibility="gone"
+        app:shapeAppearanceOverlay="@drawable/roundedcornersmall"
         app:srcCompat="@drawable/genava" />
 
 </RelativeLayout>
