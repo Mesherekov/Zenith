@@ -2,15 +2,23 @@ package com.example.zenith;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -64,8 +72,28 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
             ((RelativeLayout.LayoutParams) holder.textmass.getLayoutParams()).setMargins(20, 0, 20, 0);
             //holder.textmass.setWidth(holder.sendimage.getWidth());
         }
-        if(items.get(position).getSendYourImage()!=null){
-            holder.sendimage.setImageDrawable(items.get(position).getSendYourImage());
+        if(!items.get(position).getUriImage().equals("null")){
+            try {
+                Target target = new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        Drawable drawable = new BitmapDrawable(context.getResources(), bitmap);
+                        holder.sendimage.setImageDrawable(drawable);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    }
+                };
+                holder.sendimage.setTag(target);
+                Picasso.get().load(items.get(position).getUriImage()).resize(400, 400).centerCrop().placeholder(R.drawable.profileicon).into(target);
+            } catch (Exception ex){
+                Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            }
             holder.sendimage.setVisibility(View.VISIBLE);
         }
     }

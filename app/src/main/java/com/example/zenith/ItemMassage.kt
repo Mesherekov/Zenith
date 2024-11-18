@@ -3,7 +3,7 @@ package com.example.zenith
 import android.graphics.drawable.Drawable
 
 
-open class ItemMassage(var textmassage: String, var ownmassage: Boolean, var key: String, var rescolor: Int, var sendImage: Drawable?) {
+open class ItemMassage(var textmassage: String, var ownmassage: Boolean, var key: String, var rescolor: Int, var sendImage: Drawable?, var uri: String) {
     var textistrigger: Boolean = false
     private var listener: ChangeListener? = null
     fun getTexttrigger(): Boolean {
@@ -14,6 +14,12 @@ open class ItemMassage(var textmassage: String, var ownmassage: Boolean, var key
         }
     fun getSendYourImage(): Drawable? {
         return sendImage
+    }
+    fun getUriImage():String{
+        return uri
+    }
+    fun setUriImage(uri: String){
+        this.uri = uri
     }
     fun getTextMassage(): String {
         return textmassage

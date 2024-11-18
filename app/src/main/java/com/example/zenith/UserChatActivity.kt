@@ -266,10 +266,8 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                 }
                 massagesgd.forEach{ds: DataSnapshot? ->
                     val mass = ds?.getValue(Massages::class.java)
-                    if(mass?.uri!="null") {
-                        val target: Target = object : Target {
-                            override fun onBitmapLoaded(bitmap: Bitmap, from: LoadedFrom) {
-                                val drawable: Drawable = BitmapDrawable(resources, bitmap)
+
+
                                 if (currentuser?.uid.equals(mass?.ownUID)) {
                                     val transparentColor = Color.argb(0, 255, 0, 0)
                                     val itemMassage2 = mass?.text?.let {
@@ -278,7 +276,8 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                                             true,
                                             ds.key.toString(),
                                             transparentColor,
-                                            drawable
+                                            null,
+                                            mass.uri
                                         )
                                     }
                                     itemMassage2?.setOwnMassage(true)
@@ -289,50 +288,17 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
                                     val itemMassage3 = mass?.text?.let {
                                         ItemMassage(
                                             it, false,
-                                            ds.key.toString(), transparentColor, drawable
+                                            ds.key.toString(), transparentColor, null,
+                                            mass.uri
                                         )
                                     }
                                     itemMassage3?.setOwnMassage(false)
                                     itemMassage.add(itemMassage3!!)
                                 }
-                            }
 
-                            override fun onBitmapFailed(
-                                e: java.lang.Exception,
-                                errorDrawable: Drawable) {
-                            }
-
-                            override fun onPrepareLoad(placeHolderDrawable: Drawable) {}
-                        }
-                        Picasso.get().load(mass?.uri).resize(400, 400).placeholder(R.drawable.profileicon).into(target)
+                        //Picasso.get().load(mass?.uri).resize(400, 400).placeholder(R.drawable.profileicon).into(target)
                         //Glide.with(applicationContext).load(mass?.uri).placeholder(R.drawable.profileicon).into(requere)
-                    }else{
-                        if (currentuser?.uid.equals(mass.ownUID)) {
-                            val transparentColor = Color.argb(0, 255, 0, 0)
-                            val itemMassage2 = mass.text?.let {
-                                ItemMassage(
-                                    it,
-                                    true,
-                                    ds.key.toString(),
-                                    transparentColor,
-                                    null
-                                )
-                            }
-                            itemMassage2?.setOwnMassage(true)
-                            itemMassage.add(itemMassage2!!)
-                        } else {
-                            val transparentColor = Color.argb(0, 255, 0, 0)
 
-                            val itemMassage3 = mass.text?.let {
-                                ItemMassage(
-                                    it, false,
-                                    ds.key.toString(), transparentColor, null
-                                )
-                            }
-                            itemMassage3?.setOwnMassage(false)
-                            itemMassage.add(itemMassage3!!)
-                        }
-                    }
                 }
                 customMassageAdapter.notifyDataSetChanged()
             }
