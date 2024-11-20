@@ -8,16 +8,21 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mfirebaseAuth;
     private EditText edemail, edpassword;
+    private TextView forgotpassword;
     private Button bsignin;
     private SoundPool mSoundPool;
     @Override
@@ -25,6 +30,18 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         init();
+        forgotpassword.setOnClickListener(view -> {
+            mfirebaseAuth.sendPasswordResetEmail(edemail.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(SignInActivity.this, "The instructions were sent by e-mail", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(SignInActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        });
         bsignin.setOnClickListener(view -> {
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -57,6 +74,7 @@ public class SignInActivity extends AppCompatActivity {
         edemail = findViewById(R.id.emailin);
         edpassword = findViewById(R.id.passin);
         bsignin = findViewById(R.id.enterac);
+        forgotpassword = findViewById(R.id.forgotpassword);
         mSoundPool = new SoundPool(4, AudioManager.STREAM_MUSIC, 100);
         mSoundPool.load(this, R.raw.mouse, 1);
         mfirebaseAuth = FirebaseAuth.getInstance();

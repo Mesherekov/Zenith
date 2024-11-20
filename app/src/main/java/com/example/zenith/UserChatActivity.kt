@@ -10,7 +10,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.media.SoundPool
 import android.net.Uri
@@ -26,10 +25,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.example.zenith.R.id.addimage
 import com.example.zenith.R.id.friendname
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -44,9 +39,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Picasso.LoadedFrom
-import com.squareup.picasso.Target
 import java.io.ByteArrayOutputStream
 
 
@@ -358,11 +350,10 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         val bytes = baos.toByteArray()
         val mref = mstorage.child(System.currentTimeMillis().toString() + "send_image")
         val uptask = mref.putBytes(bytes)
-        val task =
-            uptask.continueWithTask { task1: Task<UploadTask.TaskSnapshot?>? -> mref.downloadUrl }
-                .addOnCompleteListener { task12: Task<Uri> ->
-                    uploaduri = task12.result
-                }
+        uptask.continueWithTask { _: Task<UploadTask.TaskSnapshot?>? -> mref.downloadUrl }
+            .addOnCompleteListener { task12: Task<Uri> ->
+                uploaduri = task12.result
+            }
     }
 
 }

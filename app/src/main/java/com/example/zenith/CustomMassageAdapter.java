@@ -3,7 +3,6 @@ package com.example.zenith;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -62,14 +61,12 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
         if(items.get(position).getOwnMassage()){
             //holder.textmass.getBackground().setTint(R.color.LightGreen);
             ViewCompat.setBackgroundTintList(holder.textmass, ContextCompat.getColorStateList(context, R.color.LightBlue));
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT);
             ((RelativeLayout.LayoutParams) holder.textmass.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_END);
-            RelativeLayout.LayoutParams paramsimage = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT);
             ((RelativeLayout.LayoutParams) holder.sendimage.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_END);
             ((RelativeLayout.LayoutParams) holder.sendimage.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_TOP);
             ((RelativeLayout.LayoutParams) holder.textmass.getLayoutParams()).setMargins(20, 0, 20, 0);
+            //holder.textmass.getLayoutParams().width = holder.sendimage.getLayoutParams().width;
+            //holder.textmass.setWidth(holder.sendimage.getDrawable().getIntrinsicWidth());
             //holder.textmass.setWidth(holder.sendimage.getWidth());
         }
         if(!items.get(position).getUriImage().equals("null")){
