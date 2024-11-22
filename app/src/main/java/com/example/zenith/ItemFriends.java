@@ -7,6 +7,15 @@ public class ItemFriends {
     Drawable image;
     String UID;
     int colortext;
+    String Uri;
+
+    public String getUri() {
+        return Uri;
+    }
+
+    public void setUri(String uri) {
+        Uri = uri;
+    }
 
     public int getColortext() {
         return colortext;
@@ -16,11 +25,12 @@ public class ItemFriends {
         this.colortext = colortext;
     }
 
-    public ItemFriends(String name, Drawable image, String UID, int colortext) {
+    public ItemFriends(String name, Drawable image, String UID, int colortext, String Uri) {
         this.name = name;
         this.image = image;
         this.UID = UID;
         this.colortext = colortext;
+        this.Uri = Uri;
     }
     public String getUID(){return UID;}
 

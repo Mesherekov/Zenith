@@ -66,7 +66,6 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
             ((RelativeLayout.LayoutParams) holder.sendimage.getLayoutParams()).addRule(RelativeLayout.ALIGN_PARENT_TOP);
             ((RelativeLayout.LayoutParams) holder.textmass.getLayoutParams()).setMargins(20, 0, 20, 0);
             //holder.textmass.getLayoutParams().width = holder.sendimage.getLayoutParams().width;
-            //holder.textmass.setWidth(holder.sendimage.getDrawable().getIntrinsicWidth());
             //holder.textmass.setWidth(holder.sendimage.getWidth());
         }
         if(!items.get(position).getUriImage().equals("null")){

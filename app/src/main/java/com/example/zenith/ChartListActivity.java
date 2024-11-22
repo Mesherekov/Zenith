@@ -476,28 +476,15 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                         Friends friends = ds.getValue(Friends.class);
                         FriendsKey.add(ds.getKey());
                         assert friends!=null;
-                        Target target1 = new Target() {
-                            @Override
-                            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                                if(sw_theme.isChecked()) {
-                                    itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID, Color.rgb(255,255,255)));
-                                }else itemFriends.add(new ItemFriends(friends.Name, drawable, friends.UID, Color.rgb(0,0,0)));
-                                FriendUID.add(friends.UID);
-                                numoffriends[0]++;
-                            }
 
-                            @Override
-                            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        if(sw_theme.isChecked()) {
+                            itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(255,255,255), friends.PNG));
+                        }else {
+                            itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(0,0,0), friends.PNG));
+                        }
+                        FriendUID.add(friends.UID);
+                        numoffriends[0]++;
 
-                            }
-
-                            @Override
-                            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                            }
-                        };
-                        Picasso.get().load(friends.PNG).resize(400, 400).centerCrop().placeholder(R.drawable.profileicon).into(target1);
 
                     }
                     customFriendsAdapter.notifyDataSetChanged();
