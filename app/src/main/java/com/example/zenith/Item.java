@@ -7,6 +7,7 @@ public class Item {
     Drawable image;
     String UID;
     int colortext;
+    String key;
 
     public int getColortext() {
         return colortext;
@@ -16,11 +17,20 @@ public class Item {
         this.colortext = colortext;
     }
 
-    public Item(String name, Drawable image, String UID, int colortext) {
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public Item(String name, Drawable image, String UID, int colortext, String key) {
         this.name = name;
         this.image = image;
         this.UID = UID;
         this.colortext = colortext;
+        this.key = key;
     }
     public String getUID(){return UID;}
 

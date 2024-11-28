@@ -8,6 +8,7 @@ public class ItemFriends {
     String UID;
     int colortext;
     String Uri;
+    String key;
 
     public String getUri() {
         return Uri;
@@ -25,13 +26,23 @@ public class ItemFriends {
         this.colortext = colortext;
     }
 
-    public ItemFriends(String name, Drawable image, String UID, int colortext, String Uri) {
+    public ItemFriends(String name, Drawable image, String UID, int colortext, String Uri, String key) {
         this.name = name;
         this.image = image;
         this.UID = UID;
         this.colortext = colortext;
         this.Uri = Uri;
+        this.key = key;
     }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getUID(){return UID;}
 
     public String getName() {

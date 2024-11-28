@@ -39,6 +39,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -476,15 +477,34 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                         Friends friends = ds.getValue(Friends.class);
                         FriendsKey.add(ds.getKey());
                         assert friends!=null;
+                        DatabaseReference frdb = mdatabase.child(friends.KEY);
+                        ValueEventListener friendlistener = new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                User user = snapshot.getValue(User.class);
+                                assert user != null;
+//                                if(sw_theme.isChecked()) {
+//                                    itemFriends.add(new ItemFriends(user.name, null, user.UID, Color.rgb(255,255,255), user.imageUri, friends.KEY));
+//                                }else {
+//                                    itemFriends.add(new ItemFriends(user.name, null, user.UID, Color.rgb(0,0,0), user.imageUri, friends.KEY));
+//                                }
 
-                        if(sw_theme.isChecked()) {
-                            itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(255,255,255), friends.PNG));
-                        }else {
-                            itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(0,0,0), friends.PNG));
-                        }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        };
+                        frdb.addValueEventListener(friendlistener);
+
                         FriendUID.add(friends.UID);
                         numoffriends[0]++;
-
+                       if(sw_theme.isChecked()) {
+                           itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(255,255,255), friends.PNG, friends.KEY));
+                       }else {
+                           itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(0,0,0), friends.PNG, friends.KEY));
+                       }
 
                     }
                     customFriendsAdapter.notifyDataSetChanged();
@@ -518,8 +538,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                                 @Override
                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                     Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                                    if(sw_theme.isChecked()) items.add(new Item(user.name, drawable, user.UID, Color.rgb(255,255,255)));
-                                    else items.add(new Item(user.name, drawable, user.UID, Color.rgb(0,0,0)));
+                                    if(sw_theme.isChecked()) items.add(new Item(user.name, drawable, user.UID, Color.rgb(255,255,255), ds.getKey()));
+                                    else items.add(new Item(user.name, drawable, user.UID, Color.rgb(0,0,0), ds.getKey()));
                                 }
 
                                 @Override
@@ -671,7 +691,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         try {
             if(!FriendUID.contains(item.UID)) {
                 String id = friendsdatasnapshot.getKey();
-                Friends friends = new Friends(id, item.UID, item.getName(), imageUriFriends.get(position));
+                Friends friends = new Friends(id, item.UID, item.getName(), imageUriFriends.get(position), item.key);
                 friendsdatasnapshot.push().setValue(friends);
             }
         }catch (Exception ex){
