@@ -483,12 +483,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 User user = snapshot.getValue(User.class);
                                 assert user != null;
-//                                if(sw_theme.isChecked()) {
-//                                    itemFriends.add(new ItemFriends(user.name, null, user.UID, Color.rgb(255,255,255), user.imageUri, friends.KEY));
-//                                }else {
-//                                    itemFriends.add(new ItemFriends(user.name, null, user.UID, Color.rgb(0,0,0), user.imageUri, friends.KEY));
-//                                }
-
+                                ds.getRef().child("Name").setValue(user.name);
+                                ds.getRef().child("PNG").setValue(user.imageUri);
                             }
 
                             @Override
