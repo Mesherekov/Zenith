@@ -33,6 +33,21 @@
         tools:ignore="RtlSymmetry,TextContrastCheck"
         tools:text="UserName" />
 
+    <ImageButton
+        android:id="@+id/addfriend"
+        android:layout_width="47dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/addbutton"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
     <TextView
         android:id="@+id/solid"
         android:layout_width="match_parent"
