@@ -25,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.zenith.R.id.addfriend
 import com.example.zenith.R.id.addimage
 import com.example.zenith.R.id.friendname
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -55,7 +54,6 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
     private lateinit var close: ImageButton
     private lateinit var delete: ImageButton
     private lateinit var copy: ImageButton
-    private lateinit var addfr: ImageButton
     private var mSoundPool: SoundPool? = null
     private val MASSAGE_KEY = "Massage"
     private  var mfireauth : FirebaseAuth? = null
@@ -87,7 +85,6 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         copy = findViewById(R.id.copy)
         backImage = findViewById(R.id.back)
         addImage = findViewById(addimage)
-        addfr = findViewById(addfriend)
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB")
         mSoundPool = SoundPool(4, AudioManager.STREAM_MUSIC, 100)
         mSoundPool!!.load(this, R.raw.mouse, 1)

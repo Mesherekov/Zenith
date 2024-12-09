@@ -19,15 +19,17 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
     Context context;
     List<Item> items;
     private SelectListener listener;
+    private AddFriendListener addlistener;
     @SuppressLint("NotifyDataSetChanged")
     public void setFilterList(List<Item> filterList){
         this.items = filterList;
         notifyDataSetChanged();
     }
-    public CustomAdapter(Context context, List<Item> items, SelectListener listener) {
+    public CustomAdapter(Context context, List<Item> items, SelectListener listener, AddFriendListener addlistener) {
         this.context = context;
         this.items = items;
         this.listener = listener;
+        this.addlistener = addlistener;
     }
 
     @NonNull
@@ -41,6 +43,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
         holder.name.setText(items.get(position).getName());
         holder.name.setTextColor(items.get(position).getColortext());
         holder.avatar.setImageDrawable(items.get(position).getImage());
+        holder.addfriend.setOnClickListener(view -> {
+            addlistener.addFriendOnClick(items.get(position), position);
+        });
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

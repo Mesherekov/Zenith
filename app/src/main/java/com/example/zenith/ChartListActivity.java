@@ -60,7 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 //@SuppressWarnings("all")
-public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend{
+public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend, AddFriendListener {
     private TextView email, numfriends, solid;
     private EditText name;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -68,9 +68,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private ImageButton logout, close, delete, settings, closesett;
     private FirebaseAuth mfirebaseAuth;
     private SoundPool mSoundPool;
-    private DatabaseReference mdatabase;
+    private DatabaseReference mdatabase, notificationdatabase;
     private StorageReference mstorage;
     private final String USER_KEY = "User";
+    private final String NOTIFICATION_KEY = "Notification";
+    private User userown;
     private FirebaseUser currentuser;
     private RecyclerView recyclerView, recyclerViewfriends;
     private SearchView search;
@@ -416,6 +418,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         mfirebaseAuth = FirebaseAuth.getInstance();
         currentuser = mfirebaseAuth.getCurrentUser();
         mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
+        notificationdatabase = FirebaseDatabase.getInstance().getReference(NOTIFICATION_KEY);
         friendsdatasnapshot = FirebaseDatabase.getInstance().getReference("Friends").child(currentuser.getUid());
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         recyclerView = findViewById(R.id.recyclerview);
@@ -427,7 +430,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         FriendUID = new ArrayList<>();
         FriendsKey = new ArrayList<>();
         customFriendsAdapter = new CustomFriendsAdapter(ChartListActivity.this, itemFriends, this, this);
-        adapter = new CustomAdapter(getApplicationContext(), items, this);
+        adapter = new CustomAdapter(getApplicationContext(), items, this, this);
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
         profilelayout = findViewById(R.id.profilelayout);
@@ -640,6 +643,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                     if(user.UID.equals(currentuser.getUid())){
                         name.setText(user.name);
                         userID = user.id;
+                        userown = user;
                         Picasso.get().load(user.imageUri).resize(400,400).centerCrop().placeholder(R.drawable.profileicon).into(useravatar, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -733,5 +737,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         delete.setVisibility(View.VISIBLE);
         search.setVisibility(View.INVISIBLE);
         FriendKey = FriendsKey.get(position);
+    }
+
+    @Override
+    public void addFriendOnClick(Item item, int position) {
+        String id = notificationdatabase.getKey();
+        Notification noti = new Notification(userown.id, currentuser.getUid(), userown.name, userown.imageUri);
+        notificationdatabase.child(String.valueOf(item.UID.hashCode())).push().setValue(noti);
     }
 }
