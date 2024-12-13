@@ -38,6 +38,12 @@ import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.zenith.OnClickListeners.AddFriendListener;
+import com.example.zenith.OnClickListeners.SelectFriendsListener;
+import com.example.zenith.OnClickListeners.SelectListener;
+import com.example.zenith.OnClickListeners.SelectListenerDelFriend;
+import com.example.zenith.RelLayouts.CustomAdapter;
+import com.example.zenith.RelLayouts.CustomFriendsAdapter;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

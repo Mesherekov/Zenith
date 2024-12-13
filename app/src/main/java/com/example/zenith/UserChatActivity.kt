@@ -25,6 +25,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.zenith.OnClickListeners.SelectMassageListener
+import com.example.zenith.RelLayouts.CustomMassageAdapter
 import com.example.zenith.R.id.addimage
 import com.example.zenith.R.id.friendname
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -43,7 +45,8 @@ import java.io.ByteArrayOutputStream
 
 
 @Suppress("DEPRECATION")
-class UserChatActivity : AppCompatActivity(), SelectMassageListener {
+class UserChatActivity : AppCompatActivity(),
+    SelectMassageListener {
     private lateinit var name: TextView
     private lateinit var solid: TextView
     private lateinit var userImage: ImageView
@@ -97,7 +100,11 @@ class UserChatActivity : AppCompatActivity(), SelectMassageListener {
         recyclermassageView.recycledViewPool.setMaxRecycledViews(itemViewType, 0)
         mfireauth = FirebaseAuth.getInstance()
         itemMassage = mutableListOf()
-        customMassageAdapter = CustomMassageAdapter(applicationContext, itemMassage, this)
+        customMassageAdapter = CustomMassageAdapter(
+            applicationContext,
+            itemMassage,
+            this
+        )
         recyclermassageView.adapter = customMassageAdapter
         settingsDatabase = SettingsDatabase(this)
         sqldb = settingsDatabase.writableDatabase

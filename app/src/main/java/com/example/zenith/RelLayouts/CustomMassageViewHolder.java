@@ -1,4 +1,4 @@
-package com.example.zenith;
+package com.example.zenith.RelLayouts;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -7,6 +7,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.zenith.R;
 
 public class CustomMassageViewHolder extends RecyclerView.ViewHolder{
     TextView textmass;

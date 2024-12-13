@@ -1,19 +1,20 @@
-package com.example.zenith;
+package com.example.zenith.RelLayouts;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import com.example.zenith.OnClickListeners.AddFriendListener;
+import com.example.zenith.Item;
+import com.example.zenith.R;
+import com.example.zenith.OnClickListeners.SelectListener;
 
-import javax.xml.namespace.QName;
+import java.util.List;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomViewHolder> {
     Context context;

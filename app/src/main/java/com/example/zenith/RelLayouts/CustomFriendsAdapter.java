@@ -1,9 +1,8 @@
-package com.example.zenith;
+package com.example.zenith.RelLayouts;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -14,6 +13,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.zenith.ItemFriends;
+import com.example.zenith.R;
+import com.example.zenith.OnClickListeners.SelectFriendsListener;
+import com.example.zenith.OnClickListeners.SelectListenerDelFriend;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
