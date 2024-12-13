@@ -70,8 +70,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private SoundPool mSoundPool;
     private DatabaseReference mdatabase, notificationdatabase;
     private StorageReference mstorage;
-    private final String USER_KEY = "User";
-    private final String NOTIFICATION_KEY = "Notification";
+
     private User userown;
     private FirebaseUser currentuser;
     private RecyclerView recyclerView, recyclerViewfriends;
@@ -417,8 +416,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         search.clearFocus();
         mfirebaseAuth = FirebaseAuth.getInstance();
         currentuser = mfirebaseAuth.getCurrentUser();
-        mdatabase = FirebaseDatabase.getInstance().getReference(USER_KEY);
-        notificationdatabase = FirebaseDatabase.getInstance().getReference(NOTIFICATION_KEY);
+        mdatabase = FirebaseDatabase.getInstance().getReference(FirebaseHelper.USER_KEY);
+        notificationdatabase = FirebaseDatabase.getInstance().getReference(FirebaseHelper.NOTIFICATION_KEY);
         friendsdatasnapshot = FirebaseDatabase.getInstance().getReference("Friends").child(currentuser.getUid());
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         recyclerView = findViewById(R.id.recyclerview);
@@ -742,7 +741,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     @Override
     public void addFriendOnClick(Item item, int position) {
         String id = notificationdatabase.getKey();
-        Notification noti = new Notification(userown.id, currentuser.getUid(), userown.name, userown.imageUri);
+        Notification noti = new Notification(userown.id, currentuser.getUid(), userown.name, userown.imageUri, FirebaseHelper.TYPE_ADD_TO_FRIENDS);
         notificationdatabase.child(String.valueOf(item.UID.hashCode())).push().setValue(noti);
     }
 }
