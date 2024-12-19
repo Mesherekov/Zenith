@@ -44,6 +44,7 @@ import com.example.zenith.OnClickListeners.SelectListener;
 import com.example.zenith.OnClickListeners.SelectListenerDelFriend;
 import com.example.zenith.RelLayouts.CustomAdapter;
 import com.example.zenith.RelLayouts.CustomFriendsAdapter;
+import com.example.zenith.RelLayouts.CustomNotificationAdapter;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -74,15 +75,17 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private ImageButton logout, close, delete, settings, closesett;
     private FirebaseAuth mfirebaseAuth;
     private SoundPool mSoundPool;
-    private DatabaseReference mdatabase, notificationdatabase;
+    private DatabaseReference mdatabase, notificationdatabase, mynotidatabase;
     private StorageReference mstorage;
 
     private User userown;
     private FirebaseUser currentuser;
-    private RecyclerView recyclerView, recyclerViewfriends;
+    private RecyclerView recyclerView, recyclerViewfriends, notirecyclerView;
     private SearchView search;
     private CustomFriendsAdapter customFriendsAdapter;
+    private CustomNotificationAdapter notiadapter;
     private List<ItemFriends> itemFriends;
+    private List<ItemNotification> itemNotifications;
     private List<Item> items;
     private CustomAdapter adapter;
     private Drawable namedraw;
@@ -102,7 +105,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private ImageButton pencil, changeavatar;
     private ImageView useravatar, solidsett;
     private Uri uploaduri, newuploaduri;
-    ValueEventListener vListener, valueEventListener;
+    ValueEventListener vListener, valueEventListener, vnotilistener;
     private boolean finduser = false;
     private Drawable reserveAvatar;
     private List<String> imageUriFriends;
@@ -392,7 +395,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         }
     }
 
-    @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables"})
+    @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables", "WrongViewCast"})
     private void init(){
         email = findViewById(R.id.ema);
         logout = findViewById(R.id.logout);
@@ -424,18 +427,22 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         currentuser = mfirebaseAuth.getCurrentUser();
         mdatabase = FirebaseDatabase.getInstance().getReference(FirebaseHelper.USER_KEY);
         notificationdatabase = FirebaseDatabase.getInstance().getReference(FirebaseHelper.NOTIFICATION_KEY);
+        mynotidatabase = notificationdatabase.child(String.valueOf(currentuser.getUid().hashCode()));
         friendsdatasnapshot = FirebaseDatabase.getInstance().getReference("Friends").child(currentuser.getUid());
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         recyclerView = findViewById(R.id.recyclerview);
+        notirecyclerView = findViewById(R.id.relativeLayoutnoti);
         recyclerViewfriends = findViewById(R.id.friendrecycler);
 
         items = new ArrayList<>();
         imageUriFriends = new ArrayList<>();
         itemFriends = new ArrayList<>();
         FriendUID = new ArrayList<>();
+        itemNotifications = new ArrayList<>();
         FriendsKey = new ArrayList<>();
         customFriendsAdapter = new CustomFriendsAdapter(ChartListActivity.this, itemFriends, this, this);
         adapter = new CustomAdapter(getApplicationContext(), items, this, this);
+        notiadapter = new CustomNotificationAdapter(getApplicationContext(), itemNotifications);
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
         profilelayout = findViewById(R.id.profilelayout);
@@ -576,15 +583,35 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 }
             };
             mdatabase.addValueEventListener(valueEventListener);
+            vnotilistener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (itemNotifications.size() > 0) itemNotifications.clear();
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            Notification notification = ds.getValue(Notification.class);
+                            assert notification != null;
+                            if(sw_theme.isChecked()) itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(255,255,255), notification.PNG, ds.getKey()));
+                            else itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(0,0,0), notification.PNG, ds.getKey()));
+                        }
+                        notiadapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+            mynotidatabase.addValueEventListener(vnotilistener);
 
         };
         run.run();
         runfriends.run();
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
-        recyclerViewfriends.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewfriends.setAdapter(customFriendsAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(adapter);
+            notirecyclerView.setLayoutManager(new LinearLayoutManager(this));
+            notirecyclerView.setAdapter(notiadapter);
+            recyclerViewfriends.setLayoutManager(new LinearLayoutManager(this));
+            recyclerViewfriends.setAdapter(customFriendsAdapter);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {

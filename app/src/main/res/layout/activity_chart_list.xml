@@ -45,17 +45,15 @@
             app:tint="@color/white"
             tools:ignore="MissingConstraints,RtlSymmetry,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
-        <RelativeLayout
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/relativeLayoutnoti"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="80dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
