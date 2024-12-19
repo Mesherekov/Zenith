@@ -72,7 +72,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private EditText name;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch sw_theme, sw_private;
-    private ImageButton logout, close, delete, settings, closesett;
+    private ImageButton logout, close, delete, settings, closesett, bellnoti;
     private FirebaseAuth mfirebaseAuth;
     private SoundPool mSoundPool;
     private DatabaseReference mdatabase, notificationdatabase, mynotidatabase;
@@ -92,7 +92,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private String checkS;
     private List<String> FriendsKey;
     private BottomNavigationView bview;
-    private ConstraintLayout chatlayout, profilelayout, settingslayout;
+    private ConstraintLayout chatlayout, profilelayout, settingslayout, notificationlayout;
     private String userID;
     private SettingsDatabase settingsDatabase;
     private SQLiteDatabase sqLiteDatabase;
@@ -132,6 +132,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             try {
                 mdatabase.removeEventListener(vListener);
                 mdatabase.removeEventListener(valueEventListener);
+                mynotidatabase.removeEventListener(vnotilistener);
                 playSoundBool(3);
                 mfirebaseAuth.signOut();
             } catch (Exception e){
@@ -151,6 +152,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         });
         bview.setOnItemSelectedListener(item -> {
             playSoundBool(2);
+            settingslayout.setVisibility(View.GONE);
+            notificationlayout.setVisibility(View.GONE);
            if(item.getItemId()==R.id.chat){
              item.setChecked(true);
              chatlayout.setVisibility(View.VISIBLE);
@@ -258,6 +261,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
             });
             colorAnimation.start();
+        });
+        bellnoti.setOnClickListener(view -> {
+            chatlayout.setVisibility(View.GONE);
+            profilelayout.setVisibility(View.GONE);
+            notificationlayout.setVisibility(View.VISIBLE);
         });
         settings.setOnClickListener(view -> {
             playSoundBool(3);
@@ -413,6 +421,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         blacktheme = findViewById(R.id.blacktheme);
         yellowtheme = findViewById(R.id.yellowtheme);
         purpletheme = findViewById(R.id.purpletheme);
+        bellnoti = findViewById(R.id.bell);
         bluetheme = findViewById(R.id.bluetheme);
         settingslayout = findViewById(R.id.settingslayout);
         solidsett = findViewById(R.id.solidsett);
@@ -446,6 +455,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
         profilelayout = findViewById(R.id.profilelayout);
+        notificationlayout = findViewById(R.id.Notification);
         pencil = findViewById(R.id.pencil);
         changeavatar = findViewById(R.id.changeavatar);
         useravatar = findViewById(R.id.userimage);

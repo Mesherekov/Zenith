@@ -2,6 +2,7 @@ package com.example.zenith;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
@@ -39,6 +40,8 @@ public class SignUpActivity extends AppCompatActivity {
     private StorageReference mstorage;
     private Uri uploaduri;
     private SoundPool mSoundPool;
+    private SQLiteDatabase sqLiteDatabase;
+    private SettingsDatabase settingsDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,6 +131,8 @@ public class SignUpActivity extends AppCompatActivity {
         edname = findViewById(R.id.nameup);
         edpassword = findViewById(R.id.passup);
         bsignup = findViewById(R.id.createaccount);
+        settingsDatabase = new SettingsDatabase(this);
+        sqLiteDatabase = settingsDatabase.getWritableDatabase();
         next = findViewById(R.id.next);
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         mfirebaseAuth = FirebaseAuth.getInstance();
