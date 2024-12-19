@@ -33,10 +33,14 @@ public class CustomNotificationAdapter extends RecyclerView.Adapter<CustomNotifi
         return new CustomNotificationViewHolder(LayoutInflater.from(context).inflate(R.layout.item_notification, parent, false));
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull CustomNotificationViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.name.setTextColor(itemNotifications.get(position).getColortext());
         holder.name.setText(itemNotifications.get(position).getName());
+        if(itemNotifications.get(position).getName().length()>=11){
+            holder.name.setText(itemNotifications.get(position).getName().substring(0, 8)+"...");
+        }
         Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

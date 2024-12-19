@@ -111,7 +111,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private List<String> imageUriFriends;
     private List<String> FriendUID;
     private String FriendKey;
-    private ImageButton redtheme, bluetheme, blacktheme, yellowtheme, purpletheme, greentheme;
+    private ImageButton redtheme, bluetheme, blacktheme, yellowtheme, purpletheme, greentheme, backnoti;
     private int savecol = Color.rgb(72, 61, 139);
     @Override
     protected void onStart() {
@@ -263,6 +263,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             colorAnimation.start();
         });
         bellnoti.setOnClickListener(view -> {
+            playSoundBool(3);
             chatlayout.setVisibility(View.GONE);
             profilelayout.setVisibility(View.GONE);
             notificationlayout.setVisibility(View.VISIBLE);
@@ -286,6 +287,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             delete.setVisibility(View.GONE);
             search.setVisibility(View.VISIBLE);
             playSoundBool(3);
+        });
+        backnoti.setOnClickListener(view -> {
+            playSoundBool(3);
+            notificationlayout.setVisibility(View.GONE);
+            profilelayout.setVisibility(View.VISIBLE);
+
         });
         delete.setOnClickListener(view -> {
             friendsdatasnapshot.child(FriendKey).removeValue();
@@ -325,6 +332,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 name.setBackground(namedraw);
             }
         });
+
     }
 
     private void setLightTheme() {
@@ -417,6 +425,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         sw_private = findViewById(R.id.switchprivate);
         sw_theme = findViewById(R.id.switchtheme);
         redtheme = findViewById(R.id.redtheme);
+        backnoti = findViewById(R.id.backnoti);
         greentheme = findViewById(R.id.greentheme);
         blacktheme = findViewById(R.id.blacktheme);
         yellowtheme = findViewById(R.id.yellowtheme);
@@ -593,6 +602,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 }
             };
             mdatabase.addValueEventListener(valueEventListener);
+
             vnotilistener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -600,10 +610,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                         for (DataSnapshot ds : snapshot.getChildren()) {
                             Notification notification = ds.getValue(Notification.class);
                             assert notification != null;
-                            if(sw_theme.isChecked()) itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(255,255,255), notification.PNG, ds.getKey()));
-                            else itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(0,0,0), notification.PNG, ds.getKey()));
+                            if (sw_theme.isChecked())
+                                itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(255, 255, 255), notification.PNG, ds.getKey()));
+                            else
+                                itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(0, 0, 0), notification.PNG, ds.getKey()));
                         }
                         notiadapter.notifyDataSetChanged();
+
                 }
 
                 @Override
