@@ -613,9 +613,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                             Notification notification = ds.getValue(Notification.class);
                             assert notification != null;
                             if (sw_theme.isChecked())
-                                itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(255, 255, 255), notification.PNG, ds.getKey()));
+                                itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(255, 255, 255), notification.PNG, ds.getKey(), notification.id));
                             else
-                                itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(0, 0, 0), notification.PNG, ds.getKey()));
+                                itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(0, 0, 0), notification.PNG, ds.getKey(), notification.id));
                         }
                         notiadapter.notifyDataSetChanged();
 
@@ -699,8 +699,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                     assert user != null;
                     if(user.UID.equals(currentuser.getUid())){
                         name.setText(user.name);
-                        userID = user.id;
+                        userID = ds.getKey();
                         userown = user;
+
                         Picasso.get().load(user.imageUri).resize(400,400).centerCrop().placeholder(R.drawable.profileicon).into(useravatar, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -800,7 +801,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     public void addFriendOnClick(Item item, int position) {
         if(!FriendUID.contains(item.UID)) {
             String id = notificationdatabase.getKey();
-            Notification noti = new Notification(userown.id, currentuser.getUid(), userown.name, userown.imageUri, FirebaseHelper.TYPE_ADD_TO_FRIENDS);
+            Notification noti = new Notification(userID, currentuser.getUid(), userown.name, userown.imageUri, FirebaseHelper.TYPE_ADD_TO_FRIENDS);
             notificationdatabase.child(String.valueOf(item.UID.hashCode())).push().setValue(noti);
         }else Toast.makeText(this, "This user is already your friend.", Toast.LENGTH_SHORT).show();
 
@@ -811,7 +812,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         if(!FriendUID.contains(item.UID)) {
             String id = friendsdatasnapshot.getKey();
             Friends friends = new Friends(id, item.UID, item.getName(), item.Uri, item.key);
-            Friends friends2 = new Friends(id, currentuser.getUid(), name.getText().toString(), userown.imageUri, userown.id);
+            Friends friends2 = new Friends(id, currentuser.getUid(), name.getText().toString(), userown.imageUri, userID);
             friendsdatasnapshot.push().setValue(friends);
             myfrienddatasnap.child(item.UID).push().setValue(friends2);
             notificationdatabase.child(item.getKey()).removeValue();

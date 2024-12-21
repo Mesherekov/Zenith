@@ -9,6 +9,7 @@ public class ItemNotification {
     int colortext;
     String Uri;
     String key;
+    String userkey;
     public String getUri() {
         return Uri;
     }
@@ -25,13 +26,14 @@ public class ItemNotification {
         this.colortext = colortext;
     }
 
-    public ItemNotification(String name, Drawable image, String UID, int colortext, String Uri, String key) {
+    public ItemNotification(String name, Drawable image, String UID, int colortext, String Uri, String key, String userkey) {
         this.name = name;
         this.image = image;
         this.UID = UID;
         this.colortext = colortext;
         this.Uri = Uri;
         this.key = key;
+        this.userkey = userkey;
     }
 
     public String getKey() {
