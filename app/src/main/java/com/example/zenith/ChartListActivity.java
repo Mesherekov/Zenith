@@ -39,6 +39,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zenith.OnClickListeners.AddFriendListener;
+import com.example.zenith.OnClickListeners.AddFriendNotiListener;
 import com.example.zenith.OnClickListeners.SelectFriendsListener;
 import com.example.zenith.OnClickListeners.SelectListener;
 import com.example.zenith.OnClickListeners.SelectListenerDelFriend;
@@ -67,7 +68,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 //@SuppressWarnings("all")
-public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend, AddFriendListener {
+public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend, AddFriendListener, AddFriendNotiListener {
     private TextView email, numfriends, solid;
     private EditText name;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -100,7 +101,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     private boolean isfirst;
     private final String SAVED_TEXT = "savedtext";
     private DataSnapshot dataSnapshot;
-    private DatabaseReference friendsdatasnapshot;
+    private DatabaseReference friendsdatasnapshot, myfrienddatasnap;
     private boolean isreadytoupdate = false;
     private ImageButton pencil, changeavatar;
     private ImageView useravatar, solidsett;
@@ -447,6 +448,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         notificationdatabase = FirebaseDatabase.getInstance().getReference(FirebaseHelper.NOTIFICATION_KEY);
         mynotidatabase = notificationdatabase.child(String.valueOf(currentuser.getUid().hashCode()));
         friendsdatasnapshot = FirebaseDatabase.getInstance().getReference("Friends").child(currentuser.getUid());
+        myfrienddatasnap = FirebaseDatabase.getInstance().getReference("Friends");
         mstorage = FirebaseStorage.getInstance().getReference("ImageDB");
         recyclerView = findViewById(R.id.recyclerview);
         notirecyclerView = findViewById(R.id.relativeLayoutnoti);
@@ -460,7 +462,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         FriendsKey = new ArrayList<>();
         customFriendsAdapter = new CustomFriendsAdapter(ChartListActivity.this, itemFriends, this, this);
         adapter = new CustomAdapter(getApplicationContext(), items, this, this);
-        notiadapter = new CustomNotificationAdapter(getApplicationContext(), itemNotifications);
+        notiadapter = new CustomNotificationAdapter(getApplicationContext(), itemNotifications, this);
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
         profilelayout = findViewById(R.id.profilelayout);
@@ -799,5 +801,15 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         String id = notificationdatabase.getKey();
         Notification noti = new Notification(userown.id, currentuser.getUid(), userown.name, userown.imageUri, FirebaseHelper.TYPE_ADD_TO_FRIENDS);
         notificationdatabase.child(String.valueOf(item.UID.hashCode())).push().setValue(noti);
+    }
+
+    @Override
+    public void OnClickNotiListener(ItemNotification item, int position) {
+        String id = friendsdatasnapshot.getKey();
+        Friends friends = new Friends(id, item.UID, item.getName(), item.Uri, item.key);
+        Friends friends2 = new Friends(id, currentuser.getUid(), name.getText().toString(), userown.imageUri, userown.id);
+        friendsdatasnapshot.push().setValue(friends);
+        myfrienddatasnap.child(item.UID).push().setValue(friends2);
+        notificationdatabase.removeValue();
     }
 }

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zenith.ItemNotification;
+import com.example.zenith.OnClickListeners.AddFriendNotiListener;
 import com.example.zenith.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -21,10 +22,12 @@ import java.util.List;
 public class CustomNotificationAdapter extends RecyclerView.Adapter<CustomNotificationViewHolder> {
     Context context;
     List<ItemNotification> itemNotifications;
+    AddFriendNotiListener addFriendNotiListener;
 
-    public CustomNotificationAdapter(Context context, List<ItemNotification> itemNotifications) {
+    public CustomNotificationAdapter(Context context, List<ItemNotification> itemNotifications, AddFriendNotiListener addFriendNotiListener) {
         this.context = context;
         this.itemNotifications = itemNotifications;
+        this.addFriendNotiListener = addFriendNotiListener;
     }
 
     @NonNull
@@ -41,6 +44,9 @@ public class CustomNotificationAdapter extends RecyclerView.Adapter<CustomNotifi
         if(itemNotifications.get(position).getName().length()>=11){
             holder.name.setText(itemNotifications.get(position).getName().substring(0, 8)+"...");
         }
+        holder.addnotifriend.setOnClickListener(view -> {
+            addFriendNotiListener.OnClickNotiListener(itemNotifications.get(position), position);
+        });
         Target target = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
