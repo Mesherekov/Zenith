@@ -798,18 +798,23 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
     @Override
     public void addFriendOnClick(Item item, int position) {
-        String id = notificationdatabase.getKey();
-        Notification noti = new Notification(userown.id, currentuser.getUid(), userown.name, userown.imageUri, FirebaseHelper.TYPE_ADD_TO_FRIENDS);
-        notificationdatabase.child(String.valueOf(item.UID.hashCode())).push().setValue(noti);
+        if(!FriendUID.contains(item.UID)) {
+            String id = notificationdatabase.getKey();
+            Notification noti = new Notification(userown.id, currentuser.getUid(), userown.name, userown.imageUri, FirebaseHelper.TYPE_ADD_TO_FRIENDS);
+            notificationdatabase.child(String.valueOf(item.UID.hashCode())).push().setValue(noti);
+        }else Toast.makeText(this, "This user is already your friend.", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void OnClickNotiListener(ItemNotification item, int position) {
-        String id = friendsdatasnapshot.getKey();
-        Friends friends = new Friends(id, item.UID, item.getName(), item.Uri, item.key);
-        Friends friends2 = new Friends(id, currentuser.getUid(), name.getText().toString(), userown.imageUri, userown.id);
-        friendsdatasnapshot.push().setValue(friends);
-        myfrienddatasnap.child(item.UID).push().setValue(friends2);
-        notificationdatabase.removeValue();
+        if(!FriendUID.contains(item.UID)) {
+            String id = friendsdatasnapshot.getKey();
+            Friends friends = new Friends(id, item.UID, item.getName(), item.Uri, item.key);
+            Friends friends2 = new Friends(id, currentuser.getUid(), name.getText().toString(), userown.imageUri, userown.id);
+            friendsdatasnapshot.push().setValue(friends);
+            myfrienddatasnap.child(item.UID).push().setValue(friends2);
+            notificationdatabase.child(item.getKey()).removeValue();
+        }else Toast.makeText(this, "This user is already your friend.", Toast.LENGTH_SHORT).show();
     }
 }
