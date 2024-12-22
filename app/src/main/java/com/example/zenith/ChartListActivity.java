@@ -124,215 +124,218 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart_list);
-        init();
-        getData();
+        try {
+            init();
+            getData();
 
-        assert currentuser != null;
-        email.setText(currentuser.getEmail());
-        logout.setOnClickListener(view -> {
-            try {
-                mdatabase.removeEventListener(vListener);
-                mdatabase.removeEventListener(valueEventListener);
-                mynotidatabase.removeEventListener(vnotilistener);
+            assert currentuser != null;
+            email.setText(currentuser.getEmail());
+            logout.setOnClickListener(view -> {
+                try {
+                    mdatabase.removeEventListener(vListener);
+                    mdatabase.removeEventListener(valueEventListener);
+                    mynotidatabase.removeEventListener(vnotilistener);
+                    playSoundBool(3);
+                    mfirebaseAuth.signOut();
+                } catch (Exception e) {
+                    Log.d("ERROR", e.getMessage());
+                }
+
+                Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
+                startActivity(intent);
+            });
+            changeavatar.setOnClickListener(view -> {
+                ImagePicker.with(this)
+                        .crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                        .start();
+                playSoundBool(4);
+            });
+            bview.setOnItemSelectedListener(item -> {
+                playSoundBool(2);
+                settingslayout.setVisibility(View.GONE);
+                notificationlayout.setVisibility(View.GONE);
+                if (item.getItemId() == R.id.chat) {
+                    item.setChecked(true);
+                    chatlayout.setVisibility(View.VISIBLE);
+                    profilelayout.setVisibility(View.INVISIBLE);
+                }
+                if (item.getItemId() == R.id.profile) {
+                    item.setChecked(true);
+                    chatlayout.setVisibility(View.INVISIBLE);
+                    profilelayout.setVisibility(View.VISIBLE);
+                }
+                return false;
+            });
+            redtheme.setOnClickListener(view -> {
+                playSoundBool(4);
+                @SuppressLint("ResourceType") int colorFrom = savecol;
+                int colorTo = Color.rgb(255, 0, 0);
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                colorAnimation.setDuration(400); // milliseconds
+                colorAnimation.addUpdateListener(animator -> {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+                });
+                colorAnimation.start();
+            });
+            greentheme.setOnClickListener(view -> {
+                playSoundBool(4);
+                @SuppressLint("ResourceType") int colorFrom = savecol;
+                int colorTo = Color.rgb(0, 186, 127);
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                colorAnimation.setDuration(400); // milliseconds
+                colorAnimation.addUpdateListener(animator -> {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+                });
+                colorAnimation.start();
+            });
+            bluetheme.setOnClickListener(view -> {
+                playSoundBool(4);
+                @SuppressLint("ResourceType") int colorFrom = savecol;
+                int colorTo = Color.rgb(72, 61, 139);
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                colorAnimation.setDuration(400); // milliseconds
+                colorAnimation.addUpdateListener(animator -> {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+                });
+                colorAnimation.start();
+            });
+            blacktheme.setOnClickListener(view -> {
+                playSoundBool(4);
+                @SuppressLint("ResourceType") int colorFrom = savecol;
+                int colorTo = Color.rgb(0, 0, 0);
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                colorAnimation.setDuration(400); // milliseconds
+                colorAnimation.addUpdateListener(animator -> {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+                });
+                colorAnimation.start();
+            });
+            purpletheme.setOnClickListener(view -> {
+                playSoundBool(4);
+                @SuppressLint("ResourceType") int colorFrom = savecol;
+                int colorTo = Color.rgb(194, 51, 147);
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                colorAnimation.setDuration(400); // milliseconds
+                colorAnimation.addUpdateListener(animator -> {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+                });
+                colorAnimation.start();
+            });
+            yellowtheme.setOnClickListener(view -> {
+                playSoundBool(4);
+                @SuppressLint("ResourceType") int colorFrom = savecol;
+                int colorTo = Color.rgb(255, 235, 59);
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                colorAnimation.setDuration(400); // milliseconds
+                colorAnimation.addUpdateListener(animator -> {
+                    getWindow().setStatusBarColor((int) animator.getAnimatedValue());
+                    getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
+                    savecol = colorTo;
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
+                    sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+                });
+                colorAnimation.start();
+            });
+            bellnoti.setOnClickListener(view -> {
                 playSoundBool(3);
-                mfirebaseAuth.signOut();
-            } catch (Exception e){
-                Log.d("ERROR", e.getMessage());
-            }
-
-           Intent intent = new Intent(ChartListActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
-        changeavatar.setOnClickListener(view -> {
-            ImagePicker.with(this)
-                .crop()	    			//Crop image(Optional), Check Customization for more option
-                .compress(1024)			//Final image size will be less than 1 MB(Optional)
-                .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
-                .start();
-            playSoundBool(4);
-        });
-        bview.setOnItemSelectedListener(item -> {
-            playSoundBool(2);
-            settingslayout.setVisibility(View.GONE);
-            notificationlayout.setVisibility(View.GONE);
-           if(item.getItemId()==R.id.chat){
-             item.setChecked(true);
-             chatlayout.setVisibility(View.VISIBLE);
-             profilelayout.setVisibility(View.INVISIBLE);
-           }
-            if(item.getItemId()== R.id.profile){
-                item.setChecked(true);
-                chatlayout.setVisibility(View.INVISIBLE);
+                chatlayout.setVisibility(View.GONE);
+                profilelayout.setVisibility(View.GONE);
+                notificationlayout.setVisibility(View.VISIBLE);
+            });
+            settings.setOnClickListener(view -> {
+                playSoundBool(3);
+                settingslayout.setVisibility(View.VISIBLE);
+                chatlayout.setVisibility(View.GONE);
+                profilelayout.setVisibility(View.GONE);
+                bview.setClickable(false);
+            });
+            closesett.setOnClickListener(view -> {
+                playSoundBool(3);
+                settingslayout.setVisibility(View.GONE);
                 profilelayout.setVisibility(View.VISIBLE);
-            }
-            return false;
-        });
-        redtheme.setOnClickListener(view -> {
-            playSoundBool(4);
-            @SuppressLint("ResourceType") int colorFrom = savecol;
-            int colorTo = Color.rgb(255, 0, 0);
-            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(animator -> {
-                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                savecol = colorTo;
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+                bview.setClickable(true);
             });
-            colorAnimation.start();
-        });
-        greentheme.setOnClickListener(view -> {
-            playSoundBool(4);
-            @SuppressLint("ResourceType") int colorFrom = savecol;
-            int colorTo = Color.rgb(0, 186, 127);
-            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(animator -> {
-                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                savecol = colorTo;
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+            close.setOnClickListener(view -> {
+                solid.setVisibility(View.GONE);
+                close.setVisibility(View.GONE);
+                delete.setVisibility(View.GONE);
+                search.setVisibility(View.VISIBLE);
+                playSoundBool(3);
             });
-            colorAnimation.start();
-        });
-        bluetheme.setOnClickListener(view -> {
-            playSoundBool(4);
-            @SuppressLint("ResourceType") int colorFrom = savecol;
-            int colorTo = Color.rgb(72, 61, 139);
-            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(animator -> {
-                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                savecol = colorTo;
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
-            });
-            colorAnimation.start();
-        });
-        blacktheme.setOnClickListener(view -> {
-            playSoundBool(4);
-            @SuppressLint("ResourceType") int colorFrom = savecol;
-            int colorTo = Color.rgb(0, 0, 0);
-            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(animator -> {
-                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                savecol = colorTo;
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
-            });
-            colorAnimation.start();
-        });
-        purpletheme.setOnClickListener(view -> {
-            playSoundBool(4);
-            @SuppressLint("ResourceType") int colorFrom = savecol;
-            int colorTo = Color.rgb(194, 51, 147);
-            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(animator -> {
-                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                savecol = colorTo;
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
-            });
-            colorAnimation.start();
-        });
-        yellowtheme.setOnClickListener(view -> {
-            playSoundBool(4);
-            @SuppressLint("ResourceType") int colorFrom = savecol;
-            int colorTo = Color.rgb(255, 235, 59);
-            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(animator -> {
-                getWindow().setStatusBarColor((int) animator.getAnimatedValue());
-                getWindow().setNavigationBarColor((int) animator.getAnimatedValue());
-                savecol = colorTo;
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(SettingsDatabase.COLOROFTHEME, colorTo);
-                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
-            });
-            colorAnimation.start();
-        });
-        bellnoti.setOnClickListener(view -> {
-            playSoundBool(3);
-            chatlayout.setVisibility(View.GONE);
-            profilelayout.setVisibility(View.GONE);
-            notificationlayout.setVisibility(View.VISIBLE);
-        });
-        settings.setOnClickListener(view -> {
-            playSoundBool(3);
-            settingslayout.setVisibility(View.VISIBLE);
-            chatlayout.setVisibility(View.GONE);
-            profilelayout.setVisibility(View.GONE);
-            bview.setClickable(false);
-        });
-        closesett.setOnClickListener(view -> {
-            playSoundBool(3);
-            settingslayout.setVisibility(View.GONE);
-            profilelayout.setVisibility(View.VISIBLE);
-            bview.setClickable(true);
-        });
-        close.setOnClickListener(view -> {
-            solid.setVisibility(View.GONE);
-            close.setVisibility(View.GONE);
-            delete.setVisibility(View.GONE);
-            search.setVisibility(View.VISIBLE);
-            playSoundBool(3);
-        });
-        backnoti.setOnClickListener(view -> {
-            playSoundBool(3);
-            notificationlayout.setVisibility(View.GONE);
-            profilelayout.setVisibility(View.VISIBLE);
+            backnoti.setOnClickListener(view -> {
+                playSoundBool(3);
+                notificationlayout.setVisibility(View.GONE);
+                profilelayout.setVisibility(View.VISIBLE);
 
-        });
-        delete.setOnClickListener(view -> {
-            friendsdatasnapshot.child(FriendKey).removeValue();
-            solid.setVisibility(View.GONE);
-            close.setVisibility(View.GONE);
-            delete.setVisibility(View.GONE);
-            search.setVisibility(View.VISIBLE);
-            playSoundBool(3);
-        });
-        sw_theme.setOnCheckedChangeListener((compoundButton, b) -> {
-            playSoundBool(1);
-            ContentValues contentValues = new ContentValues();
-            if (sw_theme.isChecked()) {
-                contentValues.put(SettingsDatabase.THEME, "dark");
-                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
-                setDarkTheme();
-            }
-            else {
-                contentValues.put(SettingsDatabase.THEME, "light");
-                sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
-                setLightTheme();
-            }
+            });
+            delete.setOnClickListener(view -> {
+                friendsdatasnapshot.child(FriendKey).removeValue();
+                solid.setVisibility(View.GONE);
+                close.setVisibility(View.GONE);
+                delete.setVisibility(View.GONE);
+                search.setVisibility(View.VISIBLE);
+                playSoundBool(3);
+            });
+            sw_theme.setOnCheckedChangeListener((compoundButton, b) -> {
+                playSoundBool(1);
+                ContentValues contentValues = new ContentValues();
+                if (sw_theme.isChecked()) {
+                    contentValues.put(SettingsDatabase.THEME, "dark");
+                    sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+                    setDarkTheme();
+                } else {
+                    contentValues.put(SettingsDatabase.THEME, "light");
+                    sqLiteDatabase.update(SettingsDatabase.TABLE_SETTINGS, contentValues, SettingsDatabase.ID + "= ?", new String[]{"1"});
+                    setLightTheme();
+                }
 
-        });
-        sw_private.setOnCheckedChangeListener((compoundButton, b) -> playSoundBool(1));
+            });
+            sw_private.setOnCheckedChangeListener((compoundButton, b) -> playSoundBool(1));
 
-        pencil.setOnClickListener(view -> {
-            playSoundBool(5);
-            if(isreadytoupdate){
-                updateData(name.getText().toString(), "name");
-                name.setEnabled(false);
-                name.setBackground(null);
-                isreadytoupdate = false;
-            } else {
-                isreadytoupdate = true;
-                name.setEnabled(true);
-                name.setBackground(namedraw);
-            }
-        });
+            pencil.setOnClickListener(view -> {
+                playSoundBool(5);
+                if (isreadytoupdate) {
+                    updateData(name.getText().toString(), "name");
+                    name.setEnabled(false);
+                    name.setBackground(null);
+                    isreadytoupdate = false;
+                } else {
+                    isreadytoupdate = true;
+                    name.setEnabled(true);
+                    name.setBackground(namedraw);
+                }
+            });
+        }catch (Exception ex){
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -413,7 +416,8 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     }
 
     @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables", "WrongViewCast"})
-    private void init(){
+    private void init() {
+        try{
         email = findViewById(R.id.ema);
         logout = findViewById(R.id.logout);
         name = findViewById(R.id.namechar);
@@ -476,7 +480,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         settingsDatabase = new SettingsDatabase(this);
         sqLiteDatabase = settingsDatabase.getWritableDatabase();
         loadbool();
-        if(isfirst){
+        if (isfirst) {
             ContentValues contentValues = new ContentValues();
             contentValues.put(SettingsDatabase.LANGUAGE, "English");
             contentValues.put(SettingsDatabase.THEME, "light");
@@ -484,16 +488,16 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             sqLiteDatabase.insert(SettingsDatabase.TABLE_SETTINGS, null, contentValues);
             isfirst = false;
             savebool();
-        }else {
+        } else {
             Cursor cursor = sqLiteDatabase.query(SettingsDatabase.TABLE_SETTINGS, null, null, null, null, null, null);
             int theme = cursor.getColumnIndex(SettingsDatabase.THEME);
             int coloroftheme = cursor.getColumnIndex(SettingsDatabase.COLOROFTHEME);
             int language = cursor.getColumnIndex(SettingsDatabase.LANGUAGE);
-            if(cursor.moveToFirst()){
+            if (cursor.moveToFirst()) {
                 savecol = cursor.getInt(coloroftheme);
                 getWindow().setStatusBarColor(savecol);
                 getWindow().setNavigationBarColor(savecol);
-                if(cursor.getString(theme).equals("dark")){
+                if (cursor.getString(theme).equals("dark")) {
                     sw_theme.setChecked(true);
                     setDarkTheme();
                 }
@@ -505,13 +509,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 @SuppressLint({"NotifyDataSetChanged", "UseCompatLoadingForDrawables", "SetTextI18n"})
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(itemFriends.size()>0) itemFriends.clear();
-                    if(FriendsKey.size()>0) FriendsKey.clear();
+                    if (itemFriends.size() > 0) itemFriends.clear();
+                    if (FriendsKey.size() > 0) FriendsKey.clear();
                     final int[] numoffriends = {0};
-                    for (DataSnapshot ds: snapshot.getChildren()) {
+                    for (DataSnapshot ds : snapshot.getChildren()) {
                         Friends friends = ds.getValue(Friends.class);
                         FriendsKey.add(ds.getKey());
-                        assert friends!=null;
+                        assert friends != null;
                         DatabaseReference frdb = mdatabase.child(friends.KEY);
                         ValueEventListener friendlistener = new ValueEventListener() {
                             @Override
@@ -531,15 +535,15 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
                         FriendUID.add(friends.UID);
                         numoffriends[0]++;
-                       if(sw_theme.isChecked()) {
-                           itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(255,255,255), friends.PNG, friends.KEY));
-                       }else {
-                           itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(0,0,0), friends.PNG, friends.KEY));
-                       }
+                        if (sw_theme.isChecked()) {
+                            itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(255, 255, 255), friends.PNG, friends.KEY));
+                        } else {
+                            itemFriends.add(new ItemFriends(friends.Name, null, friends.UID, Color.rgb(0, 0, 0), friends.PNG, friends.KEY));
+                        }
 
                     }
                     customFriendsAdapter.notifyDataSetChanged();
-                    numfriends.setText("Number of friends: "+numoffriends[0]);
+                    numfriends.setText("Number of friends: " + numoffriends[0]);
                 }
 
                 @Override
@@ -549,7 +553,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             };
             try {
                 friendsdatasnapshot.addValueEventListener(eventListener);
-            }catch (Exception ex){
+            } catch (Exception ex) {
                 Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
         };
@@ -558,7 +562,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 @SuppressLint("NotifyDataSetChanged")
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(items.size() > 0){
+                    if (items.size() > 0) {
                         items.clear();
                     }
                     for (DataSnapshot ds : snapshot.getChildren()) {
@@ -569,8 +573,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                                 @Override
                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                     Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                                    if(sw_theme.isChecked()) items.add(new Item(user.name, drawable, user.UID, Color.rgb(255,255,255), ds.getKey()));
-                                    else items.add(new Item(user.name, drawable, user.UID, Color.rgb(0,0,0), ds.getKey()));
+                                    if (sw_theme.isChecked())
+                                        items.add(new Item(user.name, drawable, user.UID, Color.rgb(255, 255, 255), ds.getKey()));
+                                    else
+                                        items.add(new Item(user.name, drawable, user.UID, Color.rgb(0, 0, 0), ds.getKey()));
                                 }
 
                                 @Override
@@ -598,6 +604,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                     }
                     adapter.notifyDataSetChanged();
                 }
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
 
@@ -608,16 +615,16 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             vnotilistener = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (itemNotifications.size() > 0) itemNotifications.clear();
-                        for (DataSnapshot ds : snapshot.getChildren()) {
-                            Notification notification = ds.getValue(Notification.class);
-                            assert notification != null;
-                            if (sw_theme.isChecked())
-                                itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(255, 255, 255), notification.PNG, ds.getKey(), notification.id));
-                            else
-                                itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(0, 0, 0), notification.PNG, ds.getKey(), notification.id));
-                        }
-                        notiadapter.notifyDataSetChanged();
+                    if (itemNotifications.size() > 0) itemNotifications.clear();
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Notification notification = ds.getValue(Notification.class);
+                        assert notification != null;
+                        if (sw_theme.isChecked())
+                            itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(255, 255, 255), notification.PNG, ds.getKey(), notification.id));
+                        else
+                            itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(0, 0, 0), notification.PNG, ds.getKey(), notification.id));
+                    }
+                    notiadapter.notifyDataSetChanged();
 
                 }
 
@@ -631,12 +638,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         };
         run.run();
         runfriends.run();
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter(adapter);
-            notirecyclerView.setLayoutManager(new LinearLayoutManager(this));
-            notirecyclerView.setAdapter(notiadapter);
-            recyclerViewfriends.setLayoutManager(new LinearLayoutManager(this));
-            recyclerViewfriends.setAdapter(customFriendsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+        notirecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        notirecyclerView.setAdapter(notiadapter);
+        recyclerViewfriends.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewfriends.setAdapter(customFriendsAdapter);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -646,11 +653,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             @Override
             public boolean onQueryTextChange(String s) {
                 checkS = s;
-                if(TextUtils.isEmpty(s)){
+                if (TextUtils.isEmpty(s)) {
                     recyclerView.setVisibility(View.INVISIBLE);
                     recyclerViewfriends.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     recyclerView.setVisibility(View.VISIBLE);
                     recyclerViewfriends.setVisibility(View.INVISIBLE);
                     filterList(s);
@@ -658,6 +664,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 return true;
             }
         });
+    }catch (Exception ex){
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadbool() {
@@ -745,15 +754,15 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         Intent intent = new Intent(ChartListActivity.this, UserChatActivity.class);
         intent.putExtra("NameUser", item.getName());
         intent.putExtra("UID", item.getUID());
-        try {
-            if(!FriendUID.contains(item.UID)) {
-                String id = friendsdatasnapshot.getKey();
-                Friends friends = new Friends(id, item.UID, item.getName(), imageUriFriends.get(position), item.key);
-                friendsdatasnapshot.push().setValue(friends);
-            }
-        }catch (Exception ex){
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+//        try {
+//            if(!FriendUID.contains(item.UID)) {
+//                String id = friendsdatasnapshot.getKey();
+//                Friends friends = new Friends(id, item.UID, item.getName(), imageUriFriends.get(position), item.key);
+//                friendsdatasnapshot.push().setValue(friends);
+//            }
+//        }catch (Exception ex){
+//            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
         Bitmap bitmap = ((BitmapDrawable) item.getImage()).getBitmap();
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
@@ -811,11 +820,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     public void OnClickNotiListener(ItemNotification item, int position) {
         if(!FriendUID.contains(item.UID)) {
             String id = friendsdatasnapshot.getKey();
-            Friends friends = new Friends(id, item.UID, item.getName(), item.Uri, item.key);
+            Friends friends = new Friends(id, item.UID, item.getName(), item.Uri, item.userkey);
             Friends friends2 = new Friends(id, currentuser.getUid(), name.getText().toString(), userown.imageUri, userID);
             friendsdatasnapshot.push().setValue(friends);
             myfrienddatasnap.child(item.UID).push().setValue(friends2);
-            notificationdatabase.child(item.getKey()).removeValue();
+            mynotidatabase.child(item.getKey()).removeValue();
         }else Toast.makeText(this, "This user is already your friend.", Toast.LENGTH_SHORT).show();
     }
 }
