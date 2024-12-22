@@ -10,6 +10,16 @@ public class ItemNotification {
     String Uri;
     String key;
     String userkey;
+
+    public String getTypeMassage() {
+        return TypeMassage;
+    }
+
+    public void setTypeMassage(String typeMassage) {
+        TypeMassage = typeMassage;
+    }
+
+    String TypeMassage;
     public String getUri() {
         return Uri;
     }
@@ -26,7 +36,7 @@ public class ItemNotification {
         this.colortext = colortext;
     }
 
-    public ItemNotification(String name, Drawable image, String UID, int colortext, String Uri, String key, String userkey) {
+    public ItemNotification(String name, Drawable image, String UID, int colortext, String Uri, String key, String userkey, String TypeMassage) {
         this.name = name;
         this.image = image;
         this.UID = UID;
@@ -34,6 +44,7 @@ public class ItemNotification {
         this.Uri = Uri;
         this.key = key;
         this.userkey = userkey;
+        this.TypeMassage = TypeMassage;
     }
 
     public String getKey() {

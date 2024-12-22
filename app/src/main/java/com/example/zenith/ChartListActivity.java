@@ -621,9 +621,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                         Notification notification = ds.getValue(Notification.class);
                         assert notification != null;
                         if (sw_theme.isChecked())
-                            itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(255, 255, 255), notification.PNG, ds.getKey(), notification.id));
+                            itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(255, 255, 255), notification.PNG, ds.getKey(), notification.id, notification.TypeMassage));
                         else
-                            itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(0, 0, 0), notification.PNG, ds.getKey(), notification.id));
+                            itemNotifications.add(new ItemNotification(notification.Name, null, notification.UID, Color.rgb(0, 0, 0), notification.PNG, ds.getKey(), notification.id, notification.TypeMassage));
                     }
                     notiadapter.notifyDataSetChanged();
 
@@ -809,6 +809,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
     @Override
     public void addFriendOnClick(Item item, int position) {
+        playSoundBool(2);
         if(!FriendUID.contains(item.UID)) {
             String id = notificationdatabase.getKey();
             Notification noti = new Notification(userID, currentuser.getUid(), userown.name, userown.imageUri, FirebaseHelper.TYPE_ADD_TO_FRIENDS);
@@ -820,14 +821,30 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
     @Override
     public void OnClickNotiListener(ItemNotification item, int position) {
         playSoundBool(2);
-        if(!FriendUID.contains(item.UID)) {
-            String id = friendsdatasnapshot.getKey();
-            Friends friends = new Friends(id, item.UID, item.getName(), item.Uri, item.userkey);
-            Friends friends2 = new Friends(id, currentuser.getUid(), name.getText().toString(), userown.imageUri, userID);
-            friendsdatasnapshot.push().setValue(friends);
-            myfrienddatasnap.child(item.UID).push().setValue(friends2);
-            mynotidatabase.child(item.getKey()).removeValue();
-        }else Toast.makeText(this, "This user is already your friend.", Toast.LENGTH_SHORT).show();
+        if(item.TypeMassage.equals(FirebaseHelper.TYPE_ADD_TO_FRIENDS)) {
+            if (!FriendUID.contains(item.UID)) {
+                String id = friendsdatasnapshot.getKey();
+                Friends friends = new Friends(id, item.UID, item.getName(), item.Uri, item.userkey);
+                Friends friends2 = new Friends(id, currentuser.getUid(), name.getText().toString(), userown.imageUri, userID);
+                friendsdatasnapshot.push().setValue(friends);
+                myfrienddatasnap.child(item.UID).push().setValue(friends2);
+                mynotidatabase.child(item.getKey()).removeValue();
+            } else
+                Toast.makeText(this, "This user is already your friend.", Toast.LENGTH_SHORT).show();
+        } else{
+            if(item.TypeMassage.equals(FirebaseHelper.TYPE_MASSAGE)){
+                Intent intent = new Intent(ChartListActivity.this, UserChatActivity.class);
+                intent.putExtra("NameUser", item.getName());
+                intent.putExtra("UID", item.getUID());
+                Bitmap bitmap = ((BitmapDrawable) item.getImage()).getBitmap();
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
+                intent.putExtra("byteArray", bs.toByteArray());
+                intent.putExtra("currentuser", currentuser.getUid());
+                mynotidatabase.child(item.getKey()).removeValue();
+                startActivity(intent);
+            }
+        }
     }
 
     @Override
