@@ -40,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zenith.OnClickListeners.AddFriendListener;
 import com.example.zenith.OnClickListeners.AddFriendNotiListener;
+import com.example.zenith.OnClickListeners.DelFriendListener;
 import com.example.zenith.OnClickListeners.SelectFriendsListener;
 import com.example.zenith.OnClickListeners.SelectListener;
 import com.example.zenith.OnClickListeners.SelectListenerDelFriend;
@@ -68,7 +69,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 //@SuppressWarnings("all")
-public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend, AddFriendListener, AddFriendNotiListener {
+public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend, AddFriendListener, AddFriendNotiListener, DelFriendListener {
     private TextView email, numfriends, solid;
     private EditText name;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -466,7 +467,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         FriendsKey = new ArrayList<>();
         customFriendsAdapter = new CustomFriendsAdapter(ChartListActivity.this, itemFriends, this, this);
         adapter = new CustomAdapter(getApplicationContext(), items, this, this);
-        notiadapter = new CustomNotificationAdapter(getApplicationContext(), itemNotifications, this);
+        notiadapter = new CustomNotificationAdapter(getApplicationContext(), itemNotifications, this, this);
         bview = findViewById(R.id.bottomNavigationView);
         chatlayout = findViewById(R.id.chatlayout);
         profilelayout = findViewById(R.id.profilelayout);
@@ -818,6 +819,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
     @Override
     public void OnClickNotiListener(ItemNotification item, int position) {
+        playSoundBool(2);
         if(!FriendUID.contains(item.UID)) {
             String id = friendsdatasnapshot.getKey();
             Friends friends = new Friends(id, item.UID, item.getName(), item.Uri, item.userkey);
@@ -826,5 +828,11 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             myfrienddatasnap.child(item.UID).push().setValue(friends2);
             mynotidatabase.child(item.getKey()).removeValue();
         }else Toast.makeText(this, "This user is already your friend.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void delFriendOnClick(ItemNotification item, int position) {
+        playSoundBool(2);
+        mynotidatabase.child(item.getKey()).removeValue();
     }
 }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zenith.ItemNotification;
 import com.example.zenith.OnClickListeners.AddFriendNotiListener;
+import com.example.zenith.OnClickListeners.DelFriendListener;
 import com.example.zenith.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -23,11 +24,13 @@ public class CustomNotificationAdapter extends RecyclerView.Adapter<CustomNotifi
     Context context;
     List<ItemNotification> itemNotifications;
     AddFriendNotiListener addFriendNotiListener;
+    DelFriendListener delFriendListener;
 
-    public CustomNotificationAdapter(Context context, List<ItemNotification> itemNotifications, AddFriendNotiListener addFriendNotiListener) {
+    public CustomNotificationAdapter(Context context, List<ItemNotification> itemNotifications, AddFriendNotiListener addFriendNotiListener, DelFriendListener delFriendListener) {
         this.context = context;
         this.itemNotifications = itemNotifications;
         this.addFriendNotiListener = addFriendNotiListener;
+        this.delFriendListener = delFriendListener;
     }
 
     @NonNull
@@ -46,6 +49,9 @@ public class CustomNotificationAdapter extends RecyclerView.Adapter<CustomNotifi
         }
         holder.addnotifriend.setOnClickListener(view -> {
             addFriendNotiListener.OnClickNotiListener(itemNotifications.get(position), position);
+        });
+        holder.delnotifriendp.setOnClickListener(view -> {
+            delFriendListener.delFriendOnClick(itemNotifications.get(position), position);
         });
         Target target = new Target() {
             @Override
