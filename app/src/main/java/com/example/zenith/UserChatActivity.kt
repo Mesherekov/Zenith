@@ -48,6 +48,9 @@ import java.io.ByteArrayOutputStream
 class UserChatActivity : AppCompatActivity(),
     SelectMassageListener {
     private lateinit var name: TextView
+    private lateinit var userID: String
+    private lateinit var nameown: String
+    private lateinit var imageUri: String
     private lateinit var solid: TextView
     private lateinit var userImage: ImageView
     private lateinit var backImage: ImageButton
@@ -61,6 +64,7 @@ class UserChatActivity : AppCompatActivity(),
     private val MASSAGE_KEY = "Massage"
     private  var mfireauth : FirebaseAuth? = null
     private  var mdatabase : DatabaseReference? = null
+    private var notidatabase : DatabaseReference? = null
     private lateinit var massages: Massages
     private lateinit var itemMassage: MutableList<ItemMassage>
     private lateinit var recyclermassageView: RecyclerView
@@ -135,7 +139,11 @@ class UserChatActivity : AppCompatActivity(),
             userImage.setImageBitmap(bitmap)
             friendUID = intent.getStringExtra("UID").toString()
             name.text = intent.getStringExtra("NameUser")
+            imageUri = intent.getStringExtra("PNG").toString()
+            nameown = intent.getStringExtra("NameOwn").toString()
+            userID = intent.getStringExtra("useid").toString()
             mdatabase = FirebaseDatabase.getInstance().getReference(MASSAGE_KEY).child((currentuser!!.uid.hashCode()+friendUID.hashCode()).toString())
+            notidatabase = FirebaseDatabase.getInstance().getReference(FirebaseHelper.NOTIFICATION_KEY)
             getData()
 
             if(name.text.length>12){
@@ -180,6 +188,9 @@ class UserChatActivity : AppCompatActivity(),
         sendmassage.setOnClickListener{
             playSoundBool(2)
             if (ownmassage.text.isNotEmpty() || yourimage.visibility == View.VISIBLE) {
+                val idofnoti = notidatabase?.key
+                val notification = Notification(userID, currentuser?.uid, nameown, imageUri, FirebaseHelper.TYPE_MASSAGE)
+                notidatabase?.child(friendUID.hashCode().toString())?.push()?.setValue(notification)
                 if (yourimage.visibility == View.VISIBLE) {
                     uploadImage()
                     if (ownmassage.text.toString() != "") {

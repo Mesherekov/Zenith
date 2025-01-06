@@ -44,6 +44,7 @@ public class CustomNotificationAdapter extends RecyclerView.Adapter<CustomNotifi
     public void onBindViewHolder(@NonNull CustomNotificationViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.name.setTextColor(itemNotifications.get(position).getColortext());
         holder.name.setText(itemNotifications.get(position).getName());
+        holder.typemassage.setText(itemNotifications.get(position).getTypeMassage());
         if(itemNotifications.get(position).getName().length()>=11){
             holder.name.setText(itemNotifications.get(position).getName().substring(0, 8)+"...");
         }

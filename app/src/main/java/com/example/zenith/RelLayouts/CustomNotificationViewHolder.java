@@ -14,7 +14,7 @@ import com.example.zenith.R;
 public class CustomNotificationViewHolder extends RecyclerView.ViewHolder {
     ImageView imageView;
     ImageView addnotifriend, delnotifriendp;
-    TextView name;
+    TextView name, typemassage;
     RelativeLayout relativeLayoutfriend;
     public CustomNotificationViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -23,5 +23,6 @@ public class CustomNotificationViewHolder extends RecyclerView.ViewHolder {
         imageView = itemView.findViewById(R.id.avatarnot);
         addnotifriend = itemView.findViewById(R.id.notiaddtoffriend);
         delnotifriendp = itemView.findViewById(R.id.notideltoffriend);
+        typemassage = itemView.findViewById(R.id.typemassage);
     }
 }

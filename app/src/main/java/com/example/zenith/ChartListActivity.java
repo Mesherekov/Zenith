@@ -782,6 +782,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
         intent.putExtra("byteArray", bs.toByteArray());
         intent.putExtra("currentuser", currentuser.getUid());
+        intent.putExtra("useid", userID);
+        intent.putExtra("PNG", userown.imageUri);
+        intent.putExtra("NameOwn", userown.name);
         startActivity(intent);
         playSoundBool(2);
     }
