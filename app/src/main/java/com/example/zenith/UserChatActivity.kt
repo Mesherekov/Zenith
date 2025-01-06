@@ -208,6 +208,21 @@ class UserChatActivity : AppCompatActivity(),
                         recyclermassageView.smoothScrollToPosition(counter++)
                         yourimage.visibility = View.GONE
                         addImage.setImageResource(R.drawable.addimage)
+                    }else{
+                        val id = mdatabase?.key
+                        massages = Massages(
+                            id,
+                            "",
+                            currentuser!!.uid,
+                            currentuser!!.uid,
+                            friendUID,
+                            massageUri.toString()
+                        )
+                        mdatabase?.push()?.setValue(massages)
+                        ownmassage.setText("")
+                        recyclermassageView.smoothScrollToPosition(counter++)
+                        yourimage.visibility = View.GONE
+                        addImage.setImageResource(R.drawable.addimage)
                     }
                 }
                 else {

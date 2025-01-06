@@ -71,6 +71,9 @@ public class CustomMassageAdapter extends RecyclerView.Adapter<CustomMassageView
             //holder.textmass.getLayoutParams().width = holder.sendimage.getLayoutParams().width;
             //holder.textmass.setWidth(holder.sendimage.getWidth());
         }
+        if (items.get(position).getTextMassage().equals("")){
+            holder.textmass.setVisibility(View.INVISIBLE);
+        }
         if(!items.get(position).getUriImage().equals("null")){
             try {
                 Target target = new Target() {
