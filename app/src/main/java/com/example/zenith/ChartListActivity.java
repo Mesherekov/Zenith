@@ -319,7 +319,12 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                 }
 
             });
-            sw_private.setOnCheckedChangeListener((compoundButton, b) -> playSoundBool(1));
+            sw_private.setOnCheckedChangeListener((compoundButton, b) -> {
+                playSoundBool(1);
+                if(sw_private.isChecked()){
+                    updateData("private", "privateaccount");
+                }else updateData("public", "privateaccount");
+            });
 
             pencil.setOnClickListener(view -> {
                 playSoundBool(5);
@@ -733,7 +738,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                     String password = String.valueOf(currentuser.getUid().hashCode());
                     newuploadImage();
 
-                    User user = new User(id, name, email, password, "newuploaduri.toString()", currentuser.getUid());
+                    User user = new User(id, name, email, password, "newuploaduri.toString()", currentuser.getUid(), "public");
                     mdatabase.push().setValue(user);
 
                 }

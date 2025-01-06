@@ -66,6 +66,7 @@ class UserChatActivity : AppCompatActivity(),
     private  var mdatabase : DatabaseReference? = null
     private var notidatabase : DatabaseReference? = null
     private lateinit var massages: Massages
+    private var defendofspam = false
     private lateinit var itemMassage: MutableList<ItemMassage>
     private lateinit var recyclermassageView: RecyclerView
     private lateinit var customMassageAdapter: CustomMassageAdapter
@@ -188,9 +189,19 @@ class UserChatActivity : AppCompatActivity(),
         sendmassage.setOnClickListener{
             playSoundBool(2)
             if (ownmassage.text.isNotEmpty() || yourimage.visibility == View.VISIBLE) {
-                val idofnoti = notidatabase?.key
-                val notification = Notification(userID, currentuser?.uid, nameown, imageUri, FirebaseHelper.TYPE_MASSAGE)
-                notidatabase?.child(friendUID.hashCode().toString())?.push()?.setValue(notification)
+                if (!defendofspam) {
+                    val idofnoti = notidatabase?.key
+                    val notification = Notification(
+                        userID,
+                        currentuser?.uid,
+                        nameown,
+                        imageUri,
+                        FirebaseHelper.TYPE_MASSAGE
+                    )
+                    notidatabase?.child(friendUID.hashCode().toString())?.push()
+                        ?.setValue(notification)
+                    defendofspam = true
+                }
                 if (yourimage.visibility == View.VISIBLE) {
                     uploadImage()
                     if (ownmassage.text.toString() != "") {
