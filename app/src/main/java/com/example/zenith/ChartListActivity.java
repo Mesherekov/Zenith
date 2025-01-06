@@ -70,7 +70,7 @@ import java.util.List;
 import java.util.Objects;
 //@SuppressWarnings("all")
 public class ChartListActivity extends AppCompatActivity implements SelectListener, SelectFriendsListener, SelectListenerDelFriend, AddFriendListener, AddFriendNotiListener, DelFriendListener {
-    private TextView email, numfriends, solid;
+    private TextView email, numfriends, solid, notitext;
     private EditText name;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private Switch sw_theme, sw_private;
@@ -365,18 +365,27 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
             pencil.setColorFilter(ContextCompat.getColor(this, R.color.White));
             changeavatar.setColorFilter(ContextCompat.getColor(this, R.color.White));
             settings.setColorFilter(ContextCompat.getColor(this, R.color.White), android.graphics.PorterDuff.Mode.MULTIPLY);
+            bellnoti.setColorFilter(ContextCompat.getColor(this, R.color.White), android.graphics.PorterDuff.Mode.MULTIPLY);
             solidsett.setImageResource(R.drawable.rectanglesolidblack);
             settings.setColorFilter(Color.argb(255, 255, 255, 255));
+            bellnoti.setColorFilter(Color.argb(255, 255, 255, 255));
+            notitext.setTextColor(Color.argb(255, 255, 255, 255));
             ViewCompat.setBackgroundTintList(search, ContextCompat.getColorStateList(this, R.color.Blue));
         }
         else {
             textcolor = R.color.black;
+            notitext.setTextColor(Color.argb(255, 0, 0, 0));
             logout.setColorFilter(ContextCompat.getColor(this, R.color.Black));
             closesett.setColorFilter(ContextCompat.getColor(this, R.color.Black));
             pencil.setColorFilter(ContextCompat.getColor(this, R.color.Black));
             changeavatar.setColorFilter(ContextCompat.getColor(this, R.color.Black));
             settings.setColorFilter(ContextCompat.getColor(this, R.color.Black), android.graphics.PorterDuff.Mode.MULTIPLY);
             settings.setColorFilter(Color.argb(255, 0, 0, 0));
+            bellnoti.setColorFilter(ContextCompat.getColor(this, R.color.Black), android.graphics.PorterDuff.Mode.MULTIPLY);
+            bellnoti.setColorFilter(Color.argb(255, 0, 0, 0));
+            backnoti.setColorFilter(ContextCompat.getColor(this, R.color.Black), android.graphics.PorterDuff.Mode.MULTIPLY);
+            backnoti.setColorFilter(Color.argb(255, 0, 0, 0));
+            backnoti.setColorFilter(ContextCompat.getColor(this, R.color.Black), android.graphics.PorterDuff.Mode.MULTIPLY);;
             solidsett.setImageResource(R.drawable.rectanglesolid);
         }
         email.setTextColor(ContextCompat.getColor(this, textcolor));
@@ -435,6 +444,7 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
         settings = findViewById(R.id.settings);
         sw_private = findViewById(R.id.switchprivate);
         sw_theme = findViewById(R.id.switchtheme);
+        notitext = findViewById(R.id.notitext);
         redtheme = findViewById(R.id.redtheme);
         backnoti = findViewById(R.id.backnoti);
         greentheme = findViewById(R.id.greentheme);

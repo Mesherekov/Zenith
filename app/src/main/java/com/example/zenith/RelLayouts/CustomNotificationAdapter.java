@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.zenith.ItemNotification;
@@ -43,6 +44,9 @@ public class CustomNotificationAdapter extends RecyclerView.Adapter<CustomNotifi
     @Override
     public void onBindViewHolder(@NonNull CustomNotificationViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.name.setTextColor(itemNotifications.get(position).getColortext());
+        holder.typemassage.setTextColor(itemNotifications.get(position).getColortext());
+        holder.addnotifriend.setColorFilter(itemNotifications.get(position).getColortext());
+        holder.delnotifriendp.setColorFilter(itemNotifications.get(position).getColortext());
         holder.name.setText(itemNotifications.get(position).getName());
         holder.typemassage.setText(itemNotifications.get(position).getTypeMassage());
         if(itemNotifications.get(position).getName().length()>=11){
