@@ -580,9 +580,9 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
                                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                                     Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                                     if (sw_theme.isChecked())
-                                        items.add(new Item(user.name, drawable, user.UID, Color.rgb(255, 255, 255), ds.getKey()));
+                                        items.add(new Item(user.name, drawable, user.UID, Color.rgb(255, 255, 255), ds.getKey(), user.privateaccount));
                                     else
-                                        items.add(new Item(user.name, drawable, user.UID, Color.rgb(0, 0, 0), ds.getKey()));
+                                        items.add(new Item(user.name, drawable, user.UID, Color.rgb(0, 0, 0), ds.getKey(), user.privateaccount));
                                 }
 
                                 @Override
@@ -757,9 +757,10 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 
     @Override
     public void onItemClick(Item item, int position) {
-        Intent intent = new Intent(ChartListActivity.this, UserChatActivity.class);
-        intent.putExtra("NameUser", item.getName());
-        intent.putExtra("UID", item.getUID());
+        if(item.privacy.equals("public") || FriendUID.contains(item.UID)) {
+            Intent intent = new Intent(ChartListActivity.this, UserChatActivity.class);
+            intent.putExtra("NameUser", item.getName());
+            intent.putExtra("UID", item.getUID());
 //        try {
 //            if(!FriendUID.contains(item.UID)) {
 //                String id = friendsdatasnapshot.getKey();
@@ -769,12 +770,13 @@ public class ChartListActivity extends AppCompatActivity implements SelectListen
 //        }catch (Exception ex){
 //            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
 //        }
-        Bitmap bitmap = ((BitmapDrawable) item.getImage()).getBitmap();
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
-        intent.putExtra("byteArray", bs.toByteArray());
-        intent.putExtra("currentuser", currentuser.getUid());
-        startActivity(intent);
+            Bitmap bitmap = ((BitmapDrawable) item.getImage()).getBitmap();
+            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
+            intent.putExtra("byteArray", bs.toByteArray());
+            intent.putExtra("currentuser", currentuser.getUid());
+            startActivity(intent);
+        }else Toast.makeText(this, "This is a private account, please add the user to your friends", Toast.LENGTH_SHORT).show();
     }
 
     @Override
